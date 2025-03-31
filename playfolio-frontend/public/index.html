@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title><%= htmlWebpackPlugin.options.title %></title>
+  </head>
+  <body>
+    <noscript>
+      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+    </noscript>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+  </body>
+</html>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
+
+  body{
+    background-color: #1A1B1E;
+    font-family: "Mattone", sans-serif;
+  }
+
+  @font-face {
+    font-family: 'Mattone';
+    src: url('../src/assets/Fonts/Mattone-Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Mattone';
+    src: url('../src/assets/Fonts/Mattone-Bold.otf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Mattone';
+    src: url('../src/assets/Fonts/Mattone-Black.otf') format('opentype');
+    font-weight: 900; /* Peso mais alto para o "Black" */
+    font-style: normal;
+}
+
+span{
+  font-family: 'Mattone', sans-serif;
+  font-weight: normal; /* Usa a variação Mattone-Bold */
+}
+
+h1 {
+    font-family: 'Mattone', sans-serif;
+    font-weight: 900; /* Usa a variação Mattone-Black */
+}
+
+h2 {
+    font-family: 'Mattone', sans-serif;
+    font-weight: bold; /* Usa a variação Mattone-Bold */
+}
+</style>
