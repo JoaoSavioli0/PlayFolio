@@ -37,7 +37,7 @@
                                 <div v-if="jogo.genres" class="text-start w-full line-clamp-2 text-zinc-500 ">
                                     <span v-for="(genreId, index) in jogo.genres" :key="genreId" class="text-[10px] ">{{
                                         genresNomes[genreId] == "Role-playing (RPG)" ? "RPG" : genresNomes[genreId]
-                                        }}<span v-if="index !== jogo.genres.length - 1">, </span></span>
+                                    }}<span v-if="index !== jogo.genres.length - 1">, </span></span>
                                 </div>
                                 <div v-if="jogo.first_release_date"
                                     class="mt-2 flex items-center w-full justify-start opacity-0 group-hover:opacity-100 transition-all duration-300 bg-transparent">
@@ -83,7 +83,7 @@ export default {
         }
     },
     mounted() {
-        this.carregaJogosDestaque()
+        this.encontraJogos()
     },
     methods: {
         async carregaJogosDestaque() {
@@ -104,14 +104,15 @@ export default {
                 jogosDestaqueId = jogosDestaqueId.map(e => e.game_id)
                 this.jogosDestaque = await this.encontraJogos(jogosDestaqueId)
 
-                await this.carregaTags(this.jogosDestaque)
+
 
             } catch (error) {
                 console.error("Erro: " + error)
             }
         },
+
         async encontraJogos(jogosId) {
-            const body = `fields *; where id = (${jogosId.join(', ')});`
+            const body = `fields *; sort first_release_date desc; where rating_count > 25; limit 10;`
 
             try {
                 const response = await axios.post("/v4/games", body, {
@@ -122,13 +123,14 @@ export default {
                         'Content-Type': 'text/plain'
                     }
                 })
-                await this.carregaCapas(jogosId)
 
-                return response.data
+                this.jogosDestaque = response.data
+                let jogosDestaqueId = this.jogosDestaque.map(e => e.id)
+                await this.carregaCapas(jogosDestaqueId)
+                await this.carregaTags(this.jogosDestaque)
             } catch (error) {
                 console.error("Erro: " + error)
             }
-
         },
 
         async carregaCapas(jogosId) {

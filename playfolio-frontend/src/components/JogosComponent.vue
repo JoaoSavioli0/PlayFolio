@@ -1,17 +1,20 @@
 <template>
     <div class="py-6 px-24">
         <div class="flex">
+
+            <!-- Coluna esquerda -->
             <div class="w-[50%] p-6">
                 <div class="flex flex-col gap-y-2 p-4">
+                    <h1 class="text-start">MAIS REVIEWS</h1>
                     <!-- Card -->
-                    <div class="rounded-xl w-full h-[110px] flex overflow-hidden outline-2 outline-[#1a1b1e] border-2 border-[#1a1b1e]"
+                    <div class="rounded-xl mt-4 w-full h-[110px] flex overflow-hidden outline-2 outline-[#1a1b1e] border-2 border-[#1a1b1e]"
                         v-for="(jogo, index) in jogos" :key="jogo.id">
                         <div class="w-full relative h-full">
                             <div
                                 class="rounded-md w-[65px] absolute h-auto overflow-hidden z-50 top-1/2 start-[20px] -translate-y-1/2 shadow-md">
                                 <img :src="capasJogos[jogo.id]" class="object-fit w-full h-full">
                             </div>
-                            <div class="w-full h-full z-30 bg-[#262729]/80 backdrop-blur-lg absolute"></div>
+                            <div class="w-full h-full z-30 bg-[#262729]/80 backdrop-blur-sm absolute"></div>
                             <img :src="capasJogos[jogo.id]"
                                 class="object-fit absolute w-[90%] h-auto z-20 -translate-y-1/2 top-1/2">
                             <div class="absolute w-full h-full gradiente-card z-40"></div>
@@ -24,6 +27,66 @@
                                             <span class="text-zinc-50 text-[10px]">{{ index + 1 }}</span>
                                         </div>
                                         <span class="text-sm text-start ml-2 pr-4">{{ jogo.name }}</span>
+                                        <div class="pl-4 border-l-[1px] border-zinc-500" v-if="jogo.first_release_date">
+                                            <span class="text-xs text-zinc-500">{{
+                                                formataDataUnix(jogo.first_release_date) }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex w-full" v-if="jogo.genres">
+                                        <div class="text-start w-full line-clamp-1 text-zinc-500 max-w-[60%]">
+                                            <span v-for="(genreId, index) in jogo.genres" :key="genreId"
+                                                class="text-[10px] ">{{
+                                                    genresNomes[genreId] == "Role-playing (RPG)" ? "RPG" :
+                                                        genresNomes[genreId]
+                                                }}<span v-if="index !== jogo.genres.length - 1">, </span></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center gap-x-2 w-full pt-2" v-if="jogo.platforms">
+                                        <img src="../assets/Imagens/ps_logo.png"
+                                            v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 1)"
+                                            class="w-[20px] h-auto filtro-branco">
+                                        <img src="../assets/Imagens/xbox_logo.svg"
+                                            v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 2)"
+                                            class="w-[16px] h-auto filtro-branco">
+                                        <img src="../assets/Imagens/pc_logo.png"
+                                            v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 2)"
+                                            class="w-[20px] h-auto filtro-branco">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coluna direita -->
+            <div class="w-[50%] p-6">
+                <div class="flex flex-col gap-y-2 p-4">
+                    <h1 class="text-start">MELHORES NOTAS</h1>
+                    <!-- Card -->
+                    <div class="rounded-xl mt-4 w-full h-[110px] flex overflow-hidden outline-2 outline-[#1a1b1e] border-2 border-[#1a1b1e]"
+                        v-for="(jogo, index) in jogosRecentes" :key="jogo.id">
+                        <div class="w-full relative h-full">
+                            <div
+                                class="rounded-md w-[65px] absolute h-auto overflow-hidden z-50 top-1/2 start-[20px] -translate-y-1/2 shadow-md">
+                                <img :src="capasJogos[jogo.id]" class="object-fit w-full h-full">
+                            </div>
+                            <div class="w-full h-full z-30 bg-[#262729]/80 backdrop-blur-sm absolute"></div>
+                            <img :src="capasJogos[jogo.id]"
+                                class="object-fit absolute w-[90%] h-auto z-20 -translate-y-1/2 top-1/2">
+                            <div class="absolute w-full h-full gradiente-card z-40"></div>
+
+                            <div class="w-full pl-24 h-full z-[100] relative">
+                                <div class="flex flex-col w-full justify-center h-full">
+                                    <div class="flex items-center">
+                                        <div
+                                            class="w-[29px] h-[29px] rounded-lg bg-zinc-800/30 flex items-center justify-center shrink-0">
+                                            <span class="text-zinc-50 text-[10px]">{{ index + 1 }}</span>
+                                        </div>
+                                        <div class="max-w-[55%] line-clamp-1">
+                                            <span class="text-sm text-start ml-2 pr-4">{{ jogo.name }}</span>
+                                        </div>
                                         <div class="pl-4 border-l-[1px] border-zinc-500" v-if="jogo.first_release_date">
                                             <span class="text-xs text-zinc-500">{{
                                                 formataDataUnix(jogo.first_release_date) }}</span>
@@ -45,8 +108,11 @@
                     </div>
                 </div>
             </div>
-            <div class="w-[40%] p-6"></div>
+
         </div>
+
+
+
     </div>
 </template>
 
@@ -58,6 +124,7 @@ export default {
     data() {
         return {
             jogos: [],
+            jogosRecentes: [],
             genreIds: [],
             genresNomes: {},
             capasJogos: {},
@@ -72,6 +139,7 @@ export default {
     },
     mounted() {
         this.carregaJogos()
+        this.carregaJogosRecentes()
     },
     methods: {
         async carregaJogos() {
@@ -92,6 +160,28 @@ export default {
                 await this.carregaTags(this.jogos)
                 await this.carregaPlataformas(this.jogos)
 
+
+            } catch (error) {
+                console.error("Erro: " + error)
+            }
+        },
+
+        async carregaJogosRecentes() {
+            const body = `fields *; limit 6; where rating_count > 100 & version_parent = null & parent_game = null; sort rating desc;`;
+
+            try {
+                const response = await axios.post("/v4/games", body, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
+                        'Authorization': `Bearer h6v8ywcqhwyyhj140u70v95rss6sga`,
+                        'Content-Type': 'text/plain'
+                    }
+                })
+                this.jogosRecentes = response.data
+                await this.carregaCapas(this.jogosRecentes.map((e) => e.id))
+                await this.carregaTags(this.jogosRecentes)
+                await this.carregaPlataformas(this.jogosRecentes)
 
             } catch (error) {
                 console.error("Erro: " + error)
@@ -184,10 +274,11 @@ export default {
 
                 for (let data of response.data) {
                     let abbreviation = data.abbreviation
-                    if (abbreviation.includes("PS")) id = 1
+                    if (abbreviation.includes("PS") || abbreviation.includes("Vita")) id = 1
                     if (abbreviation.includes("Series X|S") || abbreviation.includes("XBOX") || abbreviation.includes("X360")) id = 2
                     if (abbreviation.includes("PC")) id = 3
                     if (abbreviation.includes("iOS")) id = 4
+                    if (abbreviation.includes("Stadia")) id = 5
 
                     this.plataformasJogos[data.id] = id
                 }
@@ -203,6 +294,11 @@ export default {
             idMapping = this.plataformasJogos[id]
             return this.plataformasMapping[idMapping]
         }
+    },
+    computed: {
+        dataAtualUnix() {
+            return Math.floor(Date.now() / 1000)
+        }
     }
 }
 </script>
@@ -211,5 +307,9 @@ export default {
 .gradiente-card {
     background: rgb(38, 39, 41);
     background: linear-gradient(270deg, rgba(38, 39, 41, 1) 0%, rgba(0, 0, 0, 0) 76%);
+}
+
+.filtro-branco {
+    filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%) hue-rotate(168deg) brightness(103%) contrast(103%);
 }
 </style>
