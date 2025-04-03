@@ -7,55 +7,72 @@
                 <div class="flex flex-col gap-y-2 p-4">
                     <h1 class="text-start">MAIS REVIEWS</h1>
                     <!-- Card -->
+
                     <div class="rounded-xl mt-4 w-full h-[110px] flex overflow-hidden outline-2 outline-[#1a1b1e] border-2 border-[#1a1b1e]"
                         v-for="(jogo, index) in jogos" :key="jogo.id">
-                        <div class="w-full relative h-full">
-                            <div
-                                class="rounded-md w-[65px] absolute h-auto overflow-hidden z-50 top-1/2 start-[20px] -translate-y-1/2 shadow-md">
-                                <img :src="capasJogos[jogo.id]" class="object-fit w-full h-full">
-                            </div>
-                            <div class="w-full h-full z-30 bg-[#262729]/80 backdrop-blur-sm absolute"></div>
-                            <img :src="capasJogos[jogo.id]"
-                                class="object-fit absolute w-[90%] h-auto z-20 -translate-y-1/2 top-1/2">
-                            <div class="absolute w-full h-full gradiente-card z-40"></div>
+                        <router-link :to="`/game/${jogo.id}`" class="p-0 w-full">
+                            <div class="w-full relative h-full">
+                                <div
+                                    class="rounded-md w-[65px] absolute h-auto overflow-hidden z-50 top-1/2 start-[20px] -translate-y-1/2 shadow-md">
+                                    <img :src="capasJogos[jogo.id]" class="object-fit w-full h-full">
+                                </div>
+                                <div class="w-full h-full z-30 bg-[#262729]/80 backdrop-blur-sm absolute"></div>
+                                <img :src="capasJogos[jogo.id]"
+                                    class="object-fit absolute w-[90%] h-auto z-20 -translate-y-1/2 top-1/2">
+                                <div class="absolute w-full h-full gradiente-card z-40"></div>
 
-                            <div class="w-full pl-24 h-full z-[100] relative">
-                                <div class="flex flex-col w-full justify-center h-full">
-                                    <div class="flex items-center">
-                                        <div
-                                            class="w-[29px] h-[29px] rounded-lg bg-zinc-800/30 flex items-center justify-center shrink-0">
-                                            <span class="text-zinc-50 text-[10px]">{{ index + 1 }}</span>
-                                        </div>
-                                        <span class="text-sm text-start ml-2 pr-4">{{ jogo.name }}</span>
-                                        <div class="pl-4 border-l-[1px] border-zinc-500" v-if="jogo.first_release_date">
-                                            <span class="text-xs text-zinc-500">{{
-                                                formataDataUnix(jogo.first_release_date) }}</span>
-                                        </div>
+                                <div class="w-full pl-24 h-full z-[100] relative">
+                                    <div class="flex absolute end-[20px] top-[20px] items-center">
+                                        <img src="../assets/Imagens/stack.svg" class="w-[17px] h-auto filtro-branco">
+                                        <span class="ml-2 text-[12px]">{{ jogo.rating_count }}</span>
                                     </div>
-                                    <div class="flex w-full" v-if="jogo.genres">
-                                        <div class="text-start w-full line-clamp-1 text-zinc-500 max-w-[60%]">
-                                            <span v-for="(genreId, index) in jogo.genres" :key="genreId"
-                                                class="text-[10px] ">{{
-                                                    genresNomes[genreId] == "Role-playing (RPG)" ? "RPG" :
-                                                        genresNomes[genreId]
-                                                }}<span v-if="index !== jogo.genres.length - 1">, </span></span>
+                                    <div class="flex flex-col w-full justify-center h-full">
+                                        <div class="flex items-center">
+                                            <div
+                                                class="w-[29px] h-[29px] rounded-lg bg-zinc-800/30 flex items-center justify-center shrink-0">
+                                                <span class="text-zinc-50 text-[10px]">{{ index + 1 }}</span>
+                                            </div>
+                                            <span class="text-sm text-start ml-2 pr-4">{{ jogo.name }}</span>
+                                            <div class="pl-4 border-l-[1px] border-zinc-500"
+                                                v-if="jogo.first_release_date">
+                                                <span class="text-xs text-zinc-500">{{
+                                                    formataDataUnix(jogo.first_release_date) }}</span>
+                                            </div>
                                         </div>
-                                    </div>
+                                        <div class="flex w-full" v-if="jogo.genres">
+                                            <div class="text-start w-full line-clamp-1 text-zinc-500 max-w-[60%]">
+                                                <span v-for="(genreId, index) in jogo.genres" :key="genreId"
+                                                    class="text-[10px] ">{{
+                                                        genresNomes[genreId] == "Role-playing (RPG)" ? "RPG" :
+                                                            genresNomes[genreId]
+                                                    }}<span v-if="index !== jogo.genres.length - 1">, </span></span>
+                                            </div>
+                                        </div>
 
-                                    <div class="flex items-center gap-x-2 w-full pt-2" v-if="jogo.platforms">
-                                        <img src="../assets/Imagens/ps_logo.png"
-                                            v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 1)"
-                                            class="w-[20px] h-auto filtro-branco">
-                                        <img src="../assets/Imagens/xbox_logo.svg"
-                                            v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 2)"
-                                            class="w-[16px] h-auto filtro-branco">
-                                        <img src="../assets/Imagens/pc_logo.png"
-                                            v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 2)"
-                                            class="w-[20px] h-auto filtro-branco">
+                                        <div class="flex items-center gap-x-2 w-full pt-2" v-if="jogo.platforms">
+                                            <img src="../assets/Imagens/ps_logo.png"
+                                                v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 1)"
+                                                class="w-[20px] h-auto filtro-branco">
+                                            <img src="../assets/Imagens/xbox_logo.svg"
+                                                v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 2)"
+                                                class="w-[16px] h-auto filtro-branco">
+                                            <img src="../assets/Imagens/pc_logo.png"
+                                                v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 3)"
+                                                class="w-[20px] h-auto filtro-branco">
+                                            <img src="../assets/Imagens/ios_logo.png"
+                                                v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 4)"
+                                                class="w-[20px] h-auto filtro-branco">
+                                            <img src="../assets/Imagens/switch_logo.png"
+                                                v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 5)"
+                                                class="w-[20px] h-auto filtro-branco">
+                                            <img src="../assets/Imagens/stadia_logo.png"
+                                                v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 6)"
+                                                class="w-[20px] h-auto filtro-branco">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </router-link>
                     </div>
                 </div>
             </div>
@@ -78,6 +95,10 @@
                             <div class="absolute w-full h-full gradiente-card z-40"></div>
 
                             <div class="w-full pl-24 h-full z-[100] relative">
+                                <div class="flex absolute end-[20px] top-[20px] items-center">
+                                    <img src="../assets/Imagens/star.png" class="w-[17px] h-auto filtro-branco">
+                                    <span class="ml-2 text-[12px]">{{ (jogo.rating / 10).toFixed(1) }}</span>
+                                </div>
                                 <div class="flex flex-col w-full justify-center h-full">
                                     <div class="flex items-center">
                                         <div
@@ -101,6 +122,27 @@
                                                         genresNomes[genreId]
                                                 }}<span v-if="index !== jogo.genres.length - 1">, </span></span>
                                         </div>
+                                    </div>
+
+                                    <div class="flex items-center gap-x-2 w-full pt-2" v-if="jogo.platforms">
+                                        <img src="../assets/Imagens/ps_logo.png"
+                                            v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 1)"
+                                            class="w-[20px] h-auto filtro-branco">
+                                        <img src="../assets/Imagens/xbox_logo.svg"
+                                            v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 2)"
+                                            class="w-[16px] h-auto filtro-branco">
+                                        <img src="../assets/Imagens/pc_logo.png"
+                                            v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 3)"
+                                            class="w-[20px] h-auto filtro-branco">
+                                        <img src="../assets/Imagens/ios_logo.png"
+                                            v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 4)"
+                                            class="w-[20px] h-auto filtro-branco">
+                                        <img src="../assets/Imagens/switch_logo.png"
+                                            v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 5)"
+                                            class="w-[20px] h-auto filtro-branco">
+                                        <img src="../assets/Imagens/stadia_logo.png"
+                                            v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 6)"
+                                            class="w-[20px] h-auto filtro-branco">
                                     </div>
                                 </div>
                             </div>
@@ -139,7 +181,7 @@ export default {
     },
     mounted() {
         this.carregaJogos()
-        this.carregaJogosRecentes()
+        this.carregaJogos2()
     },
     methods: {
         async carregaJogos() {
@@ -166,8 +208,8 @@ export default {
             }
         },
 
-        async carregaJogosRecentes() {
-            const body = `fields *; limit 6; where rating_count > 100 & version_parent = null & parent_game = null; sort rating desc;`;
+        async carregaJogos2() {
+            const body = `fields *; limit 6; where rating_count > 300 & version_parent = null & parent_game = null; sort rating desc;`;
 
             try {
                 const response = await axios.post("/v4/games", body, {
@@ -221,7 +263,7 @@ export default {
                 }
             }
 
-            const body = `fields name; where id = (${this.genreIds.join(", ")});`
+            const body = `fields name; where id = (${this.genreIds.join(", ")}); limit 50;`
             try {
                 const response = await axios.post("/v4/genres", body, {
                     headers: {
@@ -260,7 +302,7 @@ export default {
                 }
             }
 
-            const body = `fields abbreviation; where id = (${platformIds.join(", ")});`
+            const body = `fields abbreviation; where id = (${platformIds.join(", ")}); limit 50;`
 
             try {
                 const response = await axios.post("/v4/platforms", body, {
@@ -278,7 +320,8 @@ export default {
                     if (abbreviation.includes("Series X|S") || abbreviation.includes("XBOX") || abbreviation.includes("X360")) id = 2
                     if (abbreviation.includes("PC")) id = 3
                     if (abbreviation.includes("iOS")) id = 4
-                    if (abbreviation.includes("Stadia")) id = 5
+                    if (abbreviation.includes("Switch")) id = 5
+                    if (abbreviation.includes("Stadia")) id = 6
 
                     this.plataformasJogos[data.id] = id
                 }

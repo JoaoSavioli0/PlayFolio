@@ -7,7 +7,7 @@
             </div>
         </div>
         <div class="w-full overflow-hidden cursor-grab">
-            <div ref="scrollContent" class="scroll-content flex overflow-x-auto whitespace-nowrap flex gap-4 py-8"
+            <div ref="scrollContent" class="scroll-content flex overflow-x-auto flex gap-4 py-8"
                 @mousedown="startScroll" @mousemove="moveScroll" @mouseup="stopScroll" @mouseleave="stopScroll">
 
 
@@ -23,21 +23,25 @@
 
                             <div class="end-0 top-0 px-[10px] py-[4px] justify-center flex absolute shrink-0 items-center bg-[#1A1B1E] z-50 rounded-bl-xl border-l-[1px] border-b-[1px] border-zinc-600 shadow-lg"
                                 v-if="jogo.rating">
-                                <img src="../assets/star.png" class="size-[12px]">
+                                <img src="../assets/Imagens/star.png" class="size-[12px]">
                                 <span class="ml-2 text-xs">{{ (jogo.rating / 10).toFixed(1) }}</span>
                             </div>
                         </div>
 
                         <div
                             class="w-full h-[150px] px-4 py-2 flex flex-col justify-between pb-4 text-area transition-all">
-                            <div>
+                            <div class="w-full">
                                 <span
                                     class="text-start text-zinc-50 text-sm font-medium line-clamp-2 break-words hyphens-auto w-full">
                                     {{ jogo.name }}</span>
-                                <div v-if="jogo.genres" class="text-start w-full line-clamp-2 text-zinc-500 ">
-                                    <span v-for="(genreId, index) in jogo.genres" :key="genreId" class="text-[10px] ">{{
-                                        genresNomes[genreId] == "Role-playing (RPG)" ? "RPG" : genresNomes[genreId]
-                                    }}<span v-if="index !== jogo.genres.length - 1">, </span></span>
+                                <div v-if="jogo.genres" class="text-start w-full line-clamp-2 text-zinc-500 leading-4">
+                                    <span v-for="(genreId, index) in jogo.genres" :key="genreId" class="text-[10px] ">
+                                        {{ genresNomes[genreId] == "Role-playing (RPG)" ? "RPG" : genresNomes[genreId]
+                                        }}
+                                        <span v-if="index !== jogo.genres.length - 1">
+                                            ,
+                                        </span>
+                                    </span>
                                 </div>
                                 <div v-if="jogo.first_release_date"
                                     class="mt-2 flex items-center w-full justify-start opacity-0 group-hover:opacity-100 transition-all duration-300 bg-transparent">
@@ -111,9 +115,8 @@ export default {
             }
         },
 
-        async encontraJogos(jogosId) {
-            const body = `fields *; sort first_release_date desc; where rating_count > 25; limit 10;`
-
+        async encontraJogos() {
+            const body = `fields *; sort first_release_date desc; where rating_count > 25; limit 15;`
             try {
                 const response = await axios.post("/v4/games", body, {
                     headers: {
@@ -128,6 +131,7 @@ export default {
                 let jogosDestaqueId = this.jogosDestaque.map(e => e.id)
                 await this.carregaCapas(jogosDestaqueId)
                 await this.carregaTags(this.jogosDestaque)
+
             } catch (error) {
                 console.error("Erro: " + error)
             }
@@ -153,7 +157,6 @@ export default {
                     console.error("Erro carregando imagem: " + error)
                 }
             })
-
             await Promise.all(requests)
         },
 
@@ -166,7 +169,7 @@ export default {
                 }
             }
 
-            const body = `fields name; where id = (${this.genreIds.join(", ")});`
+            const body = `fields name; where id = (${this.genreIds.join(", ")}); limit 50;`
             try {
                 const response = await axios.post("/v4/genres", body, {
                     headers: {
@@ -176,15 +179,17 @@ export default {
                         'Content-Type': 'text/plain'
                     }
                 })
+                console.log("response: " + JSON.stringify(response.data))
 
                 for (let data of response.data) {
                     this.genresNomes[data.id] = data.name
                 }
 
+
             } catch (error) {
                 console.error("Erro carregando generos: " + error)
             }
-            console.log("genreNomes: " + this.genresNomes)
+            console.log("genreNomes: " + JSON.stringify(this.genresNomes))
         },
 
         formataDataUnix(dataUnix) {
