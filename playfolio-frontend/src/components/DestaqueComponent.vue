@@ -10,8 +10,6 @@
             <div ref="scrollContent" class="scroll-content flex overflow-x-auto flex gap-4 py-8"
                 @mousedown="startScroll" @mousemove="moveScroll" @mouseup="stopScroll" @mouseleave="stopScroll">
 
-
-
                 <div class="relative group select-none" v-for="jogo in jogosDestaque" :key="jogo.id">
 
                     <div

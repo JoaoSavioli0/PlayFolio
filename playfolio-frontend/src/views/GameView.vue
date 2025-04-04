@@ -54,6 +54,24 @@
                             <span class="inline text-zinc-50 text-xs"> {{ formataDataUnix(dados.first_release_date, 2)
                             }}</span>
                         </li>
+                        <li>
+                            <span class="text-xs text-zinc-400">Gêneros: </span>
+                            <span class="inline text-zinc-50 text-xs"> {{ tags.join(", ") }}</span>
+                        </li>
+                        <li>
+                            <span class="text-xs text-zinc-400">Plataformas: </span>
+                            <span class="inline text-zinc-50 text-xs"> {{ plataformas.join(", ") }}</span>
+                        </li>
+                        <li>
+                            <span class="text-xs text-zinc-400">Desenvolvedora: </span>
+                            <span class="inline text-zinc-50 text-xs"> {{empresas.find(e =>
+                                e.developer)?.name || "Não encontrado"}}</span>
+                        </li>
+                        <li>
+                            <span class="text-xs text-zinc-400">Desenvolvedora: </span>
+                            <span class="inline text-zinc-50 text-xs"> {{empresas.find(e =>
+                                e.developer)?.name || "Não encontrado"}}</span>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -73,7 +91,10 @@ export default {
             imagens: [],
             capasJogos: [],
             dados: {},
-            plataformas: []
+            plataformas: [],
+            tags: [],
+            empresas: [],
+            nomeEmpresas: []
         }
     },
     mounted() {
@@ -102,6 +123,7 @@ export default {
                 await this.carregaCapa()
                 await this.carregaTags()
                 await this.carregaPlataformas()
+                await this.carregaEmpresas()
 
 
             } catch (error) {
@@ -151,12 +173,37 @@ export default {
             }
         },
 
+        async carregaTags() {
+            let ids = []
+
+            for (let genreId of this.dados.genres) {
+                ids.push(genreId)
+            }
+
+            const body = `fields name; where id = (${ids.join(", ")}); limit 5;`
+            try {
+                const response = await axios.post("/v4/genres", body, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
+                        'Authorization': `Bearer h6v8ywcqhwyyhj140u70v95rss6sga`,
+                        'Content-Type': 'text/plain'
+                    }
+                })
+
+                for (let data of response.data) {
+                    this.tags.push(data.name)
+                }
+
+            } catch (error) {
+                console.error("Erro carregando generos: " + error)
+            }
+        },
+
         async carregaPlataformas() {
             let platformIds = []
-            for (let platformId of this.jogo.platforms) {
-                if (!platformIds.includes(platformId)) {
-                    platformIds.push(platformId)
-                }
+            for (let platformId of this.dados.platforms) {
+                platformIds.push(platformId)
             }
 
             const body = `fields name; where id = (${platformIds.join(", ")});`
@@ -172,11 +219,57 @@ export default {
                 })
 
                 for (let data of response.data) {
-                    this.plataformas.push(data)
+                    this.plataformas.push(data.name)
                 }
 
             } catch (error) {
                 console.error("Erro carregando plataformas: " + error)
+            }
+        },
+
+        async carregaEmpresas() {
+            const body = `fields company, developer, porting, publisher, supporting; where game = ${this.id};`
+            try {
+                const response = await axios.post("/v4/involved_companies", body, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
+                        'Authorization': `Bearer h6v8ywcqhwyyhj140u70v95rss6sga`,
+                        'Content-Type': 'text/plain'
+                    }
+                })
+
+                for (let data of response.data) {
+                    this.empresas.push(data)
+                }
+
+                await this.carregaNomesEmpresas(this.empresas.map(e => e.company))
+
+            } catch (error) {
+                console.error("Erro carregando empresas: " + error)
+            }
+        },
+
+        async carregaNomesEmpresas(ids) {
+            const body = `fields name; where id = (${ids.join(", ")});`
+
+            try {
+                const response = await axios.post("/v4/companies", body, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
+                        'Authorization': `Bearer h6v8ywcqhwyyhj140u70v95rss6sga`,
+                        'Content-Type': 'text/plain'
+                    }
+                })
+
+
+                for (let data of response.data) {
+                    this.empresas.filter(e => e.company == data.id).forEach(e => e.name = data.name)
+                }
+
+            } catch (error) {
+                console.error("Erro carregando nomes das empresas: " + error)
             }
         },
 
