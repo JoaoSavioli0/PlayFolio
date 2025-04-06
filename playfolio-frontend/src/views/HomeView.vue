@@ -1,9 +1,9 @@
 <template>
   <NavbarComponent />
   <BannerComponent />
-  <DestaqueComponent />
   <InfoComponent />
-  <JogosComponent />
+  <!-- <DestaqueComponent />
+  <JogosComponent /> -->
 </template>
 
 <script>

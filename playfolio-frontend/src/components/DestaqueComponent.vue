@@ -1,75 +1,94 @@
 <template>
-    <div class="w-full px-24 pt-12 pb-6" v-if="jogosDestaque.length">
+    <div class="w-full px-40 pt-12 pb-6" v-if="jogosDestaque.length">
         <div class="flex w-full items-center">
-            <div class="whitespace-nowrap flex items-center">
-                <h2 class="text-2xl text-start text-zinc-50">DESTAQUES</h2>
-                <img src="../assets/fogo.svg" class="filtro-branco ml-2 w-[30px] h-auto">
+            <div class="whitespace-nowrap flex items-center justify-between w-full">
+                <div class="flex">
+                    <h2 class="text-2xl text-start text-zinc-50">DESTAQUES</h2>
+                    <img src="../assets/fogo.svg" class="filtro-branco ml-2 w-[30px] h-auto">
+                </div>
+
+                <div class="flex justify-end gap-2">
+                    <button @click="embla.scrollPrev()" class="p-[4px] rounded-full hover:bg-zinc-800">
+                        <img src="../assets/Imagens/arrow-2.svg" class="w-[35px] h-auto cursor-pointer filtro-branco">
+                    </button>
+                    <button @click="embla.scrollNext()" class="p-[4px] rounded-full hover:bg-zinc-800">
+                        <img src="../assets/Imagens/arrow-2.svg"
+                            class="w-[35px] h-auto cursor-pointer filtro-branco -rotate-180">
+                    </button>
+                </div>
+
             </div>
         </div>
-        <div class="w-full overflow-hidden cursor-grab">
-            <div ref="scrollContent" class="scroll-content flex overflow-x-auto flex gap-4 py-8"
-                @mousedown="startScroll" @mousemove="moveScroll" @mouseup="stopScroll" @mouseleave="stopScroll">
 
-                <div class="relative group select-none" v-for="jogo in jogosDestaque" :key="jogo.id">
+        <div class="embla mt-6">
+            <div class="embla__viewport" ref="viewport">
+                <div class="embla__container">
+                    <div class="embla__slide h-[420px] w-[250px] clip-card bg-[#262729] flex flex-col shrink-0 relative card-area rounded-xl overflow-hidden border-[1px] border-zinc-600"
+                        v-for="(jogo, index) in jogosDestaque" :key="index">
+                        <router-link class="w-full h-[400px] xl:mb-2 relative overflow-hidden relative image-area z-40"
+                            :to="`/game/${jogo.id}`">
 
-                    <div
-                        class="h-[320px] w-[200px] clip-card bg-[#262729] flex flex-col shrink-0 relative card-area rounded-xl overflow-hidden border-[1px] border-zinc-600">
-
-                        <div class="w-full h-[200px] relative overflow-hidden relative image-area z-40">
                             <img :src="capasJogos[jogo.id]" alt="">
                             <div class="w-full h-full absolute gradiente-card top-0"></div>
 
                             <div class="end-0 top-0 px-[10px] py-[4px] justify-center flex absolute shrink-0 items-center bg-[#1A1B1E] z-50 rounded-bl-xl border-l-[1px] border-b-[1px] border-zinc-600 shadow-lg"
                                 v-if="jogo.rating">
-                                <img src="../assets/Imagens/star.png" class="size-[12px]">
-                                <span class="ml-2 text-xs">{{ (jogo.rating / 10).toFixed(1) }}</span>
+                                <img src="../assets/Imagens/star.png" class="size-[12px] xl:size-[16px]">
+                                <span class="ml-2 text-xs xl:text-sm">{{ (jogo.rating / 10).toFixed(1) }}</span>
                             </div>
-                        </div>
+
+                        </router-link>
 
                         <div
                             class="w-full h-[150px] px-4 py-2 flex flex-col justify-between pb-4 text-area transition-all">
-                            <div class="w-full">
+                            <div class="w-full h-[110px]">
                                 <span
-                                    class="text-start text-zinc-50 text-sm font-medium line-clamp-2 break-words hyphens-auto w-full">
+                                    class="text-start text-zinc-50 text-sm xl:text-md font-medium line-clamp-2 break-words hyphens-auto w-full">
                                     {{ jogo.name }}</span>
-                                <div v-if="jogo.genres" class="text-start w-full line-clamp-2 text-zinc-500 leading-4">
-                                    <span v-for="(genreId, index) in jogo.genres" :key="genreId" class="text-[10px] ">
-                                        {{ genresNomes[genreId] == "Role-playing (RPG)" ? "RPG" : genresNomes[genreId]
+                                <div v-if="jogo.genres" class="text-start w-full line-clamp-1 text-zinc-500 leading-4">
+                                    <span v-for="(genreId, index) in jogo.genres" :key="genreId"
+                                        class="text-[10px] xl:text-xs">
+                                        {{ genresNomes[genreId] == "Role-playing (RPG)" ? "RPG" :
+                                            genresNomes[genreId]
                                         }}
                                         <span v-if="index !== jogo.genres.length - 1">
                                             ,
                                         </span>
                                     </span>
                                 </div>
-                                <div v-if="jogo.first_release_date"
-                                    class="mt-2 flex items-center w-full justify-start opacity-0 group-hover:opacity-100 transition-all duration-300 bg-transparent">
-                                    <img src="../assets/calendario.svg" class="w-[15px] h-auto filtro-cinza">
 
-                                    <span class="text-[10px] text-zinc-500 ml-2" v-if="jogo.first_release_date">{{
-                                        formataDataUnix(jogo.first_release_date) }}</span>
-                                </div>
                             </div>
-                            <div class="w-full relative">
+                            <div class="w-full relative flex items-center justify-between">
+                                <div v-if="jogo.first_release_date"
+                                    class="mt-2 flex items-center w-full justify-start transition-all duration-300 bg-transparent">
+                                    <img src="../assets/calendario.svg" class="w-[14px] h-auto filtro-cinza">
+
+                                    <span class="text-[10px] xl:text-xs text-zinc-500 ml-2"
+                                        v-if="jogo.first_release_date">{{
+                                            formataDataUnix(jogo.first_release_date) }}</span>
+                                </div>
 
                                 <button
-                                    class="w-full border-2 border-zinc-500 rounded-xl cursor-pointer opacity-0 absolute translate-y-[5px] group-hover:opacity-100 group-hover:-translate-y-[40px] transition-all duration-300"><span
-                                        class="text-zinc-300 text-xs">QUERO JOGAR</span></button>
-                                <button
-                                    class="w-full border-2 border-zinc-500 rounded-xl cursor-pointer shadow-sm hover:-translate-y-[4px] transition-all peer">
-                                    <span class="text-zinc-200 text-xs py-[8px] peer:hover:text-white">JÁ
-                                        JOGUEI</span>
+                                    class="border-[1px] w-[40px] h-[40px] shrink-0 flex items-center justify-center border-zinc-500 rounded-full cursor-pointer shadow-sm transition-all peer hover:border-zinc-50">
+                                    <span class="text-zinc-200 text-xs peer:hover:text-white xl:text-xl">+</span>
                                 </button>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
+
+            <!-- Botões (caso queira) -->
+
         </div>
+
     </div>
 </template>
 
 <script>
 import axios from 'axios';
+import EmblaCarousel from 'embla-carousel'
 
 export default {
     name: "Destaque",
@@ -81,11 +100,16 @@ export default {
             genresNomes: {},
             isDown: false,
             startX: 0,
-            scrollLeft: 0
+            scrollLeft: 0,
+            embla: null
         }
     },
     mounted() {
         this.encontraJogos()
+
+        setTimeout(() => {
+
+        }, 5000)
     },
     methods: {
         async carregaJogosDestaque() {
@@ -127,11 +151,24 @@ export default {
 
                 this.jogosDestaque = response.data
                 let jogosDestaqueId = this.jogosDestaque.map(e => e.id)
+
                 await this.carregaCapas(jogosDestaqueId)
                 await this.carregaTags(this.jogosDestaque)
-
+                this.carregaCarrossel()
             } catch (error) {
                 console.error("Erro: " + error)
+            }
+        },
+
+        carregaCarrossel() {
+            const viewportNode = this.$refs.viewport
+            if (viewportNode) {
+                this.embla = EmblaCarousel(viewportNode, {
+                    loop: false,
+                    align: 'start',
+                    slidesToScroll: 1,
+                    dragFree: true
+                })
             }
         },
 
@@ -224,18 +261,6 @@ export default {
     background: linear-gradient(0deg, rgba(38, 39, 41, 1) 0%, rgba(0, 0, 0, 0) 51%);
 }
 
-.card-area:hover .text-area {
-    height: 300px;
-    transition: all;
-    transition-duration: 300ms;
-}
-
-.card-area:hover .button-quero {
-    opacity: 1;
-    transition-duration: 300ms;
-    transform: translateY(-50px)
-}
-
 .filtro-branco {
     filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%) hue-rotate(168deg) brightness(103%) contrast(103%);
 }
@@ -255,5 +280,25 @@ export default {
 .scroll-content::-webkit-scrollbar {
     display: none;
     /* Chrome e Safari */
+}
+
+.embla {
+    overflow: hidden;
+}
+
+.embla__viewport {
+    overflow: hidden;
+    width: 100%;
+}
+
+.embla__container {
+    display: flex;
+    gap: 1rem;
+}
+
+.embla__slide {
+    flex: 0 0 250px;
+    /* Largura do card */
+    min-width: 0;
 }
 </style>

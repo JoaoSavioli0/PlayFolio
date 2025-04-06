@@ -1,22 +1,132 @@
 <template>
-    <div class="w-full py-6 px-24">
-        <div class="grid-parent">
-            <div class="grid-div1 h-[400px] p-2">
-                <div class="grid-content rounded-xl h-full  bg-[#161616]"></div>
+    <div class="w-full py-6 px-40">
+        <div class="grid-parent px-40">
+
+            <div class="h-[300px] p-2" :class="`grid-div${index + 1}`" v-for="(jogo, index) in jogosEsperados"
+                :key="index">
+                <div class="grid-content rounded-3xl h-full overflow-hidden relative flex items-center">
+                    <img :src="capasJogos[jogo.id]" class="w-full h-full object-cover absolute z-10">
+                    <div class="absolute w-full h-full bg-[#161616]/90 z-20"></div>
+                    <div class="px-12 text-left relative z-30">
+                        <h1 class="relative text-3xl line-clamp-2">{{ jogo.name }}</h1>
+                        <span class="text-zinc-400">{{ formataDataUnix(jogo.first_release_date, 1) }}</span>
+                    </div>
+                    <div class="px-12 border-l-[1px] border-zinc-400 relative z-30 flex flex-col">
+
+                        <div class="w-full text-end" v-if="formataDataDiferencaUnix(jogo.first_release_date).mes >
+                            0">
+                            <h2 class="text-5xl">{{ formataDataDiferencaUnix(jogo.first_release_date).mes }}</h2>
+                            <span>
+                                {{ formataDataDiferencaUnix(jogo.first_release_date)?.mes > 1 ? 'Meses' : 'Mês' }}
+                            </span>
+                        </div>
+
+                        <div class="w-full mt-4 text-end"
+                            v-if="formataDataDiferencaUnix(jogo.first_release_date).dia > 0">
+                            <h2 class="text-5xl">{{ formataDataDiferencaUnix(jogo.first_release_date).dia }}</h2>
+                            <span>
+                                {{ formataDataDiferencaUnix(jogo.first_release_date)?.dia > 1 ? 'Dias' : 'Dia' }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="grid-div h-[400px] grid-div2 p-2">
-                <div class="grid-content rounded-xl h-full bg-[#161616]"></div>
-            </div>
-            <div class="grid-div grid-div3 p-2">
-                <div class="grid-content rounded-xl h-full bg-[#161616]"></div>
-            </div>
+
         </div>
     </div>
 </template>
 
 <script>
+import axios from 'axios';
+import dayjs from 'dayjs'
+import duration from 'dayjs/plugin/duration'
+import relativeTime from 'dayjs/plugin/relativeTime'
+
 export default {
-    name: "Info"
+    name: "Info",
+    data() {
+        return {
+            jogosEsperados: [],
+            capasJogos: {},
+        }
+    },
+    mounted() {
+        this.encontraJogos()
+    },
+    methods: {
+        async encontraJogos() {
+            const body = `fields name, first_release_date; sort first_release_date; where first_release_date > ${this.dataAtualUnix} & hypes > 100; limit 4;`
+            try {
+                const response = await axios.post("/v4/games", body, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
+                        'Authorization': `Bearer h6v8ywcqhwyyhj140u70v95rss6sga`,
+                        'Content-Type': 'text/plain'
+                    }
+                })
+
+                this.jogosEsperados = response.data
+                let jogosEsperadosId = this.jogosEsperados.map(e => e.id)
+                await this.carregaCapas(jogosEsperadosId)
+
+            } catch (error) {
+                console.error("Erro carregando hypes: " + error)
+            }
+        },
+
+        async carregaCapas(jogosId) {
+
+            const body = `fields url, game; where game = (${jogosId.join(", ")}); limit ${jogosId.length};`
+            try {
+                const response = await axios.post("/v4/covers", body, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
+                        'Authorization': `Bearer h6v8ywcqhwyyhj140u70v95rss6sga`,
+                        'Content-Type': 'text/plain'
+                    }
+                })
+                let imagens = response.data
+                console.log("imagens: " + JSON.stringify(imagens))
+                for (let imagem of imagens) {
+                    console.log("id: " + imagem.id + "\nurl: " + imagem.url)
+                    this.capasJogos[imagem.game] = imagem.url.replace("thumb", "1080p")
+                }
+
+                console.log("capas: " + JSON.stringify(this.capasJogos))
+            } catch (error) {
+                console.error("Erro carregando imagem: " + error)
+            }
+        },
+        formataDataUnix(dataUnix) {
+            const timestamp = dataUnix;
+            const data = new Date(timestamp * 1000);
+            const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+            return data.toLocaleString('pt-BR', options)
+        },
+        formataDataDiferencaUnix(dataUnix) {
+            dayjs.extend(duration)
+            dayjs.extend(relativeTime)
+
+            const hoje = dayjs()
+            const lancamento = dayjs.unix(dataUnix)
+
+            const diferenca = lancamento.diff(hoje)
+
+            const duracao = dayjs.duration(diferenca)
+
+            const meses = Math.floor(duracao.asMonths())
+            const dias = duracao.subtract(dayjs.duration({ months: meses })).days()
+
+            return { 'mes': meses, 'dia': dias }
+        }
+    },
+    computed: {
+        dataAtualUnix() {
+            return Math.floor(Date.now() / 1000)
+        }
+    }
 }
 </script>
 
@@ -24,7 +134,7 @@ export default {
 .grid-parent {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(3, 1fr);
+    grid-template-rows: repeat(5, 1fr);
     grid-column-gap: 0px;
     grid-row-gap: 0px;
 }
@@ -44,6 +154,10 @@ export default {
 }
 
 .grid-div3 {
-    grid-area: 3 / 1 / 4 / 5;
+    grid-area: 3 / 1 / 5 / 3;
+}
+
+.grid-div4 {
+    grid-area: 3 / 3 / 5 / 5;
 }
 </style>

@@ -8,41 +8,46 @@
                     <h1 class="text-start">MAIS REVIEWS</h1>
                     <!-- Card -->
 
-                    <div class="rounded-xl mt-4 w-full h-[110px] flex overflow-hidden outline-2 outline-[#1a1b1e] border-2 border-[#1a1b1e]"
+                    <div class="rounded-3xl mt-[1px] w-full h-[120px] flex overflow-hidden outline-2 outline-[#1a1b1e] border-2 border-[#1a1b1e]"
                         v-for="(jogo, index) in jogos" :key="jogo.id">
                         <router-link :to="`/game/${jogo.id}`" class="p-0 w-full">
                             <div class="w-full relative h-full">
                                 <div
-                                    class="rounded-md w-[65px] absolute h-auto overflow-hidden z-50 top-1/2 start-[20px] -translate-y-1/2 shadow-md">
+                                    class="rounded-md w-[65px] absolute h-auto overflow-hidden z-50 top-1/2 start-[15px] -translate-y-1/2 shadow-md">
                                     <img :src="capasJogos[jogo.id]" class="object-fit w-full h-full">
                                 </div>
-                                <div class="w-full h-full z-30 bg-[#262729]/80 backdrop-blur-sm absolute"></div>
+                                <div class="w-full h-full z-30 bg-[#262729]/80 backdrop-blur-xs absolute ">
+                                </div>
                                 <img :src="capasJogos[jogo.id]"
                                     class="object-fit absolute w-[90%] h-auto z-20 -translate-y-1/2 top-1/2">
                                 <div class="absolute w-full h-full gradiente-card z-40"></div>
 
-                                <div class="w-full pl-24 h-full z-[100] relative">
+                                <div class="w-full pl-[90px] h-full z-[100] relative">
                                     <div class="flex absolute end-[20px] top-[20px] items-center">
                                         <img src="../assets/Imagens/stack.svg" class="w-[17px] h-auto filtro-branco">
-                                        <span class="ml-2 text-[12px]">{{ jogo.rating_count }}</span>
+                                        <span class="ml-2 text-[12px] xl:text-[15px]">{{ jogo.rating_count }}</span>
                                     </div>
                                     <div class="flex flex-col w-full justify-center h-full">
                                         <div class="flex items-center">
                                             <div
                                                 class="w-[29px] h-[29px] rounded-lg bg-zinc-800/30 flex items-center justify-center shrink-0">
-                                                <span class="text-zinc-50 text-[10px]">{{ index + 1 }}</span>
+                                                <span class="text-zinc-50 text-[10px] xl:text-[14px]">{{ index + 1
+                                                    }}</span>
                                             </div>
-                                            <span class="text-sm text-start ml-2 pr-4">{{ jogo.name }}</span>
+                                            <div class="max-w-[55%] line-clamp-1 text-left">
+                                                <span class="text-sm text-start ml-2 pr-4 xl:text-md">{{ jogo.name
+                                                    }}</span>
+                                            </div>
                                             <div class="pl-4 border-l-[1px] border-zinc-500"
                                                 v-if="jogo.first_release_date">
-                                                <span class="text-xs text-zinc-500">{{
+                                                <span class="text-xs text-zinc-500 xl:text-md">{{
                                                     formataDataUnix(jogo.first_release_date) }}</span>
                                             </div>
                                         </div>
                                         <div class="flex w-full" v-if="jogo.genres">
                                             <div class="text-start w-full line-clamp-1 text-zinc-500 max-w-[60%]">
                                                 <span v-for="(genreId, index) in jogo.genres" :key="genreId"
-                                                    class="text-[10px] ">{{
+                                                    class="text-[10px] xl:text-[13px]">{{
                                                         genresNomes[genreId] == "Role-playing (RPG)" ? "RPG" :
                                                             genresNomes[genreId]
                                                     }}<span v-if="index !== jogo.genres.length - 1">, </span></span>
@@ -82,72 +87,77 @@
                 <div class="flex flex-col gap-y-2 p-4">
                     <h1 class="text-start">MELHORES NOTAS</h1>
                     <!-- Card -->
-                    <div class="rounded-xl mt-4 w-full h-[110px] flex overflow-hidden outline-2 outline-[#1a1b1e] border-2 border-[#1a1b1e]"
+                    <div class="rounded-3xl mt-[1px] w-full h-[120px] flex overflow-hidden outline-2 outline-[#1a1b1e] border-2 border-[#1a1b1e]"
                         v-for="(jogo, index) in jogosRecentes" :key="jogo.id">
-                        <div class="w-full relative h-full">
-                            <div
-                                class="rounded-md w-[65px] absolute h-auto overflow-hidden z-50 top-1/2 start-[20px] -translate-y-1/2 shadow-md">
-                                <img :src="capasJogos[jogo.id]" class="object-fit w-full h-full">
-                            </div>
-                            <div class="w-full h-full z-30 bg-[#262729]/80 backdrop-blur-sm absolute"></div>
-                            <img :src="capasJogos[jogo.id]"
-                                class="object-fit absolute w-[90%] h-auto z-20 -translate-y-1/2 top-1/2">
-                            <div class="absolute w-full h-full gradiente-card z-40"></div>
-
-                            <div class="w-full pl-24 h-full z-[100] relative">
-                                <div class="flex absolute end-[20px] top-[20px] items-center">
-                                    <img src="../assets/Imagens/star.png" class="w-[17px] h-auto filtro-branco">
-                                    <span class="ml-2 text-[12px]">{{ (jogo.rating / 10).toFixed(1) }}</span>
+                        <router-link :to="`/game/${jogo.id}`" class="p-0 w-full">
+                            <div class="w-full relative h-full">
+                                <div
+                                    class="rounded-md w-[65px] absolute h-auto overflow-hidden z-50 top-1/2 start-[15px] -translate-y-1/2 shadow-md">
+                                    <img :src="capasJogos[jogo.id]" class="object-fit w-full h-full">
                                 </div>
-                                <div class="flex flex-col w-full justify-center h-full">
-                                    <div class="flex items-center">
-                                        <div
-                                            class="w-[29px] h-[29px] rounded-lg bg-zinc-800/30 flex items-center justify-center shrink-0">
-                                            <span class="text-zinc-50 text-[10px]">{{ index + 1 }}</span>
-                                        </div>
-                                        <div class="max-w-[55%] line-clamp-1">
-                                            <span class="text-sm text-start ml-2 pr-4">{{ jogo.name }}</span>
-                                        </div>
-                                        <div class="pl-4 border-l-[1px] border-zinc-500" v-if="jogo.first_release_date">
-                                            <span class="text-xs text-zinc-500">{{
-                                                formataDataUnix(jogo.first_release_date) }}</span>
-                                        </div>
-                                    </div>
-                                    <div class="flex w-full">
-                                        <div v-if="jogo.genres"
-                                            class="text-start w-full line-clamp-1 text-zinc-500 max-w-[60%]">
-                                            <span v-for="(genreId, index) in jogo.genres" :key="genreId"
-                                                class="text-[10px] ">{{
-                                                    genresNomes[genreId] == "Role-playing (RPG)" ? "RPG" :
-                                                        genresNomes[genreId]
-                                                }}<span v-if="index !== jogo.genres.length - 1">, </span></span>
-                                        </div>
-                                    </div>
+                                <div class="w-full h-full z-30 bg-[#262729]/80 backdrop-blur-xs absolute"></div>
+                                <img :src="capasJogos[jogo.id]"
+                                    class="object-fit absolute w-[90%] h-auto z-20 -translate-y-1/2 top-1/2">
+                                <div class="absolute w-full h-full gradiente-card z-40"></div>
 
-                                    <div class="flex items-center gap-x-2 w-full pt-2" v-if="jogo.platforms">
-                                        <img src="../assets/Imagens/ps_logo.png"
-                                            v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 1)"
-                                            class="w-[20px] h-auto filtro-branco">
-                                        <img src="../assets/Imagens/xbox_logo.svg"
-                                            v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 2)"
-                                            class="w-[16px] h-auto filtro-branco">
-                                        <img src="../assets/Imagens/pc_logo.png"
-                                            v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 3)"
-                                            class="w-[20px] h-auto filtro-branco">
-                                        <img src="../assets/Imagens/ios_logo.png"
-                                            v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 4)"
-                                            class="w-[20px] h-auto filtro-branco">
-                                        <img src="../assets/Imagens/switch_logo.png"
-                                            v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 5)"
-                                            class="w-[20px] h-auto filtro-branco">
-                                        <img src="../assets/Imagens/stadia_logo.png"
-                                            v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 6)"
-                                            class="w-[20px] h-auto filtro-branco">
+                                <div class="w-full pl-[90px] h-full z-[100] relative">
+                                    <div class="flex absolute end-[20px] top-[20px] items-center">
+                                        <img src="../assets/Imagens/star.png" class="w-[17px] h-auto filtro-branco">
+                                        <span class="ml-2 text-[12px]">{{ (jogo.rating / 10).toFixed(1) }}</span>
+                                    </div>
+                                    <div class="flex flex-col w-full justify-center h-full">
+                                        <div class="flex items-center">
+                                            <div
+                                                class="w-[29px] h-[29px] rounded-lg bg-zinc-800/30 flex items-center justify-center shrink-0">
+                                                <span class="text-zinc-50 text-[10px] xl:text-[14px]">{{ index + 1
+                                                    }}</span>
+                                            </div>
+                                            <div class="max-w-[55%] line-clamp-1 text-left">
+                                                <span class="text-sm text-start ml-2 pr-4 xl:text-md">{{ jogo.name
+                                                    }}</span>
+                                            </div>
+                                            <div class="pl-4 border-l-[1px] border-zinc-500"
+                                                v-if="jogo.first_release_date">
+                                                <span class="text-xs text-zinc-500 xl:text-md">{{
+                                                    formataDataUnix(jogo.first_release_date) }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex w-full" v-if="jogo.genres">
+                                            <div class="text-start w-full line-clamp-1 text-zinc-500 max-w-[60%]">
+                                                <span v-for="(genreId, index) in jogo.genres" :key="genreId"
+                                                    class="text-[10px] xl:text-[13px]">{{
+                                                        genresNomes[genreId] == "Role-playing (RPG)" ? "RPG" :
+                                                            genresNomes[genreId]
+                                                    }}<span v-if="index !== jogo.genres.length - 1">, </span></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="flex items-center gap-x-2 w-full pt-2" v-if="jogo.platforms">
+                                            <img src="../assets/Imagens/ps_logo.png"
+                                                v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 1)"
+                                                class="w-[20px] h-auto filtro-branco">
+                                            <img src="../assets/Imagens/xbox_logo.svg"
+                                                v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 2)"
+                                                class="w-[16px] h-auto filtro-branco">
+                                            <img src="../assets/Imagens/pc_logo.png"
+                                                v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 3)"
+                                                class="w-[20px] h-auto filtro-branco">
+                                            <img src="../assets/Imagens/ios_logo.png"
+                                                v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 4)"
+                                                class="w-[20px] h-auto filtro-branco">
+                                            <img src="../assets/Imagens/switch_logo.png"
+                                                v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 5)"
+                                                class="w-[20px] h-auto filtro-branco">
+                                            <img src="../assets/Imagens/stadia_logo.png"
+                                                v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 6)"
+                                                class="w-[20px] h-auto filtro-branco">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </router-link>
                     </div>
+
                 </div>
             </div>
 
@@ -348,8 +358,8 @@ export default {
 
 <style scoped>
 .gradiente-card {
-    background: rgb(38, 39, 41);
-    background: linear-gradient(270deg, rgba(38, 39, 41, 1) 0%, rgba(0, 0, 0, 0) 76%);
+    background: rgb(29, 30, 34);
+    background: linear-gradient(90deg, rgba(29, 30, 34, 0) 0%, rgba(29, 30, 34, 0.4990371148459384) 15%, rgba(29, 30, 34, 0.700717787114846) 40%, rgba(29, 30, 34, 0.896796218487395) 60%, rgba(29, 30, 34, 1) 90%);
 }
 
 .filtro-branco {
