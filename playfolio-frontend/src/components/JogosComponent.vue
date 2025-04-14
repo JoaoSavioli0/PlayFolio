@@ -1,5 +1,5 @@
 <template>
-    <div class="py-6 px-40 h-full mt-8">
+    <div class="py-6 min-[1800px]:px-40 px-20 h-full">
         <div class="flex h-full">
 
             <!-- Coluna esquerda -->
@@ -32,11 +32,11 @@
                                             <div
                                                 class="w-[29px] h-[29px] rounded-lg bg-zinc-800/30 flex items-center justify-center shrink-0">
                                                 <span class="text-zinc-50 text-[10px] xl:text-[14px]">{{ index + 1
-                                                    }}</span>
+                                                }}</span>
                                             </div>
                                             <div class="max-w-[55%] line-clamp-1 text-left">
                                                 <span class="text-sm text-start ml-2 pr-4 xl:text-md">{{ jogo.name
-                                                    }}</span>
+                                                }}</span>
                                             </div>
                                             <div class="pl-4 border-l-[1px] border-zinc-500"
                                                 v-if="jogo.first_release_date">
@@ -110,12 +110,12 @@
                                             <div
                                                 class="w-[29px] h-[29px] rounded-lg bg-zinc-800/30 flex items-center justify-center shrink-0">
                                                 <span class="text-zinc-50 text-[10px] xl:text-[14px]">{{ index + 1
-                                                    }}</span>
+                                                }}</span>
                                             </div>
                                             <div class="max-w-[55%] line-clamp-1 break-all text-left">
                                                 <span class="text-sm text-start ml-2 pr-4 xl:text-md w-full">{{
                                                     jogo.name
-                                                }}</span>
+                                                    }}</span>
                                             </div>
                                             <div class="pl-4 border-l-[1px] border-zinc-500"
                                                 v-if="jogo.first_release_date">

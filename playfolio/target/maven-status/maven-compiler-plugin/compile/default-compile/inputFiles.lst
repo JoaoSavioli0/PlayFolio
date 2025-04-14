@@ -1,1 +1,11 @@
-C:\Users\joao.savioli\Desktop\Playfolio project\playfolio\src\main\java\com\playfolio\app\PlayfolioApplication.java
+C:\Users\jjast\OneDrive\Documentos\GitHub\PlayFolio\playfolio\src\main\java\com\playfolio\app\controllers\GlobalExceptionHandler.java
+C:\Users\jjast\OneDrive\Documentos\GitHub\PlayFolio\playfolio\src\main\java\com\playfolio\app\controllers\UsuarioController.java
+C:\Users\jjast\OneDrive\Documentos\GitHub\PlayFolio\playfolio\src\main\java\com\playfolio\app\dtos\LoginDto.java
+C:\Users\jjast\OneDrive\Documentos\GitHub\PlayFolio\playfolio\src\main\java\com\playfolio\app\entities\Usuario.java
+C:\Users\jjast\OneDrive\Documentos\GitHub\PlayFolio\playfolio\src\main\java\com\playfolio\app\exceptions\usuario\EmailJaCadastradoException.java
+C:\Users\jjast\OneDrive\Documentos\GitHub\PlayFolio\playfolio\src\main\java\com\playfolio\app\exceptions\usuario\UsuarioJaCadastradoException.java
+C:\Users\jjast\OneDrive\Documentos\GitHub\PlayFolio\playfolio\src\main\java\com\playfolio\app\PlayfolioApplication.java
+C:\Users\jjast\OneDrive\Documentos\GitHub\PlayFolio\playfolio\src\main\java\com\playfolio\app\repositories\UsuarioRepository.java
+C:\Users\jjast\OneDrive\Documentos\GitHub\PlayFolio\playfolio\src\main\java\com\playfolio\app\SecurityConfig.java
+C:\Users\jjast\OneDrive\Documentos\GitHub\PlayFolio\playfolio\src\main\java\com\playfolio\app\services\JwtService.java
+C:\Users\jjast\OneDrive\Documentos\GitHub\PlayFolio\playfolio\src\main\java\com\playfolio\app\services\UsuarioService.java

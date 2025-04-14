@@ -1,24 +1,25 @@
 <template>
-    <div class="w-full pt-6 px-40">
+    <div class="w-full pt-6 min-[1800px]:px-40 lg:px-20">
         <div class="w-full">
             <h1 class="text-start text-[30px] py-8">PRÓXIMOS LANÇAMENTOS ⏳</h1>
         </div>
-        <div class="grid-parent px-40">
+        <div class="grid lg:grid-cols-2 grid-cols-1 gap-4 min-[1800px]:px-40 lg:px-20">
 
-            <div class="h-[300px] p-2" :class="`grid-div${index + 1}`" v-for="(jogo, index) in jogosEsperados"
-                :key="index">
-                <div class="grid-content rounded-3xl h-full overflow-hidden relative flex items-center">
+            <div class="min-[1800px]:h-[300px] h-[240px] p-2" :class="`grid-div${index + 1}`"
+                v-for="(jogo, index) in jogosEsperados" :key="index">
+                <div class="rounded-3xl h-full overflow-hidden relative flex items-center">
                     <img :src="capasJogos[jogo.cover]" class="w-full h-full object-cover absolute z-10">
-                    <div class="absolute w-full h-full bg-[#161616]/90 z-20"></div>
+                    <div class="absolute w-full h-full bg-[#161616]/80 z-20"></div>
                     <div class="px-12 text-left relative z-30">
-                        <h1 class="relative text-3xl line-clamp-2">{{ jogo.name }}</h1>
+                        <h1 class="relative min-[1800px]:text-3xl text-xl line-clamp-2">{{ jogo.name }}</h1>
                         <span class="text-zinc-400">{{ formataDataUnix(jogo.first_release_date, 1) }}</span>
                     </div>
                     <div class="px-12 border-l-[1px] border-zinc-400 relative z-30 flex flex-col">
 
                         <div class="w-full text-end" v-if="formataDataDiferencaUnix(jogo.first_release_date).mes >
                             0">
-                            <h2 class="text-5xl">{{ formataDataDiferencaUnix(jogo.first_release_date).mes }}</h2>
+                            <h2 class="min-[1800px]:text-5xl text-3xl">{{
+                                formataDataDiferencaUnix(jogo.first_release_date).mes }}</h2>
                             <span>
                                 {{ formataDataDiferencaUnix(jogo.first_release_date)?.mes > 1 ? 'Meses' : 'Mês' }}
                             </span>
@@ -26,7 +27,8 @@
 
                         <div class="w-full mt-4 text-end"
                             v-if="formataDataDiferencaUnix(jogo.first_release_date).dia > 0">
-                            <h2 class="text-5xl">{{ formataDataDiferencaUnix(jogo.first_release_date).dia }}</h2>
+                            <h2 class="min-[1800px]:text-5xl text-3xl">{{
+                                formataDataDiferencaUnix(jogo.first_release_date).dia }}</h2>
                             <span>
                                 {{ formataDataDiferencaUnix(jogo.first_release_date)?.dia > 1 ? 'Dias' : 'Dia' }}
                             </span>
@@ -130,33 +132,9 @@ export default {
 </script>
 
 <style scoped>
-.grid-parent {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(5, 1fr);
-    grid-column-gap: 0px;
-    grid-row-gap: 0px;
-}
-
 .grid-content {
     -webkit-box-shadow: inset 0px 0px 31px 11px rgba(0, 0, 0, 0.75);
     -moz-box-shadow: inset 0px 0px 31px 11px rgba(0, 0, 0, 0.75);
     box-shadow: inset 0px 0px 31px 11px rgba(0, 0, 0, 0.75);
-}
-
-.grid-div1 {
-    grid-area: 1 / 1 / 3 / 3;
-}
-
-.grid-div2 {
-    grid-area: 1 / 3 / 3 / 5;
-}
-
-.grid-div3 {
-    grid-area: 3 / 1 / 5 / 3;
-}
-
-.grid-div4 {
-    grid-area: 3 / 3 / 5 / 5;
 }
 </style>

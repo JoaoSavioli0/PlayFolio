@@ -1,1 +1,11 @@
+com\playfolio\app\services\UsuarioService.class
+com\playfolio\app\exceptions\usuario\EmailJaCadastradoException.class
+com\playfolio\app\exceptions\usuario\UsuarioJaCadastradoException.class
+com\playfolio\app\dtos\LoginDto.class
+com\playfolio\app\entities\Usuario.class
+com\playfolio\app\services\JwtService.class
+com\playfolio\app\controllers\UsuarioController.class
+com\playfolio\app\controllers\GlobalExceptionHandler.class
+com\playfolio\app\repositories\UsuarioRepository.class
+com\playfolio\app\SecurityConfig.class
 com\playfolio\app\PlayfolioApplication.class

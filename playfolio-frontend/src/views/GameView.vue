@@ -24,18 +24,25 @@
                     </div>
                 </div>
 
-                <div class="w-full mt-8 flex flex-col rounded-xl border-[1px] border-zinc-500 p-4">
-                    <div class="w-full">
-                        <h1 class="text-sm text-start">FAÇA LOGIN E SALVE SEUS JOGOS</h1>
+                <div
+                    class="w-full mt-8 flex flex-col rounded-3xl border-[1px] border-zinc-500 overflow-hidden relative shadow-lg">
+                    <div class="w-full h-full relative z-50 p-4">
+                        <div class="w-full">
+                            <h1 class="text-sm text-start">FAÇA LOGIN E SALVE SEUS JOGOS</h1>
+                        </div>
+                        <div class="flex mt-4">
+                            <button class="rounded-full bg-zinc-50 px-2 py-[2px] text-center">
+                                <span class="text-[#1b1d1f] text-sm">Login</span>
+                            </button>
+                            <button class="rounded-full border-[1px] border-zinc-50 px-2 py-[2px] text-center ml-2">
+                                <span class="text-zinc-50 text-sm">Cadastro</span>
+                            </button>
+                        </div>
                     </div>
-                    <div class="flex justify-between">
-                        <button class="rounded-full bg-zinc-50 px-2 text-center mt-4">
-                            <span class="text-[#1b1d1f] text-sm">Fazer login</span>
-                        </button>
-                        <button class="rounded-full bg-zinc-50 px-2 text-center mt-4">
-                            <span class="text-[#1b1d1f] text-sm">Fazer login</span>
-                        </button>
-                    </div>
+
+                    <div class="absolute w-full h-full gradiente-cinza-escuro z-30"></div>
+
+                    <img src="../assets/Imagens/ori_background.jpg" class="absolute w-full h-full object-cover z-20">
                 </div>
 
                 <div class="w-full mt-8">
@@ -55,7 +62,7 @@
                             <img :src="item.img" class="w-[23px] h-auto transition-all duration-200"
                                 :class="[itemAtivo == item.id ? 'filtro-branco' : 'filtro-cinza']">
                             <span class="ml-4 transition" :class="{ 'text-zinc-50': itemAtivo == item.id }">{{ item.name
-                            }}</span>
+                                }}</span>
                         </li>
 
                         <li @click="deslogaUsuario" class="group" v-if="this.usuario">
@@ -129,6 +136,11 @@ export default {
 .gradiente-cinza-transparente {
     background: rgb(237, 237, 237);
     background: linear-gradient(180deg, rgba(237, 237, 237, 0) 0%, rgba(27, 29, 31, 1) 85%);
+}
+
+.gradiente-cinza-escuro {
+    background: #191a1c;
+    background: linear-gradient(90deg, rgba(25, 26, 28, 1) 21%, rgba(25, 26, 28, 0.88) 70%, rgba(25, 26, 28, 0.55) 85%, rgba(25, 26, 28, 0) 100%);
 }
 
 .gradiente-cinza-claro {

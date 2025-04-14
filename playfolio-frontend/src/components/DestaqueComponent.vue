@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full px-40 pb-16" v-if="jogosDestaque.length">
+    <div class="w-full min-[1800px]:px-40 px-20 py-16" v-if="jogosDestaque.length">
         <div class="flex w-full items-center">
             <div class="whitespace-nowrap flex items-center justify-between w-full">
                 <div class="flex">
