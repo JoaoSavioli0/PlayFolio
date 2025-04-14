@@ -13,6 +13,7 @@
     "dotenv": "^16.4.7",
     "embla-carousel": "^8.6.0",
     "flickity": "^3.0.0",
+    "pinia": "^3.0.2",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3"
   },

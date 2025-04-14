@@ -1,24 +1,24 @@
 <template>
-    <div class="py-6 px-24">
-        <div class="flex">
+    <div class="py-6 px-40 h-full mt-8">
+        <div class="flex h-full">
 
             <!-- Coluna esquerda -->
-            <div class="w-[50%] p-6">
-                <div class="flex flex-col gap-y-2 p-4">
-                    <h1 class="text-start">MAIS REVIEWS</h1>
+            <div class="w-[50%] pr-6 py-4">
+                <div class="flex flex-col gap-y-2 pr-2">
+                    <h1 class="text-end text-[30px]">📈 MAIS REVIEWS</h1>
                     <!-- Card -->
 
                     <div class="rounded-3xl mt-[1px] w-full h-[120px] flex overflow-hidden outline-2 outline-[#1a1b1e] border-2 border-[#1a1b1e]"
-                        v-for="(jogo, index) in jogos" :key="jogo.id">
+                        v-for="(jogo, index) in jogosReview" :key="jogo.id">
                         <router-link :to="`/game/${jogo.id}`" class="p-0 w-full">
                             <div class="w-full relative h-full">
                                 <div
                                     class="rounded-md w-[65px] absolute h-auto overflow-hidden z-50 top-1/2 start-[15px] -translate-y-1/2 shadow-md">
-                                    <img :src="capasJogos[jogo.id]" class="object-fit w-full h-full">
+                                    <img :src="capasJogos[jogo.cover]" class="object-fit w-full h-full">
                                 </div>
                                 <div class="w-full h-full z-30 bg-[#262729]/80 backdrop-blur-xs absolute ">
                                 </div>
-                                <img :src="capasJogos[jogo.id]"
+                                <img :src="capasJogos[jogo.cover]"
                                     class="object-fit absolute w-[90%] h-auto z-20 -translate-y-1/2 top-1/2">
                                 <div class="absolute w-full h-full gradiente-card z-40"></div>
 
@@ -83,20 +83,20 @@
             </div>
 
             <!-- Coluna direita -->
-            <div class="w-[50%] p-6">
-                <div class="flex flex-col gap-y-2 p-4">
-                    <h1 class="text-start">MELHORES NOTAS</h1>
+            <div class="w-[50%] pl-6 py-4 border-l-[1px] border-zinc-800">
+                <div class="flex flex-col gap-y-2 pl-2">
+                    <h1 class="text-start text-[30px]">MELHORES NOTAS 💎</h1>
                     <!-- Card -->
                     <div class="rounded-3xl mt-[1px] w-full h-[120px] flex overflow-hidden outline-2 outline-[#1a1b1e] border-2 border-[#1a1b1e]"
-                        v-for="(jogo, index) in jogosRecentes" :key="jogo.id">
+                        v-for="(jogo, index) in jogosNota" :key="jogo.id">
                         <router-link :to="`/game/${jogo.id}`" class="p-0 w-full">
                             <div class="w-full relative h-full">
                                 <div
                                     class="rounded-md w-[65px] absolute h-auto overflow-hidden z-50 top-1/2 start-[15px] -translate-y-1/2 shadow-md">
-                                    <img :src="capasJogos[jogo.id]" class="object-fit w-full h-full">
+                                    <img :src="capasJogos[jogo.cover]" class="object-fit w-full h-full">
                                 </div>
                                 <div class="w-full h-full z-30 bg-[#262729]/80 backdrop-blur-xs absolute"></div>
-                                <img :src="capasJogos[jogo.id]"
+                                <img :src="capasJogos[jogo.cover]"
                                     class="object-fit absolute w-[90%] h-auto z-20 -translate-y-1/2 top-1/2">
                                 <div class="absolute w-full h-full gradiente-card z-40"></div>
 
@@ -112,9 +112,10 @@
                                                 <span class="text-zinc-50 text-[10px] xl:text-[14px]">{{ index + 1
                                                     }}</span>
                                             </div>
-                                            <div class="max-w-[55%] line-clamp-1 text-left">
-                                                <span class="text-sm text-start ml-2 pr-4 xl:text-md">{{ jogo.name
-                                                    }}</span>
+                                            <div class="max-w-[55%] line-clamp-1 break-all text-left">
+                                                <span class="text-sm text-start ml-2 pr-4 xl:text-md w-full">{{
+                                                    jogo.name
+                                                }}</span>
                                             </div>
                                             <div class="pl-4 border-l-[1px] border-zinc-500"
                                                 v-if="jogo.first_release_date">
@@ -175,8 +176,10 @@ export default {
     name: "Jogos",
     data() {
         return {
-            jogos: [],
-            jogosRecentes: [],
+            jogosReview: [],
+            jogosNota: [],
+            jogosGenres: [],
+            jogosPlatforms: [],
             genreIds: [],
             genresNomes: {},
             capasJogos: {},
@@ -186,14 +189,20 @@ export default {
                 2: "Xbox",
                 3: "PC",
                 4: "Mobile"
-            }
+            },
+            jogosIds: []
         }
     },
     mounted() {
-        this.carregaJogos()
-        this.carregaJogos2()
+        this.carregaDados()
     },
     methods: {
+        async carregaDados() {
+            await this.carregaJogos()
+            await this.carregaJogos2()
+            setTimeout(await this.carregaInfo(), 1000)
+        },
+
         async carregaJogos() {
             const body = `fields *; sort value desc; limit 6; sort rating_count desc;`;
 
@@ -206,11 +215,27 @@ export default {
                         'Content-Type': 'text/plain'
                     }
                 })
-                this.jogos = response.data
-                console.log("this.jogos: " + JSON.stringify(this.jogos))
-                await this.carregaCapas(this.jogos.map((e) => e.id))
-                await this.carregaTags(this.jogos)
-                await this.carregaPlataformas(this.jogos)
+                this.jogosReview = response.data
+
+                this.jogosReview.map((e) => { if (!this.jogosIds.includes(e.id)) { console.log("entrou: " + e.name); this.jogosIds.push(e.id) } })
+
+                this.jogosReview.forEach(e => {
+                    e.genres.forEach(genreId => {
+                        if (!this.jogosGenres.includes(genreId)) {
+                            this.jogosGenres.push(genreId)
+                        }
+                    });
+                });
+
+                this.jogosReview.forEach(e => {
+                    e.platforms.forEach(platformId => {
+                        if (!this.jogosPlatforms.includes(platformId)) {
+                            this.jogosPlatforms.push(platformId)
+                        }
+                    })
+                })
+
+                console.log("jogosGenres: " + this.jogosGenres)
 
 
             } catch (error) {
@@ -230,50 +255,63 @@ export default {
                         'Content-Type': 'text/plain'
                     }
                 })
-                this.jogosRecentes = response.data
-                await this.carregaCapas(this.jogosRecentes.map((e) => e.id))
-                await this.carregaTags(this.jogosRecentes)
-                await this.carregaPlataformas(this.jogosRecentes)
+
+                this.jogosNota = response.data
+
+
+                this.jogosNota.map((e) => { if (!this.jogosIds.includes(e.id)) this.jogosIds.push(e.id) })
+
+                this.jogosNota.forEach(e => {
+                    e.genres.forEach(genreId => {
+                        if (!this.jogosGenres.includes(genreId)) {
+                            this.jogosGenres.push(genreId);
+                        }
+                    });
+                });
+
+                this.jogosNota.forEach(e => {
+                    e.platforms.forEach(platformId => {
+                        if (!this.jogosPlatforms.includes(platformId)) {
+                            this.jogosPlatforms.push(platformId)
+                        }
+                    })
+                })
 
             } catch (error) {
                 console.error("Erro: " + error)
             }
         },
 
-        async carregaCapas(jogosId) {
-            const requests = jogosId.map(async (id) => {
-                const body = `fields url; where game = ${id}; limit 1;`
-                try {
-                    const response = await axios.post("/v4/covers", body, {
-                        headers: {
-                            'Accept': 'application/json',
-                            'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                            'Authorization': `Bearer h6v8ywcqhwyyhj140u70v95rss6sga`,
-                            'Content-Type': 'text/plain'
-                        }
-                    })
-                    let imagem = response.data[0]
-                    if (imagem && imagem.url) {
-                        this.capasJogos[id] = imagem.url.replace("thumb", "720p")
-                    }
-                    console.log("this.capaJogos: " + this.capasJogos)
-                } catch (error) {
-                    console.error("Erro carregando imagem: " + error)
-                }
-            })
-            await Promise.all(requests)
+        async carregaInfo() {
+            await this.carregaCapas(this.jogosIds)
+            setTimeout(await this.carregaTags(this.jogosGenres), 3000)
+            await this.carregaPlataformas(this.jogosPlatforms)
         },
 
-        async carregaTags(jogos) {
-            for (let jogo of jogos) {
-                for (let genreId of jogo.genres) {
-                    if (!this.genreIds.includes(genreId)) {
-                        this.genreIds.push(genreId)
+        async carregaCapas(jogosId) {
+            const body = `fields url; where game = (${jogosId.join(", ")}); limit 12;`
+            try {
+                const response = await axios.post("/v4/covers", body, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
+                        'Authorization': `Bearer h6v8ywcqhwyyhj140u70v95rss6sga`,
+                        'Content-Type': 'text/plain'
+                    }
+                })
+                for (let data of response.data) {
+                    if (data && data.url) {
+                        this.capasJogos[data.id] = data.url.replace("thumb", "720p")
                     }
                 }
+            } catch (error) {
+                console.error("Erro carregando imagem: " + error)
             }
+        },
 
-            const body = `fields name; where id = (${this.genreIds.join(", ")}); limit 50;`
+        async carregaTags(generos) {
+
+            const body = `fields name; where id = (${generos.join(", ")}); limit 50;`
             try {
                 const response = await axios.post("/v4/genres", body, {
                     headers: {
@@ -291,7 +329,6 @@ export default {
             } catch (error) {
                 console.error("Erro carregando generos: " + error)
             }
-            console.log("genreNomes: " + this.genresNomes)
         },
 
         formataDataUnix(dataUnix) {
@@ -301,18 +338,10 @@ export default {
             return data.toLocaleString('pt-BR', options)
         },
 
-        async carregaPlataformas(jogos) {
+        async carregaPlataformas(plataformas) {
             let id = 0
-            let platformIds = []
-            for (let jogo of jogos) {
-                for (let platformId of jogo.platforms) {
-                    if (!platformIds.includes(platformId)) {
-                        platformIds.push(platformId)
-                    }
-                }
-            }
 
-            const body = `fields abbreviation; where id = (${platformIds.join(", ")}); limit 50;`
+            const body = `fields abbreviation; where id = (${plataformas.join(", ")}); limit 50;`
 
             try {
                 const response = await axios.post("/v4/platforms", body, {
@@ -335,8 +364,6 @@ export default {
 
                     this.plataformasJogos[data.id] = id
                 }
-
-                console.log("Plataformas: " + JSON.stringify(this.plataformasJogos))
 
             } catch (error) {
                 console.error("Erro carregando plataformas: " + error)

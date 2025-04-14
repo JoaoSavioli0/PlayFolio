@@ -1,11 +1,14 @@
 <template>
-    <div class="w-full py-6 px-40">
+    <div class="w-full pt-6 px-40">
+        <div class="w-full">
+            <h1 class="text-start text-[30px] py-8">PRÓXIMOS LANÇAMENTOS ⏳</h1>
+        </div>
         <div class="grid-parent px-40">
 
             <div class="h-[300px] p-2" :class="`grid-div${index + 1}`" v-for="(jogo, index) in jogosEsperados"
                 :key="index">
                 <div class="grid-content rounded-3xl h-full overflow-hidden relative flex items-center">
-                    <img :src="capasJogos[jogo.id]" class="w-full h-full object-cover absolute z-10">
+                    <img :src="capasJogos[jogo.cover]" class="w-full h-full object-cover absolute z-10">
                     <div class="absolute w-full h-full bg-[#161616]/90 z-20"></div>
                     <div class="px-12 text-left relative z-30">
                         <h1 class="relative text-3xl line-clamp-2">{{ jogo.name }}</h1>
@@ -55,7 +58,7 @@ export default {
     },
     methods: {
         async encontraJogos() {
-            const body = `fields name, first_release_date; sort first_release_date; where first_release_date > ${this.dataAtualUnix} & hypes > 100; limit 4;`
+            const body = `fields name, first_release_date, cover; sort first_release_date; where first_release_date > ${this.dataAtualUnix} & hypes > 100; limit 4;`
             try {
                 const response = await axios.post("/v4/games", body, {
                     headers: {
@@ -67,8 +70,7 @@ export default {
                 })
 
                 this.jogosEsperados = response.data
-                let jogosEsperadosId = this.jogosEsperados.map(e => e.id)
-                await this.carregaCapas(jogosEsperadosId)
+                setTimeout(await this.carregaCapas(this.jogosEsperados.map(e => e.id)), 1000)
 
             } catch (error) {
                 console.error("Erro carregando hypes: " + error)
@@ -88,13 +90,10 @@ export default {
                     }
                 })
                 let imagens = response.data
-                console.log("imagens: " + JSON.stringify(imagens))
                 for (let imagem of imagens) {
-                    console.log("id: " + imagem.id + "\nurl: " + imagem.url)
-                    this.capasJogos[imagem.game] = imagem.url.replace("thumb", "1080p")
+                    this.capasJogos[imagem.id] = imagem.url.replace("thumb", "1080p")
                 }
 
-                console.log("capas: " + JSON.stringify(this.capasJogos))
             } catch (error) {
                 console.error("Erro carregando imagem: " + error)
             }

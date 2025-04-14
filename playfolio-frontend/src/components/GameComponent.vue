@@ -1,151 +1,189 @@
 <template>
-    <div
-            class="w-[820px] h-min rounded-2xl border-[1px] border-zinc-600 overflow-hidden flex flex-col bg-[#1B1D1F]">
-            <div class="w-full h-[450px] z-40 relative">
-                <img :src="imagens[0]" class="w-full h-full">
-                <div class="absolute bottom-0 w-full h-[25%] gradiente-cinza-transparente"></div>
-            </div>
-            <div class="w-full z-50 flex px-2">
+    <VideoPlayerComponent v-if="videoPlayerUrl" :url="videoPlayerUrl" @fechar-video="videoPlayerUrl = ''" />
+    <ImageComponent v-if="imagemUrl" :url="imagemUrl" @fechar-imagem="imagemUrl = ''" />
+    <div class="w-[820px] h-min rounded-2xl border-[1px] border-zinc-600 overflow-hidden flex flex-col bg-[#1B1D1F]">
+        <div class="w-full h-[450px] z-40 relative">
+            <img :src="imagens[0]" class="w-full h-full">
+            <div class="absolute bottom-0 w-full h-[25%] gradiente-cinza-transparente"></div>
+        </div>
+        <div class="w-full z-50 flex px-2">
 
-                <!-- Caixa esquerda -->
-                <div class="w-max pl-4 pr-2">
-                    <div
-                        class="w-full h-[105px] px-4 flex items-center rounded-2xl border-[2px] border-zinc-700 mt-[-100px] bg-[#1b1d1f]/90">
-
-                        <img :src="capasJogos[id]" class="w-[65px] h-auto rounded-lg shadow-md">
-
-                        <div class="flex w-full h-full pl-2" v-if="dados">
-                            <div class="flex flex-col text-start px-4 justify-center h-full">
-                                <span class="text-[12px] text-zinc-300">NOTA</span>
-                                <h2 class="text-2xl"
-                                    :class="[{ 'text-lime-400': dados.total_rating >= 90 }, { 'text-red-600': dados.total_rating <= 50 }, { 'text-teal-300': dados.total_rating >= 70 && dados.total_rating < 90 }, { 'text-amber-400': dados.rating > 50 && dados.total_rating < 70 }]">
-                                    {{ (dados.total_rating / 10).toFixed(1) }}</h2>
-                                <span class="text-[10px] text-zinc-300"></span>
-                            </div>
-
-                            <div class="flex flex-col text-start px-4 justify-center h-full">
-                                <span class="text-[12px] text-zinc-300">AVALIAÇÕES</span>
-                                <h2 class="text-2xl">
-                                    {{ dados.total_rating_count }}</h2>
-                                <span class="text-[10px] text-zinc-300"></span>
-                            </div>
-                        </div>
-                    </div>      
-                </div>
-
-                <!-- Caixa direita -->
-                <div class="w-max pl-4 pr-2">
+            <!-- Caixa esquerda -->
+            <div class="w-max pl-4 pr-2">
                 <div
-                        class="w-full h-[105px] px-4 py-2 flex justify-around flex-col rounded-2xl border-[2px] border-zinc-700 mt-[-100px] bg-[#1b1d1f]/90">
+                    class="w-full h-[105px] px-4 flex items-center rounded-2xl border-[2px] border-zinc-700 mt-[-100px] bg-[#1b1d1f]/90">
 
-                        <div class="w-full">
-                            <span class="text-[10px] text-zinc-400">Crie uma conta e salve seus jogos favoritos</span>
+                    <img :src="capasJogos[id]" class="w-[65px] h-auto rounded-lg shadow-md">
+
+                    <div class="flex w-full h-full pl-2" v-if="dados">
+                        <div class="flex flex-col text-start px-4 justify-center h-full">
+                            <span class="text-[12px] text-zinc-300">NOTA</span>
+                            <h2 class="text-2xl"
+                                :class="[{ 'text-lime-400': dados.total_rating >= 90 }, { 'text-red-600': dados.total_rating <= 50 }, { 'text-teal-300': dados.total_rating >= 70 && dados.total_rating < 90 }, { 'text-amber-400': dados.rating > 50 && dados.total_rating < 70 }]">
+                                {{ (dados.total_rating / 10).toFixed(1) }}</h2>
+                            <span class="text-[10px] text-zinc-300"></span>
                         </div>
-                        <div class="w-full flex justify-start items-center">
-                            <button class="py-2 px-4 rounded-xl border-[1px] border-zinc-500 text-sm cursor-pointer">Login</button>
-                            <span class="px-4 text-zinc-400 text-sm">Ou</span>
-                            <button class="p-2 px-4 rounded-xl border-[1px] border-zinc-500 text-sm cursor-pointer">Cadastre-se</button>
+
+                        <div class="flex flex-col text-start px-4 justify-center h-full">
+                            <span class="text-[12px] text-zinc-300">AVALIAÇÕES</span>
+                            <h2 class="text-2xl">
+                                {{ dados.total_rating_count }}</h2>
+                            <span class="text-[10px] text-zinc-300"></span>
                         </div>
                     </div>
-                    </div>
+                </div>
             </div>
 
-            <div class="py-6 px-6 text-start">
-                <div class="flex items-center">
-                    <h2 class="text-3xl pr-2">{{ dados.name }}</h2>
-                    <span class="text-xl text-zinc-400 pl-2 border-l-[2px] border-zinc-400">{{
-                        formataDataUnix(dados.first_release_date, 1) }}</span>
-                </div>
-                <div class="w-full">
-                    <span class="text-[10px] text-zinc-400">{{ dados.parent_game ? "Expansão" : "Jogo Principal"
-                    }}</span>
-                </div>
-                <div class="w-full mt-4">
-                    <ul>
-                        <li>
-                            <span class="text-xs text-zinc-400">Data de Lançamento: </span>
-                            <span class="inline text-zinc-50 text-xs"> {{ formataDataUnix(dados.first_release_date, 2)
-                            }}</span>
-                        </li>
-                        <li>
-                            <span class="text-xs text-zinc-400">Gêneros: </span>
-                            <span class="inline text-zinc-50 text-xs"> {{ tags.join(", ") }}</span>
-                        </li>
-                        <li>
-                            <span class="text-xs text-zinc-400">Plataformas: </span>
-                            <span class="inline text-zinc-50 text-xs"> {{ plataformas.join(", ") }}</span>
-                        </li>
-                        <li>
-                            <span class="text-xs text-zinc-400">Desenvolvedores: </span>
-                            <span class="inline text-zinc-50 text-xs"> {{empresas.filter(e =>
-                                e.developer)?.map(e => e.name).join(", ") || "Não encontrado"}}</span>
-                        </li>
-                        <li>
-                            <span class="text-xs text-zinc-400">Publicadoras: </span>
-                            <span class="inline text-zinc-50 text-xs"> {{empresas.filter(e =>
-                                e.publisher)?.map(e => e.name).join(", ") || "Não encontrado"}}</span>
-                        </li>
-                        <li>
-                            <span class="text-xs text-zinc-400">Suporte: </span>
-                            <span class="inline text-zinc-50 text-xs"> {{empresas.filter(e =>
-                                e.supporting)?.map(e => e.name).join(", ") || "Não encontrado"}}</span>
-                        </li>
-                    </ul>
-                </div>
+            <!-- Caixa direita -->
+            <div class="w-max pl-4 pr-2">
+                <div
+                    class="w-full h-[105px] px-4 py-2 flex justify-around flex-col rounded-2xl border-[2px] border-zinc-700 mt-[-100px] bg-[#1b1d1f]/90">
 
-                <div class="w-full mt-8 ">
-                    <span class="text-xs text-zinc-50 block">Sumário</span>
-                    <span class="text-xs text-zinc-400">{{ dados.summary }}</span>
-                </div>
-                <div class="w-full mt-8 ">
-                    <span class="text-xs text-zinc-50 block">História</span>
-                    <span class="text-xs text-zinc-400">{{ dados.storyline }}</span>
-                </div>
-
-                <div class="w-full mt-8 relative">
-                    <span class="text-zinc-50 text-xs">Capturas de tela ({{ imagens.length }})</span>
-
-                    <div class="embla mt-2">
-                        <div class="embla__viewport" ref="viewport">
-                        <div class="embla__container">
-                            <div class="embla__slide h-[450px] rounded-xl overflow-hidden" v-for="img in imagens">
-                                <img :src="img" class="w-full h-full object-fit rounded-xl" />
-                            </div>
-                        </div>
-                        <div class="absolute top-0 end-4 *:hover:bg-zinc-800">
-                            <button class="embla__prev rounded-full p-[2px]" ref="embla__prev"><img src="../assets/Imagens/arrow-2.svg" class="w-[26px] h-auto cursor-pointer filtro-branco"></button>
-                            <button class="embla__next ml-2 rounded-full p-[2px]" ref="embla__next"><img src="../assets/Imagens/arrow-2.svg" class="w-[26px] h-auto cursor-pointer filtro-branco -rotate-180"></button>
-                        </div>
-                        </div>
+                    <div class="w-full">
+                        <span class="text-[10px] text-zinc-400">Crie uma conta e salve seus jogos favoritos</span>
+                    </div>
+                    <div class="w-full flex justify-start items-center">
+                        <button
+                            class="py-2 px-4 rounded-xl border-[1px] border-zinc-500 text-sm cursor-pointer">Login</button>
+                        <span class="px-4 text-zinc-400 text-sm">Ou</span>
+                        <button
+                            class="p-2 px-4 rounded-xl border-[1px] border-zinc-500 text-sm cursor-pointer">Cadastre-se</button>
                     </div>
                 </div>
             </div>
         </div>
+
+        <div class="py-6 px-6 text-start">
+            <div class="flex items-center">
+                <h2 class="text-3xl pr-2">{{ dados.name }}</h2>
+                <span class="text-xl text-zinc-400 pl-2 border-l-[2px] border-zinc-400">{{
+                    formataDataUnix(dados.first_release_date, 1) }}</span>
+            </div>
+            <div class="w-full">
+                <span class="text-[10px] text-zinc-400">{{ dados.parent_game ? "Expansão" : "Jogo Principal"
+                    }}</span>
+            </div>
+            <div class="w-full mt-4">
+                <ul>
+                    <li>
+                        <span class="text-xs text-zinc-400">Data de Lançamento: </span>
+                        <span class="inline text-zinc-50 text-xs" v-if="dados.first_release_date"> {{
+                            formataDataUnix(dados.first_release_date, 2)
+                            }}</span>
+                        <span class="inline text-zinc-50 text-xs" v-else>Não encontrado</span>
+                    </li>
+                    <li>
+                        <span class="text-xs text-zinc-400">Gêneros: </span>
+                        <span class="inline text-zinc-50 text-xs"> {{ tags?.join(", ") || "Não encontrado" }}</span>
+                    </li>
+                    <li>
+                        <span class="text-xs text-zinc-400">Plataformas: </span>
+                        <span class="inline text-zinc-50 text-xs"> {{ plataformas?.join(", ") || "Não encontrado"
+                            }}</span>
+                    </li>
+                    <li>
+                        <span class="text-xs text-zinc-400">Desenvolvedores: </span>
+                        <span class="inline text-zinc-50 text-xs"> {{empresas.filter(e =>
+                            e.developer)?.map(e => e.name).join(", ") || "Não encontrado"}}</span>
+                    </li>
+                    <li>
+                        <span class="text-xs text-zinc-400">Publicadoras: </span>
+                        <span class="inline text-zinc-50 text-xs"> {{empresas.filter(e =>
+                            e.publisher)?.map(e => e.name).join(", ") || "Não encontrado"}}</span>
+                    </li>
+                    <li>
+                        <span class="text-xs text-zinc-400">Suporte: </span>
+                        <span class="inline text-zinc-50 text-xs"> {{empresas.filter(e =>
+                            e.supporting)?.map(e => e.name).join(", ") || "Não encontrado"}}</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="w-full mt-8" v-if="dados.summary">
+                <span class="text-xs text-zinc-50 block">Sumário</span>
+                <span class="text-xs text-zinc-400">{{ dados.summary }}</span>
+            </div>
+            <div class="w-full mt-8" v-if="dados.storyline">
+                <span class="text-xs text-zinc-50 block">História</span>
+                <span class="text-xs text-zinc-400">{{ dados.storyline }}</span>
+            </div>
+
+            <div class="w-full mt-8 relative">
+                <div class="flex items-center">
+                    <img src="../assets/Imagens/camera.svg" class="filtro-cinza w-[19px] h-auto">
+                    <span class="text-zinc-50 text-xs ml-2">Capturas de tela ({{ imagens.length }})</span>
+                </div>
+
+                <div class="embla mt-2">
+                    <div class="embla__viewport" ref="viewport">
+                        <div class="embla__container">
+                            <div class="embla__slide h-[450px] rounded-xl overflow-hidden cursor-pointer"
+                                v-for="img in imagens" @click="imagemUrl = img">
+                                <img :src="img" class="w-full h-full object-fit rounded-xl" />
+                            </div>
+                        </div>
+                        <div class="absolute top-0 end-4 *:hover:bg-zinc-800">
+                            <button class="embla__prev rounded-full p-[2px]" ref="embla__prev"><img
+                                    src="../assets/Imagens/arrow-2.svg"
+                                    class="w-[26px] h-auto cursor-pointer filtro-branco"></button>
+                            <button class="embla__next ml-2 rounded-full p-[2px]" ref="embla__next"><img
+                                    src="../assets/Imagens/arrow-2.svg"
+                                    class="w-[26px] h-auto cursor-pointer filtro-branco -rotate-180"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-full mt-8 relative">
+                <div class="flex items-center">
+                    <img src="../assets/Imagens/video.svg" class="filtro-cinza w-[19px] h-auto">
+                    <span class="text-zinc-50 text-xs ml-2">Vídeos ({{ videos.length }})</span>
+                </div>
+
+                <div class="w-full mt-2 grid grid-cols-3 gap-4">
+                    <a class="aspect-video w-full h-auto overflow-hidden rounded-lg cursor-pointer"
+                        v-for="video in videos" @click="videoPlayerUrl = video.video_id">
+                        <img :src="capasVideos[video.id]" class="w-full h-full object-cover">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
 import EmblaCarousel from 'embla-carousel'
 import axios from 'axios'
+import VideoPlayerComponent from './VideoPlayerComponent.vue'
+import ImageComponent from './ImageComponent.vue'
 
-export default{
+export default {
     name: "Game",
     props: {
         id: {
-            type: Number,
+            type: String,
             required: true
         }
+    },
+    components: {
+        VideoPlayerComponent,
+        ImageComponent
     },
     data() {
         return {
             imagens: [],
+            videos: [],
             capasJogos: [],
+            capasVideos: {},
             dados: {},
             plataformas: [],
             tags: [],
             empresas: [],
             nomeEmpresas: [],
             usuarioLogado: false,
-            embla: null
+            embla: null,
+            videoPlayerUrl: "",
+            imagemUrl: ""
         }
     },
     mounted() {
@@ -154,8 +192,8 @@ export default{
             const viewportNode = this.$refs.viewport
             if (viewportNode) {
                 this.embla = EmblaCarousel(viewportNode, {
-                loop: true,
-                align: 'start'
+                    loop: true,
+                    align: 'start'
                 })
 
                 const prevButtonNode = this.$refs.embla__prev
@@ -187,10 +225,35 @@ export default{
                 await this.carregaTags()
                 await this.carregaPlataformas()
                 await this.carregaEmpresas()
-
+                await this.carregaVideos()
 
             } catch (error) {
                 console.error("Erro ao carregar dados do jogo: " + error)
+            }
+        },
+
+        async carregaVideos() {
+            if (!this.id) return
+
+            const body = `fields video_id; where game = ${this.id};`;
+            try {
+                const response = await axios.post("/v4/game_videos", body, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
+                        'Authorization': `Bearer h6v8ywcqhwyyhj140u70v95rss6sga`,
+                        'Content-Type': 'text/plain'
+                    }
+                })
+                let data = response.data
+                data.forEach((e) => {
+                    this.videos.push(e);
+                    this.capasVideos[e.id] = `https://i.ytimg.com/vi/${e.video_id}/hqdefault.jpg`
+                    console.log(e.video_id)
+                })
+
+            } catch (error) {
+                console.error("Erro ao carregar screenshots: " + error)
             }
         },
 
@@ -355,20 +418,26 @@ export default{
 
 <style scoped>
 .embla {
-  overflow: hidden;
+    overflow: hidden;
 }
+
 .embla__viewport {
-  overflow: hidden;
-  width: 100%;
+    overflow: hidden;
+    width: 100%;
 }
+
 .embla__container {
-  display: flex;
+    display: flex;
 }
+
 .embla__slide {
-  position: relative;
-  flex: 0 0 100%;
-  padding: 10px;
+    position: relative;
+    flex: 0 0 100%;
+    padding: 10px;
 
 }
 
+.filtro-cinza {
+    filter: brightness(0) saturate(100%) invert(77%) sepia(7%) saturate(302%) hue-rotate(202deg) brightness(82%) contrast(87%);
+}
 </style>

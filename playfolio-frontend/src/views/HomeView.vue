@@ -2,8 +2,8 @@
   <NavbarComponent />
   <BannerComponent />
   <InfoComponent />
-  <!-- <DestaqueComponent />
-  <JogosComponent /> -->
+  <DestaqueComponent />
+  <JogosComponent />
 </template>
 
 <script>

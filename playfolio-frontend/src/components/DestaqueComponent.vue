@@ -1,10 +1,9 @@
 <template>
-    <div class="w-full px-40 pt-12 pb-6" v-if="jogosDestaque.length">
+    <div class="w-full px-40 pb-16" v-if="jogosDestaque.length">
         <div class="flex w-full items-center">
             <div class="whitespace-nowrap flex items-center justify-between w-full">
                 <div class="flex">
-                    <h2 class="text-2xl text-start text-zinc-50">DESTAQUES</h2>
-                    <img src="../assets/fogo.svg" class="filtro-branco ml-2 w-[30px] h-auto">
+                    <h2 class="text-[30px] text-start text-zinc-50">DESTAQUES 🔥</h2>
                 </div>
 
                 <div class="flex justify-end gap-2">
@@ -107,35 +106,9 @@ export default {
     mounted() {
         this.encontraJogos()
 
-        setTimeout(() => {
-
-        }, 5000)
     },
     methods: {
-        async carregaJogosDestaque() {
-            const body = `
-      fields game_id; sort value desc; limit 10; where popularity_type = 1;
-      `;
 
-            try {
-                const response = await axios.post("/v4/popularity_primitives", body, {
-                    headers: {
-                        'Accept': 'application/json',
-                        'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer h6v8ywcqhwyyhj140u70v95rss6sga`,
-                        'Content-Type': 'text/plain'
-                    }
-                })
-                let jogosDestaqueId = response.data
-                jogosDestaqueId = jogosDestaqueId.map(e => e.game_id)
-                this.jogosDestaque = await this.encontraJogos(jogosDestaqueId)
-
-
-
-            } catch (error) {
-                console.error("Erro: " + error)
-            }
-        },
 
         async encontraJogos() {
             const body = `fields *; sort first_release_date desc; where rating_count > 25; limit 15;`
@@ -153,8 +126,9 @@ export default {
                 let jogosDestaqueId = this.jogosDestaque.map(e => e.id)
 
                 await this.carregaCapas(jogosDestaqueId)
-                await this.carregaTags(this.jogosDestaque)
                 this.carregaCarrossel()
+                setTimeout(await this.carregaTags(this.jogosDestaque), 2000)
+
             } catch (error) {
                 console.error("Erro: " + error)
             }
