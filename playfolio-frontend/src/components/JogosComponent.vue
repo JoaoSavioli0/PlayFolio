@@ -8,19 +8,25 @@
                     <h1 class="text-end text-[30px]">📈 MAIS REVIEWS</h1>
                     <!-- Card -->
 
-                    <div class="rounded-3xl mt-[1px] w-full h-[120px] flex overflow-hidden outline-2 outline-[#1a1b1e] border-2 border-[#1a1b1e]"
+                    <div class="mt-[1px] w-full h-[120px] flex rounded-2xl overflow-hidden"
                         v-for="(jogo, index) in jogosReview" :key="jogo.id">
-                        <router-link :to="`/game/${jogo.id}`" class="p-0 w-full">
-                            <div class="w-full relative h-full">
+
+                        <router-link :to="`/game/${jogo.id}`" class="w-full h-full p-0">
+                            <div class="w-full h-full relative overflow-hidden">
+
+                                <!-- 🎯 BG principal com blur -->
+                                <div class="absolute inset-0 z-10">
+                                    <img :src="capasJogos[jogo.cover]" class="w-full h-full object-cover blur-lg" />
+                                </div>
+
+                                <!-- 🌫️ Gradiente por cima -->
+                                <div class="absolute inset-0 z-20 w-full h-full bg-black/60"></div>
+
+                                <!-- 🖼️ Miniatura frontal -->
                                 <div
-                                    class="rounded-md w-[65px] absolute h-auto overflow-hidden z-50 top-1/2 start-[15px] -translate-y-1/2 shadow-md">
-                                    <img :src="capasJogos[jogo.cover]" class="object-fit w-full h-full">
+                                    class="absolute top-1/2 start-[15px] z-30 -translate-y-1/2 w-[65px] h-[90px] overflow-hidden rounded-md shadow-md">
+                                    <img :src="capasJogos[jogo.cover]" class="w-full h-full object-cover" />
                                 </div>
-                                <div class="w-full h-full z-30 bg-[#262729]/80 backdrop-blur-xs absolute ">
-                                </div>
-                                <img :src="capasJogos[jogo.cover]"
-                                    class="object-fit absolute w-[90%] h-auto z-20 -translate-y-1/2 top-1/2">
-                                <div class="absolute w-full h-full gradiente-card z-40"></div>
 
                                 <div class="w-full pl-[90px] h-full z-[100] relative">
                                     <div class="flex absolute end-[20px] top-[20px] items-center">
@@ -87,18 +93,25 @@
                 <div class="flex flex-col gap-y-2 pl-2">
                     <h1 class="text-start text-[30px]">MELHORES NOTAS 💎</h1>
                     <!-- Card -->
-                    <div class="rounded-3xl mt-[1px] w-full h-[120px] flex overflow-hidden outline-2 outline-[#1a1b1e] border-2 border-[#1a1b1e]"
+                    <div class="mt-[1px] w-full h-[120px] flex rounded-2xl overflow-hidden"
                         v-for="(jogo, index) in jogosNota" :key="jogo.id">
-                        <router-link :to="`/game/${jogo.id}`" class="p-0 w-full">
-                            <div class="w-full relative h-full">
-                                <div
-                                    class="rounded-md w-[65px] absolute h-auto overflow-hidden z-50 top-1/2 start-[15px] -translate-y-1/2 shadow-md">
-                                    <img :src="capasJogos[jogo.cover]" class="object-fit w-full h-full">
+
+                        <router-link :to="`/game/${jogo.id}`" class="w-full h-full p-0">
+                            <div class="w-full h-full relative overflow-hidden">
+
+                                <!-- 🎯 BG principal com blur -->
+                                <div class="absolute inset-0 z-10">
+                                    <img :src="capasJogos[jogo.cover]" class="w-full h-full object-cover blur-lg" />
                                 </div>
-                                <div class="w-full h-full z-30 bg-[#262729]/80 backdrop-blur-xs absolute"></div>
-                                <img :src="capasJogos[jogo.cover]"
-                                    class="object-fit absolute w-[90%] h-auto z-20 -translate-y-1/2 top-1/2">
-                                <div class="absolute w-full h-full gradiente-card z-40"></div>
+
+                                <!-- 🌫️ Gradiente por cima -->
+                                <div class="absolute inset-0 z-20 w-full h-full bg-black/60"></div>
+
+                                <!-- 🖼️ Miniatura frontal -->
+                                <div
+                                    class="absolute top-1/2 start-[15px] z-30 -translate-y-1/2 w-[65px] h-[90px] overflow-hidden rounded-md shadow-md">
+                                    <img :src="capasJogos[jogo.cover]" class="w-full h-full object-cover" />
+                                </div>
 
                                 <div class="w-full pl-[90px] h-full z-[100] relative">
                                     <div class="flex absolute end-[20px] top-[20px] items-center">

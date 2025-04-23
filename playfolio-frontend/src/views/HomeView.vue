@@ -4,6 +4,7 @@
   <InfoComponent />
   <DestaqueComponent />
   <JogosComponent />
+  <FooterComponent />
 </template>
 
 <script>
@@ -13,6 +14,7 @@ import BannerComponent from '@/components/BannerComponent.vue';
 import NavbarComponent from '@/components/NavbarComponent.vue';
 import DestaqueComponent from '@/components/DestaqueComponent.vue';
 import JogosComponent from '@/components/JogosComponent.vue';
+import FooterComponent from '@/components/FooterComponent.vue';
 
 export default {
 
@@ -22,7 +24,8 @@ export default {
     BannerComponent,
     NavbarComponent,
     DestaqueComponent,
-    JogosComponent
+    JogosComponent,
+    FooterComponent
   },
 
 }
