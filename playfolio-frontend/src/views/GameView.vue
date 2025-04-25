@@ -25,18 +25,23 @@
                 </div>
 
                 <div
-                    class="w-full mt-8 flex flex-col rounded-3xl border-[1px] border-zinc-500 overflow-hidden relative shadow-lg">
+                    class="w-full mt-8 flex flex-col rounded-xl border-[1px] border-zinc-500 overflow-hidden relative shadow-lg">
                     <div class="w-full h-full relative z-50 p-4">
                         <div class="w-full">
                             <h1 class="text-sm text-start">FAÇA LOGIN E SALVE SEUS JOGOS</h1>
                         </div>
                         <div class="flex mt-4">
-                            <button class="rounded-full bg-zinc-50 px-2 py-[2px] text-center">
-                                <span class="text-[#1b1d1f] text-sm">Login</span>
-                            </button>
-                            <button class="rounded-full border-[1px] border-zinc-50 px-2 py-[2px] text-center ml-2">
-                                <span class="text-zinc-50 text-sm">Cadastro</span>
-                            </button>
+                            <router-link to="/account/login" class="p-0">
+                                <button class="rounded-full bg-zinc-50 px-4 py-[2px] text-center cursor-pointer">
+                                    <span class="text-[#1b1d1f] text-sm">Login</span>
+                                </button>
+                            </router-link>
+                            <router-link to="/account/registro" class="p-0">
+                                <button
+                                    class="rounded-full border-[1px] border-zinc-50 px-4 py-[2px] text-center ml-2 cursor-pointer">
+                                    <span class="text-zinc-50 text-sm">Cadastro</span>
+                                </button>
+                            </router-link>
                         </div>
                     </div>
 
@@ -76,7 +81,7 @@
             </div>
         </div>
 
-        <GameComponent :id="id" />
+        <GameComponent :id="id" :usuario="usuario?.id || 0" />
 
     </div>
 </template>
@@ -132,7 +137,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .gradiente-cinza-transparente {
     background: rgb(237, 237, 237);
     background: linear-gradient(180deg, rgba(237, 237, 237, 0) 0%, rgba(27, 29, 31, 1) 85%);

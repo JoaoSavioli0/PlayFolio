@@ -16,9 +16,10 @@ const routes = [
     props: true,
   },
   {
-    path: '/account/login',
+    path: '/account/:tipo',
     name: 'login',
     component: LoginView,
+    props: true
   }
 ]
 

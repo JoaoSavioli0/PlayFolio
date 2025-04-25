@@ -1,6 +1,8 @@
 <template>
     <VideoPlayerComponent v-if="videoPlayerUrl" :url="videoPlayerUrl" @fechar-video="videoPlayerUrl = ''" />
     <ImageComponent v-if="imagemUrl" :url="imagemUrl" @fechar-imagem="imagemUrl = ''" />
+    <AvaliacaoBoxComponent v-if="avaliacaoBoxOpen" :dados="dados" :imagem="imagens[0]"
+        @fecha-avaliacaoBox="avaliacaoBoxOpen = false" />
     <div class="w-[820px] h-min rounded-2xl border-[1px] border-zinc-600 overflow-hidden flex flex-col bg-[#1B1D1F]">
         <div class="w-full h-[450px] z-40 relative">
             <img :src="imagens[0]" class="w-full h-full">
@@ -11,33 +13,35 @@
             <!-- Caixa esquerda -->
             <div class="w-max pl-4 pr-2">
                 <div
-                    class="w-full h-[105px] px-4 flex items-center rounded-2xl border-[2px] border-zinc-700 mt-[-100px] bg-[#1b1d1f]/90">
+                    class="w-full h-[105px] px-4 flex items-center rounded-2xl border-[2px] border-zinc-700 mt-[-100px] bg-[#1b1d1f]/60">
 
                     <img :src="capasJogos[id]" class="w-[65px] h-auto rounded-lg shadow-md">
 
                     <div class="flex w-full h-full pl-2" v-if="dados">
                         <div class="flex flex-col text-start px-4 justify-center h-full">
                             <span class="text-[12px] text-zinc-300">NOTA</span>
-                            <h2 class="text-2xl"
+                            <h2 class="text-2xl" v-if="dados.total_rating"
                                 :class="[{ 'text-lime-400': dados.total_rating >= 90 }, { 'text-red-600': dados.total_rating <= 50 }, { 'text-teal-300': dados.total_rating >= 70 && dados.total_rating < 90 }, { 'text-amber-400': dados.rating > 50 && dados.total_rating < 70 }]">
                                 {{ (dados.total_rating / 10).toFixed(1) }}</h2>
-                            <span class="text-[10px] text-zinc-300"></span>
+                            <h2 v-else>
+                                N/A
+                            </h2>
                         </div>
 
                         <div class="flex flex-col text-start px-4 justify-center h-full">
                             <span class="text-[12px] text-zinc-300">AVALIAÇÕES</span>
-                            <h2 class="text-2xl">
+                            <h2 class="text-2xl" v-if="dados.total_rating">
                                 {{ dados.total_rating_count }}</h2>
-                            <span class="text-[10px] text-zinc-300"></span>
+                            <h2 v-else>N/A</h2>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Caixa direita -->
-            <div class="w-max pl-4 pr-2">
+            <div class="w-max pl-4 pr-2" v-if="usuario != 0">
                 <div
-                    class="w-full h-[105px] px-4 py-2 flex justify-around flex-col rounded-2xl border-[2px] border-zinc-700 mt-[-100px] bg-[#1b1d1f]/90">
+                    class="w-full h-[105px] px-4 py-2 flex justify-around flex-col rounded-2xl border-[2px] border-zinc-700 mt-[-100px] bg-[#1b1d1f]/60">
 
                     <div class="w-full">
                         <span class="text-[10px] text-zinc-400">Crie uma conta e salve seus jogos favoritos</span>
@@ -51,6 +55,23 @@
                     </div>
                 </div>
             </div>
+
+            <div class="w-max pl-4 pr-2" v-else>
+                <div
+                    class="w-full h-[105px] px-4 py-2 flex justify-around flex-col rounded-2xl border-[2px] border-zinc-700 mt-[-100px] bg-[#1b1d1f]/90">
+
+                    <div class="w-full text-start">
+                        <span class="text-[10px] text-zinc-400">Avalie esse jogo</span>
+                    </div>
+                    <div class="w-full flex justify-start items-center">
+                        <button class="py-2 px-4 rounded-xl border-[1px] border-zinc-500 text-sm cursor-pointer"
+                            @click="avaliacaoBoxOpen = true">Avaliar</button>
+                        <button
+                            class="py-2 px-4 rounded-xl border-[1px] border-zinc-500 text-xs cursor-pointer ml-4">Quero
+                            jogar</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="py-6 px-6 text-start">
@@ -61,7 +82,7 @@
             </div>
             <div class="w-full">
                 <span class="text-[10px] text-zinc-400">{{ dados.parent_game ? "Expansão" : "Jogo Principal"
-                    }}</span>
+                }}</span>
             </div>
             <div class="w-full mt-4">
                 <ul>
@@ -69,7 +90,7 @@
                         <span class="text-xs text-zinc-400">Data de Lançamento: </span>
                         <span class="inline text-zinc-50 text-xs" v-if="dados.first_release_date"> {{
                             formataDataUnix(dados.first_release_date, 2)
-                            }}</span>
+                        }}</span>
                         <span class="inline text-zinc-50 text-xs" v-else>Não encontrado</span>
                     </li>
                     <li>
@@ -79,7 +100,7 @@
                     <li>
                         <span class="text-xs text-zinc-400">Plataformas: </span>
                         <span class="inline text-zinc-50 text-xs"> {{ plataformas?.join(", ") || "Não encontrado"
-                            }}</span>
+                        }}</span>
                     </li>
                     <li>
                         <span class="text-xs text-zinc-400">Desenvolvedores: </span>
@@ -156,6 +177,8 @@ import EmblaCarousel from 'embla-carousel'
 import axios from 'axios'
 import VideoPlayerComponent from './VideoPlayerComponent.vue'
 import ImageComponent from './ImageComponent.vue'
+import AvaliacaoBoxComponent from './AvaliacaoBoxComponent.vue'
+
 
 export default {
     name: "Game",
@@ -163,11 +186,16 @@ export default {
         id: {
             type: String,
             required: true
+        },
+        usuario: {
+            type: BigInt,
+            required: true
         }
     },
     components: {
         VideoPlayerComponent,
-        ImageComponent
+        ImageComponent,
+        AvaliacaoBoxComponent
     },
     data() {
         return {
@@ -183,7 +211,8 @@ export default {
             usuarioLogado: false,
             embla: null,
             videoPlayerUrl: "",
-            imagemUrl: ""
+            imagemUrl: "",
+            avaliacaoBoxOpen: false
         }
     },
     mounted() {
@@ -203,6 +232,7 @@ export default {
                 nextButtonNode.addEventListener("click", this.embla.scrollNext, false)
             }
         })
+        console.log("UsuarioId: " + this.usuario)
     },
     methods: {
         async carregaDados() {
@@ -417,6 +447,11 @@ export default {
 </script>
 
 <style scoped>
+.gradiente-cinza-transparente {
+    background: rgb(237, 237, 237);
+    background: linear-gradient(180deg, rgba(237, 237, 237, 0) 0%, rgba(27, 29, 31, 1) 85%);
+}
+
 .embla {
     overflow: hidden;
 }

@@ -5,37 +5,38 @@
         </div>
         <div class="grid lg:grid-cols-2 grid-cols-1 gap-4 min-[1800px]:px-40 lg:px-20">
 
-            <div class="min-[1800px]:h-[300px] h-[240px] p-2" :class="`grid-div${index + 1}`"
-                v-for="(jogo, index) in jogosEsperados" :key="index">
-                <div class="rounded-3xl h-full overflow-hidden relative flex items-center">
-                    <img :src="capasJogos[jogo.cover]" class="w-full h-full object-cover absolute z-10">
-                    <div class="absolute w-full h-full bg-[#161616]/80 z-20"></div>
-                    <div class="px-12 text-left relative z-30">
-                        <h1 class="relative min-[1800px]:text-3xl text-xl line-clamp-2">{{ jogo.name }}</h1>
-                        <span class="text-zinc-400">{{ formataDataUnix(jogo.first_release_date, 1) }}</span>
-                    </div>
-                    <div class="px-12 border-l-[1px] border-zinc-400 relative z-30 flex flex-col">
-
-                        <div class="w-full text-end" v-if="formataDataDiferencaUnix(jogo.first_release_date).mes >
-                            0">
-                            <h2 class="min-[1800px]:text-5xl text-3xl">{{
-                                formataDataDiferencaUnix(jogo.first_release_date).mes }}</h2>
-                            <span>
-                                {{ formataDataDiferencaUnix(jogo.first_release_date)?.mes > 1 ? 'Meses' : 'Mês' }}
-                            </span>
+            <router-link v-for="(jogo, index) in jogosEsperados" :key="index" :to="`/game/${jogo.id}`" class="p-0">
+                <div class="min-[1800px]:h-[300px] h-[240px] p-2" :class="`grid-div${index + 1}`">
+                    <div class="rounded-3xl h-full overflow-hidden relative flex items-center justify-between">
+                        <img :src="capasJogos[jogo.cover]" class="w-full h-full object-cover absolute z-10">
+                        <div class="absolute w-full h-full bg-[#161616]/80 z-20"></div>
+                        <div class="px-12 text-left relative z-30">
+                            <h1 class="relative min-[1800px]:text-3xl text-xl line-clamp-2">{{ jogo.name }}</h1>
+                            <span class="text-zinc-400">{{ formataDataUnix(jogo.first_release_date, 1) }}</span>
                         </div>
+                        <div class="px-12 border-l-[1px] border-zinc-400 relative z-30 flex flex-col">
 
-                        <div class="w-full mt-4 text-end"
-                            v-if="formataDataDiferencaUnix(jogo.first_release_date).dia > 0">
-                            <h2 class="min-[1800px]:text-5xl text-3xl">{{
-                                formataDataDiferencaUnix(jogo.first_release_date).dia }}</h2>
-                            <span>
-                                {{ formataDataDiferencaUnix(jogo.first_release_date)?.dia > 1 ? 'Dias' : 'Dia' }}
-                            </span>
+                            <div class="w-full text-end" v-if="formataDataDiferencaUnix(jogo.first_release_date).mes >
+                                0">
+                                <h2 class="min-[1800px]:text-5xl text-3xl">{{
+                                    formataDataDiferencaUnix(jogo.first_release_date).mes }}</h2>
+                                <span>
+                                    {{ formataDataDiferencaUnix(jogo.first_release_date)?.mes > 1 ? 'Meses' : 'Mês' }}
+                                </span>
+                            </div>
+
+                            <div class="w-full mt-4 text-end"
+                                v-if="formataDataDiferencaUnix(jogo.first_release_date).dia > 0">
+                                <h2 class="min-[1800px]:text-5xl text-3xl">{{
+                                    formataDataDiferencaUnix(jogo.first_release_date).dia }}</h2>
+                                <span>
+                                    {{ formataDataDiferencaUnix(jogo.first_release_date)?.dia > 1 ? 'Dias' : 'Dia' }}
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </router-link>
 
         </div>
     </div>

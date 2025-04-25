@@ -6,7 +6,7 @@
         </div>
         <div class="flex">
             <input class="rounded-full w-[100px] h-[35px] bg-zinc-50" placeholder="Search"></input>
-            <router-link to="/account/login" class="p-0">
+            <router-link tipo="login" to="/account/login" class="p-0">
                 <div class="size-[35px] rounded-full bg-zinc-50 ml-2"></div>
             </router-link>
         </div>
