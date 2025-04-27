@@ -1,8 +1,8 @@
 <template>
     <VideoPlayerComponent v-if="videoPlayerUrl" :url="videoPlayerUrl" @fechar-video="videoPlayerUrl = ''" />
     <ImageComponent v-if="imagemUrl" :url="imagemUrl" @fechar-imagem="imagemUrl = ''" />
-    <AvaliacaoBoxComponent v-if="avaliacaoBoxOpen" :dados="dados" :imagem="imagens[0]"
-        @fecha-avaliacaoBox="avaliacaoBoxOpen = false" />
+    <AvaliacaoBoxComponent v-if="avaliacaoBoxOpen" :dados="dados" :imagem="imagens[0]" :statusDefault="statusDefault"
+        :capa="capasJogos[id]" @fecha-avaliacaoBox="avaliacaoBoxOpen = false" />
     <div class="w-[820px] h-min rounded-2xl border-[1px] border-zinc-600 overflow-hidden flex flex-col bg-[#1B1D1F]">
         <div class="w-full h-[450px] z-40 relative">
             <img :src="imagens[0]" class="w-full h-full">
@@ -65,9 +65,9 @@
                     </div>
                     <div class="w-full flex justify-start items-center">
                         <button class="py-2 px-4 rounded-xl border-[1px] border-zinc-500 text-sm cursor-pointer"
-                            @click="avaliacaoBoxOpen = true">Avaliar</button>
-                        <button
-                            class="py-2 px-4 rounded-xl border-[1px] border-zinc-500 text-xs cursor-pointer ml-4">Quero
+                            @click="() => { avaliacaoBoxOpen = true, statusDefault = 1 }">Avaliar</button>
+                        <button class="py-2 px-4 rounded-xl border-[1px] border-zinc-500 text-xs cursor-pointer ml-4"
+                            @click="() => { avaliacaoBoxOpen = true, statusDefault = 4 }">Quero
                             jogar</button>
                     </div>
                 </div>
@@ -212,7 +212,8 @@ export default {
             embla: null,
             videoPlayerUrl: "",
             imagemUrl: "",
-            avaliacaoBoxOpen: false
+            avaliacaoBoxOpen: false,
+            statusDefault: 0
         }
     },
     mounted() {
