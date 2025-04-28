@@ -1,4 +1,5 @@
 <template>
+    <PesquisaJogoBoxComponent v-if="pesquisaJogoBoxOpen" @fechar-box="pesquisaJogoBoxOpen = false" />
     <div class="w-full h-full pb-6 pt-4 px-24 flex justify-center gap-x-4">
 
         <div class="w-[300px] h-screen relative pt-4">
@@ -11,7 +12,11 @@
                             <span class="text-sm text-[#1b1d1f]">Voltar</span>
                         </button>
                     </router-link>
-                    <h1 class="text-xl inline">PlayFolio</h1>
+                    <div class="flex items-center">
+                        <img src="../assets/Imagens/logo.png" class="size-[16px] shrink-0 filtro-branco">
+
+                        <h1 class="text-xl inline ml-[3px]">PlayFolio</h1>
+                    </div>
                 </div>
 
                 <div class="w-full mt-8 flex flex-col" v-if="usuario">
@@ -51,7 +56,7 @@
                 </div>
 
                 <div class="w-full mt-8">
-                    <button
+                    <button @click="pesquisaJogoBoxOpen = true"
                         class="w-full rounded-full bg-zinc-50 py-[10px] text-[#1b1d1f] flex justify-center cursor-pointer">
                         <img src="../assets/Imagens/lupa.svg" class="w-[15px] h-auto">
                         <span class="ml-2">Buscar jogos</span>
@@ -67,7 +72,7 @@
                             <img :src="item.img" class="w-[23px] h-auto transition-all duration-200"
                                 :class="[itemAtivo == item.id ? 'filtro-branco' : 'filtro-cinza']">
                             <span class="ml-4 transition" :class="{ 'text-zinc-50': itemAtivo == item.id }">{{ item.name
-                                }}</span>
+                            }}</span>
                         </li>
 
                         <li @click="deslogaUsuario" class="group" v-if="this.usuario">
@@ -88,6 +93,7 @@
 
 <script>
 import GameComponent from '@/components/GameComponent.vue'
+import PesquisaJogoBoxComponent from '@/components/PesquisaJogoBoxComponent.vue'
 import { useUserStore } from '@/stores/UserStore'
 import axios from 'axios'
 
@@ -95,7 +101,8 @@ export default {
     name: "BaseView",
     props: ['id'],
     components: {
-        GameComponent
+        GameComponent,
+        PesquisaJogoBoxComponent
     },
     data() {
         return {
@@ -106,13 +113,13 @@ export default {
                 { id: 4, name: "Configurações", img: require("../assets/Imagens/settings.svg"), needLogin: true },
             ],
             itemAtivo: 0,
-            usuario: null
+            usuario: null,
+            pesquisaJogoBoxOpen: false,
         }
     },
     mounted() {
         if (useUserStore().usuario != null) {
             this.usuario = useUserStore().usuario
-            console.log("Usuario: ", this.usuario)
         } else {
             useUserStore().reconectaSessao()
             if (useUserStore().usuario != null) {
@@ -133,7 +140,7 @@ export default {
             }
             return this.itemsNav
         }
-    }
+    },
 }
 </script>
 

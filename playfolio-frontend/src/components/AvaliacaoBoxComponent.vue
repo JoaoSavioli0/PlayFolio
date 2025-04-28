@@ -29,7 +29,7 @@
 
                         <img src="../assets/Imagens/joystick-2.svg" class="w-[20px] h-auto"
                             :class="{ 'filtro-cinza': status != 1 }">
-                        <span class="ml-[4px]">Jogando</span>
+                        <span class="ml-[4px] max-[1800px]:text-sm">Jogando</span>
                     </button>
 
                     <button
@@ -39,7 +39,7 @@
 
                         <img src="../assets/Imagens/flag.svg" class="w-[20px] h-auto"
                             :class="{ 'filtro-cinza-verde': status != 2 }">
-                        <span class="ml-[4px]">Zerado</span>
+                        <span class="ml-[4px] max-[1800px]:text-sm">Zerado</span>
                     </button>
 
                     <button
@@ -49,7 +49,7 @@
 
                         <img src="../assets/Imagens/skull.svg" class="w-[18px] h-auto "
                             :class="{ 'filtro-cinza': status != 3 }">
-                        <span class="ml-[4px]">Dropado</span>
+                        <span class="ml-[4px] max-[1800px]:text-sm">Dropado</span>
                     </button>
 
                     <button
@@ -59,13 +59,13 @@
 
                         <img src="../assets/Imagens/shine.svg" class="w-[18px] h-auto pr-[2px]"
                             :class="{ 'filtro-cinza': status != 4 }">
-                        <span class="ml-[4px]">Quero jogar</span>
+                        <span class="ml-[4px] max-[1800px]:text-sm">Quero jogar</span>
                     </button>
 
                 </div>
 
                 <div class="w-full mt-8 text-start px-4" v-if="status != 4">
-                    <h1 class="text-3xl text-zinc-50 pr-3">NOTA</h1>
+                    <h1 class="text-3xl max-[1800px]:text-xl text-zinc-50 pr-3">NOTA</h1>
 
                 </div>
 
@@ -128,6 +128,12 @@
                                             class="absolute top-[10px] start-[16px] pointer-events-none text-zinc-500">0</span>
                                         <span
                                             class="absolute top-[10px] end-[12px] pointer-events-none text-zinc-500">10</span>
+                                        <div class="absolute top-[14px] start-[60px] flex gap-x-2">
+                                            <span class="text-zinc-500 text-xs">Deslize</span>
+                                            <span class="opacity-75 text-zinc-500 text-xs">></span>
+                                            <span class="opacity-50 text-zinc-500 text-xs">></span>
+                                            <span class="opacity-25 text-zinc-500 text-xs">></span>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -135,7 +141,7 @@
                                     <div class="w-full relative">
                                         <span
                                             class="absolute whitespace-nowrap text-zinc-400 flex flex-col items-center"
-                                            :style="{ 'left': posicaoMedia - 5 + '%' }">
+                                            :style="{ 'left': posicaoMedia * 0.85 + '%' }">
                                             <img src="../assets/Imagens/arrow-2.svg"
                                                 class="-rotate-270 filtro-cinza w-[25px] h-auto mt-2">
                                             <h2 class="block text-[12px] -mt-[4px]">MÉDIA</h2>
@@ -150,7 +156,7 @@
                 </div>
 
                 <div class="w-full mt-12 text-start px-4" v-if="status != 4">
-                    <h1 class="text-3xl text-zinc-50 bg-[#262729]">COMENTÁRIO</h1>
+                    <h1 class="text-3xl text-zinc-50 bg-[#262729] max-[1800px]:text-xl">COMENTÁRIO</h1>
                 </div>
 
                 <div class="w-full mt-4 px-4" v-if="status != 4">
@@ -169,8 +175,9 @@
                         <img :src="capa" class="w-[150px] h-auto rounded-md shadow-md">
                     </div>
                     <div class="col-span-3 flex flex-col justify-center text-start">
-                        <h1 class="text-2xl">{{ dados.name }}</h1>
-                        <span class="text-zinc-300">Adicione {{ dados.name }} à sua lista de espera</span>
+                        <h1 class="text-2xl max-[1800px]:text-xl">{{ dados.name }}</h1>
+                        <span class="text-zinc-300 max-[1800px]:text-sm">Adicione {{ dados.name }} à sua lista de
+                            espera</span>
                         <button
                             class="rounded-full text-zinc-900 bg-zinc-50 px-4 py-2 text-sm w-[90%] mt-4 cursor-pointer hover:-translate-y-[2px] hover:shadow-lg transition-all">Adicionar</button>
                     </div>
