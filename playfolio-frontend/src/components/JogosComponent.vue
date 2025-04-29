@@ -31,18 +31,19 @@
                                 <div class="w-full pl-[90px] h-full z-[100] relative">
                                     <div class="flex absolute end-[20px] top-[20px] items-center">
                                         <img src="../assets/Imagens/stack.svg" class="w-[17px] h-auto filtro-branco">
-                                        <span class="ml-2 text-[12px] xl:text-[15px]">{{ jogo.rating_count }}</span>
+                                        <span class="ml-2 text-[12px] xl:text-[15px]">{{ jogo.total_rating_count
+                                            }}</span>
                                     </div>
                                     <div class="flex flex-col w-full justify-center h-full">
                                         <div class="flex items-center">
                                             <div
                                                 class="w-[29px] h-[29px] rounded-lg bg-zinc-800/30 flex items-center justify-center shrink-0">
                                                 <span class="text-zinc-50 text-[10px] xl:text-[14px]">{{ index + 1
-                                                }}</span>
+                                                    }}</span>
                                             </div>
                                             <div class="max-w-[55%] line-clamp-1 text-left">
                                                 <span class="text-sm text-start ml-2 pr-4 xl:text-md">{{ jogo.name
-                                                }}</span>
+                                                    }}</span>
                                             </div>
                                             <div class="pl-4 border-l-[1px] border-zinc-500"
                                                 v-if="jogo.first_release_date">
@@ -123,12 +124,12 @@
                                             <div
                                                 class="w-[29px] h-[29px] rounded-lg bg-zinc-800/30 flex items-center justify-center shrink-0">
                                                 <span class="text-zinc-50 text-[10px] xl:text-[14px]">{{ index + 1
-                                                }}</span>
+                                                    }}</span>
                                             </div>
                                             <div class="max-w-[55%] line-clamp-1 break-all text-left">
                                                 <span class="text-sm text-start ml-2 pr-4 xl:text-md w-full">{{
                                                     jogo.name
-                                                    }}</span>
+                                                }}</span>
                                             </div>
                                             <div class="pl-4 border-l-[1px] border-zinc-500"
                                                 v-if="jogo.first_release_date">
@@ -217,7 +218,7 @@ export default {
         },
 
         async carregaJogos() {
-            const body = `fields *; sort value desc; limit 6; sort rating_count desc;`;
+            const body = `fields *; sort value desc; limit 6; sort total_rating_count desc;`;
 
             try {
                 const response = await axios.post("/v4/games", body, {

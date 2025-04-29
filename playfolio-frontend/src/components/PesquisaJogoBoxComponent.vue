@@ -37,7 +37,12 @@
                             <!-- 🖼️ Miniatura frontal -->
                             <div
                                 class="absolute top-1/2 start-[15px] z-30 -translate-y-1/2 w-[55px] h-[75px] overflow-hidden rounded-md shadow-md">
-                                <img :src="capasJogosPesquisados[jogo.cover]" class="w-full h-full object-cover" />
+                                <img :src="capasJogosPesquisados[jogo.cover]" class="w-full h-full object-cover"
+                                    v-if="capasJogosPesquisados[jogo.cover]" />
+
+                                <div class="w-full h-full flex justify-center items-center">
+                                    <img src="../assets/Imagens/no_image.png" class="w-[25px] h-auto filtro-cinza">
+                                </div>
                             </div>
 
                             <div class="w-full pl-[90px] h-full z-[100] relative">
@@ -46,7 +51,7 @@
                                         <div class="max-w-[55%] line-clamp-2 text-left">
                                             <h1 class="text-start pr-4 text-md min-[1800px]:text-lg">{{
                                                 jogo.name
-                                            }}</h1>
+                                                }}</h1>
                                         </div>
                                         <div v-if="jogo.first_release_date" class="w-fit">
                                             <h2 class="text-left text-zinc-500 text-xs min-[1800px]:text-sm">{{
@@ -98,7 +103,7 @@ export default {
 
         async pesquisaTitulo() {
             const tituloFormatado = this.tituloPesquisado.toLowerCase().replace(/" /g, '\\"')
-            const body = `search "${tituloFormatado}"; fields name, first_release_date, cover; limit 50`
+            const body = `search "${tituloFormatado}"; fields name, first_release_date, cover, total_rating_count; limit 50;`
             try {
                 const response = await axios.post("/v4/games", body, {
                     headers: {
@@ -111,7 +116,18 @@ export default {
 
                 this.jogosPesquisados = response.data
 
-                console.log(this.jogosPesquisados)
+                console.log("Jogos desordenados: ", this.jogosPesquisados)
+
+                this.jogosPesquisados = response.data.sort((a, b) => {
+                    const aCount = a.total_rating_count ?? 0;
+                    const bCount = b.total_rating_count ?? 0;
+
+                    if (aCount === 0 && bCount > 0) return 1;
+                    if (bCount === 0 && aCount > 0) return -1;
+                    return bCount - aCount;
+                });
+
+                console.log("Jogos ordenados: ", this.jogosPesquisados)
 
                 await this.carregaCapas(this.jogosPesquisados.map(j => j.id))
 
@@ -160,6 +176,10 @@ export default {
 </script>
 
 <style scoped>
+.filtro-cinza {
+    filter: brightness(0) saturate(100%) invert(45%) sepia(6%) saturate(508%) hue-rotate(202deg) brightness(95%) contrast(84%);
+}
+
 .filtro-branco {
     filter: brightness(0) invert(1);
 }

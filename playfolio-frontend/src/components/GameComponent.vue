@@ -6,8 +6,13 @@
 
     <div class="w-[820px] h-min rounded-2xl border-[1px] border-zinc-600 overflow-hidden flex flex-col bg-[#1B1D1F]">
         <div class="w-full h-[450px] z-40 relative">
-            <img :src="imagens[0]" class="w-full h-full" v-if="!carregandoDados">
-            <div class="w-full h-full flex justify-center items-center" v-else>
+            <img :src="imagens[0]" class="w-full h-full" v-if="!carregandoDados && imagens[0]">
+
+            <div class="w-full h-full flex justify-center items-center" v-if="!carregandoDados && !imagens[0]">
+                <img src="../assets/Imagens/no_image.png" class="w-[40px] h-auto filtro-cinza">
+            </div>
+
+            <div class="w-full h-full flex justify-center items-center" v-if="carregandoDados">
                 <span class="loading loading-ring loading-xl"></span>
             </div>
             <div class="absolute bottom-0 w-full h-[25%] gradiente-cinza-transparente"></div>
@@ -19,8 +24,15 @@
                 <div
                     class="w-full h-[105px] px-4 flex items-center rounded-2xl border-[2px] border-zinc-700 mt-[-100px] bg-[#1b1d1f]/60">
 
-                    <img :src="capasJogos[id]" class="w-[65px] h-auto rounded-lg shadow-md" v-if="!carregandoDados">
-                    <div class="w-[65px] h-full flex items-center justify-center" v-else>
+                    <img :src="capasJogos[id]" class="w-[65px] h-auto rounded-lg shadow-md"
+                        v-if="!carregandoDados && capasJogos[id]">
+
+                    <div class="size-[65px] flex justify-center items-center"
+                        v-else-if="!carregandoDados && !capasJogos[id]">
+                        <img src="../assets/Imagens/no_image.png" class="w-[25px] h-auto filtro-cinza">
+                    </div>
+
+                    <div class="w-[65px] h-full flex items-center justify-center" v-else-if="carregandoDados">
                         <span class="loading loading-ring loading-lg"></span>
                     </div>
 
@@ -84,12 +96,15 @@
         <div class="py-6 px-6 text-start">
             <div class="flex items-center">
                 <h2 class="text-3xl pr-2">{{ dados.name }}</h2>
-                <span class="text-xl text-zinc-400 pl-2 border-l-[2px] border-zinc-400">{{
-                    formataDataUnix(dados.first_release_date, 1) }}</span>
+                <span class="text-xl text-zinc-400 pl-2 border-l-[2px] border-zinc-400"
+                    v-if="dados.first_release_date">{{
+                        formataDataUnix(dados.first_release_date, 1) }}</span>
+
+                <span class="text-xl text-zinc-400 pl-2 border-l-[2px] border-zinc-400" v-else>N/A</span>
             </div>
             <div class="w-full">
                 <span class="text-[10px] text-zinc-400">{{ dados.parent_game ? "Jogo Relacionado" : "Jogo Principal"
-                }}</span>
+                    }}</span>
             </div>
             <div class="w-full mt-4" v-if="!carregandoDados">
                 <ul>
@@ -97,7 +112,7 @@
                         <span class="text-xs text-zinc-400">Data de Lançamento: </span>
                         <span class="inline text-zinc-50 text-xs" v-if="dados.first_release_date"> {{
                             formataDataUnix(dados.first_release_date, 2)
-                        }}</span>
+                            }}</span>
                         <span class="inline text-zinc-50 text-xs" v-else>Não encontrado</span>
                     </li>
                     <li>
@@ -107,7 +122,7 @@
                     <li>
                         <span class="text-xs text-zinc-400">Plataformas: </span>
                         <span class="inline text-zinc-50 text-xs"> {{ plataformas?.join(", ") || "Não encontrado"
-                        }}</span>
+                            }}</span>
                     </li>
                     <li>
                         <span class="text-xs text-zinc-400">Desenvolvedores: </span>
@@ -127,7 +142,7 @@
                 </ul>
             </div>
 
-            <div class="w-full h-[300px] flex justify-center items-center" v-else>
+            <div class="w-full h-[300px] flex justify-center items-center" v-if="carregandoDados">
                 <span class="loading loading-ring loading-xl"></span>
             </div>
 
