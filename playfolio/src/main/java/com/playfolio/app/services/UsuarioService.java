@@ -33,4 +33,8 @@ public class UsuarioService {
         }
         return null;
     }
+
+    public Usuario loginToken(String email){
+        return usuarioRepository.findByEmail(email);
+    }
 }

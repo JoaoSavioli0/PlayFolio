@@ -1,4 +1,6 @@
 package com.playfolio.app.repositories;
+import java.util.Optional;
+
 import com.playfolio.app.entities.Usuario;
 
 import org.springframework.data.jpa.repository.JpaRepository;

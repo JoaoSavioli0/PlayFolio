@@ -29,8 +29,8 @@
                     </div>
                 </div>
 
-                <div
-                    class="w-full mt-8 flex flex-col rounded-xl border-[1px] border-zinc-500 overflow-hidden relative shadow-lg">
+                <div class="w-full mt-8 flex flex-col rounded-xl border-[1px] border-zinc-500 overflow-hidden relative shadow-lg"
+                    v-if="!usuario">
                     <div class="w-full h-full relative z-50 p-4">
                         <div class="w-full">
                             <h1 class="text-sm text-start">FAÇA LOGIN E SALVE SEUS JOGOS</h1>
@@ -72,7 +72,7 @@
                             <img :src="item.img" class="w-[23px] h-auto transition-all duration-200"
                                 :class="[itemAtivo == item.id ? 'filtro-branco' : 'filtro-cinza']">
                             <span class="ml-4 transition" :class="{ 'text-zinc-50': itemAtivo == item.id }">{{ item.name
-                            }}</span>
+                                }}</span>
                         </li>
 
                         <li @click="deslogaUsuario" class="group" v-if="this.usuario">
@@ -86,7 +86,7 @@
             </div>
         </div>
 
-        <GameComponent :id="id" :usuario="usuario?.id || 0" />
+        <GameComponent v-if="carregouUsuario" :id="id" :usuario="usuario ? usuario : null" />
 
     </div>
 </template>
@@ -115,17 +115,24 @@ export default {
             itemAtivo: 0,
             usuario: null,
             pesquisaJogoBoxOpen: false,
+            carregouUsuario: false
         }
     },
-    mounted() {
+    async mounted() {
+
         if (useUserStore().usuario != null) {
             this.usuario = useUserStore().usuario
         } else {
-            useUserStore().reconectaSessao()
+            await useUserStore().reconectaSessao()
             if (useUserStore().usuario != null) {
                 this.usuario = useUserStore().usuario
             }
         }
+        this.carregouUsuario = true
+        setTimeout(() => {
+            console.log("Usuario View> ", this.usuario)
+        }, 2000)
+
     },
     methods: {
         deslogaUsuario() {

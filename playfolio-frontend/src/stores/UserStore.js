@@ -46,7 +46,6 @@ export const useUserStore = defineStore('usuario', {
         const response = await axios.get("http://localhost:5000/usuario/me", {
           headers: { Authorization: `Bearer ${this.token}` },
         })
-
         this.usuario = response.data
       } catch (error) {
         console.error("Sua sessão está expirada, deslogando...")

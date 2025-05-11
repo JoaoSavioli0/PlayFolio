@@ -25,7 +25,6 @@ public class Usuario {
 
 
     //Getters Setters
-
     public Long getId() {
         return Id;
     }

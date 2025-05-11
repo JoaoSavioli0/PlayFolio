@@ -2,7 +2,8 @@
     <VideoPlayerComponent v-if="videoPlayerUrl" :url="videoPlayerUrl" @fechar-video="videoPlayerUrl = ''" />
     <ImageComponent v-if="imagemUrl" :url="imagemUrl" @fechar-imagem="imagemUrl = ''" />
     <AvaliacaoBoxComponent v-if="avaliacaoBoxOpen" :dados="dados" :imagem="imagens[0]" :statusDefault="statusDefault"
-        :capa="capasJogos[id]" @fecha-avaliacaoBox="avaliacaoBoxOpen = false" />
+        :usuario="usuario" :capa="capasJogos[id]" @fecha-avaliacaoBox="avaliacaoBoxOpen = false"
+        :avaliacaoUsuario="reviewDoUsuario" />
 
     <div class="w-[820px] h-min rounded-2xl border-[1px] border-zinc-600 overflow-hidden flex flex-col bg-[#1B1D1F]">
         <div class="w-full h-[450px] z-40 relative">
@@ -58,7 +59,7 @@
             </div>
 
             <!-- Caixa direita -->
-            <div class="w-max pl-4 pr-2" v-if="usuario != 0">
+            <div class="w-max pl-4 pr-2" v-if="!usuario">
                 <div
                     class="w-full h-[105px] px-4 py-2 flex justify-around flex-col rounded-2xl border-[2px] border-zinc-700 mt-[-100px] bg-[#1b1d1f]/60">
 
@@ -75,7 +76,7 @@
                 </div>
             </div>
 
-            <div class="w-max pl-4 pr-2" v-else>
+            <div class="w-max pl-4 pr-2" v-else-if="usuario && !reviewDoUsuario">
                 <div
                     class="w-full h-[105px] px-4 py-2 flex justify-around flex-col rounded-2xl border-[2px] border-zinc-700 mt-[-100px] bg-[#1b1d1f]/90">
 
@@ -91,11 +92,48 @@
                     </div>
                 </div>
             </div>
+
+            <div class="w-[50%] pl-4 pr-2 cursor-pointer" v-else-if="usuario && reviewDoUsuario"
+                @click="() => { avaliacaoBoxOpen = true, statusDefault = reviewDoUsuario.status }">
+                <div
+                    class="w-full h-[105px] px-2 py-2 flex justify-around flex-col rounded-2xl border-[2px] border-zinc-700 mt-[-100px] bg-[#1b1d1f]/90 relative overflow-hidden">
+
+                    <div class="w-full flex items-center text-start z-20">
+                        <div class="px-4">
+                            <span class="text-xs text-zinc-500">Status</span>
+                            <h2 class="text-2xl mt-1">{{ reviewMapping[reviewDoUsuario.status] }}</h2>
+                        </div>
+                        <div class="border-l border-zinc-700 px-4">
+                            <span class="text-xs text-zinc-500">Sua nota</span>
+                            <h1 class="text-3xl mt-1 w-fit" :class="{
+                                'degradeVermelho': reviewDoUsuario.nota < 4,
+                                'degradeAmarelo': reviewDoUsuario.nota >= 4 && reviewDoUsuario.nota < 7,
+                                'degradeAzul': reviewDoUsuario.nota >= 7 && reviewDoUsuario.nota < 9,
+                                'degradeRoxo': reviewDoUsuario.nota >= 9
+                            }">{{ reviewDoUsuario.nota }}</h1>
+                        </div>
+                    </div>
+
+                    <img src="../assets/Imagens/expressoes/1.png" v-if="reviewDoUsuario.nota == 0"
+                        class="absolute end-[-40px] bottom-[-40px] w-[150px] h-auto opacity-[0.5] z-10 brilhoCinza">
+                    <img src="../assets/Imagens/expressoes/2.png"
+                        v-if="reviewDoUsuario.nota > 0 && reviewDoUsuario.nota < 4"
+                        class="absolute end-[-40px] bottom-[-40px] w-[150px] h-auto opacity-[0.5] z-10 brilhoVermelho">
+                    <img src="../assets/Imagens/expressoes/3.png"
+                        v-if="reviewDoUsuario.nota >= 4 && reviewDoUsuario.nota < 7"
+                        class="absolute end-[-40px] bottom-[-40px] w-[150px] h-auto opacity-[0.5] z-10 brilhoAmarelo">
+                    <img src="../assets/Imagens/expressoes/4.png"
+                        v-if="reviewDoUsuario.nota >= 7 && reviewDoUsuario.nota < 9"
+                        class="absolute end-[-40px] bottom-[-40px] w-[150px] h-auto opacity-[0.5] z-10 brilhoAzul">
+                    <img src="../assets/Imagens/expressoes/5.png" v-if="reviewDoUsuario.nota >= 9"
+                        class="absolute end-[-40px] bottom-[-40px] w-[150px] h-auto opacity-[0.5] z-10 brilhoRoxo">
+                </div>
+            </div>
         </div>
 
         <div class="py-6 px-6 text-start">
             <div class="flex items-center">
-                <h2 class="text-3xl pr-2">{{ dados.name }}</h2>
+                <h2 class="text-3xl pr-2 max-w-[70%] line-clamp-3">{{ dados.name }}</h2>
                 <span class="text-xl text-zinc-400 pl-2 border-l-[2px] border-zinc-400"
                     v-if="dados.first_release_date">{{
                         formataDataUnix(dados.first_release_date, 1) }}</span>
@@ -104,7 +142,7 @@
             </div>
             <div class="w-full">
                 <span class="text-[10px] text-zinc-400">{{ dados.parent_game ? "Jogo Relacionado" : "Jogo Principal"
-                    }}</span>
+                }}</span>
             </div>
             <div class="w-full mt-4" v-if="!carregandoDados">
                 <ul>
@@ -112,7 +150,7 @@
                         <span class="text-xs text-zinc-400">Data de Lançamento: </span>
                         <span class="inline text-zinc-50 text-xs" v-if="dados.first_release_date"> {{
                             formataDataUnix(dados.first_release_date, 2)
-                            }}</span>
+                        }}</span>
                         <span class="inline text-zinc-50 text-xs" v-else>Não encontrado</span>
                     </li>
                     <li>
@@ -122,7 +160,7 @@
                     <li>
                         <span class="text-xs text-zinc-400">Plataformas: </span>
                         <span class="inline text-zinc-50 text-xs"> {{ plataformas?.join(", ") || "Não encontrado"
-                            }}</span>
+                        }}</span>
                     </li>
                     <li>
                         <span class="text-xs text-zinc-400">Desenvolvedores: </span>
@@ -199,6 +237,57 @@
                     <span class="loading loading-ring loading-xl"></span>
                 </div>
             </div>
+
+            <div class="w-full mt-8 relative">
+                <div class="flex items-center">
+                    <img src="../assets/Imagens/message.svg" class="filtro-cinza w-[19px] h-auto">
+                    <span class="text-zinc-50 text-xs ml-2">Reviews ({{ reviews.length }})</span>
+                </div>
+            </div>
+
+            <div class="w-full grid grid-cols-1 gap-4 mt-6">
+                <div class="w-full flex flex-col pb-8 border-b border-zinc-800 " v-for="review in reviews">
+                    <!-- Dados usuário -->
+                    <div class="w-full">
+                        <div class="flex gap-x-2">
+                            <div class="rounded-full size-[40px] bg-zinc-400"></div>
+                            <div class="flex flex-col justify-center">
+                                <h2 class="text-zinc-50 text-sm">{{ review.usuario.nome }}</h2>
+                                <span class="text-[10px] text-zinc-500">@{{ review.usuario.usuario }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Review  -->
+                    <div class="w-full flex mt-2">
+                        <!-- Nota -->
+                        <div class="flex flex-col items-center gap-y-2 pr-4 border-r min-w-[100px]">
+                            <h1 class="text-4xl" :class="{
+                                'degradeVermelho': review.nota < 4,
+                                'degradeAmarelo': review.nota >= 4 && review.nota < 7,
+                                'degradeAzul': review.nota >= 7 && review.nota < 9,
+                                'degradeRoxo': review.nota >= 9
+                            }">
+                                {{ review.nota }}
+                            </h1>
+                            <div class="w-full border rounded-md flex items-center justify-center py-[2px] px-2" :class="{
+                                'border-[#c31ef1]': review.status == 1,
+                                'border-green-600': review.status == 2,
+                                'border-[#d22d56]': review.status == 3,
+                            }">
+                                <span class="text-[#c31ef1] text-[10px]" v-if="review.status == 1">Jogando</span>
+                                <span class="text-green-600 text-[10px]" v-else-if="review.status == 2">Concluído</span>
+                                <span class="text-[#d22d56] text-[10px]" v-else-if="review.status == 3">Dropado</span>
+                            </div>
+                        </div>
+                        <!-- Texto -->
+                        <div class="pl-4 text-zinc-400 text-xs">
+                            {{ review.review }}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -219,7 +308,7 @@ export default {
             required: true
         },
         usuario: {
-            type: BigInt,
+            type: Object,
             required: true
         }
     },
@@ -245,12 +334,23 @@ export default {
             imagemUrl: "",
             avaliacaoBoxOpen: false,
             statusDefault: 0,
-            carregandoDados: false
+            carregandoDados: false,
+            reviews: [],
+            reviewDoUsuario: {},
+            reviewMapping: {
+                1: 'Jogando',
+                2: 'Zerado',
+                3: 'Dropado',
+                4: 'Quero jogar'
+            }
         }
     },
 
     mounted() {
+        console.log("Usuario: ", this.usuario)
+        this.usuarioLogado = this.usuario ? true : false
         this.carregaDados()
+        this.carregaReviewDoUsuario()
         this.$nextTick(() => {
             const viewportNode = this.$refs.viewport
             if (viewportNode) {
@@ -266,7 +366,6 @@ export default {
                 nextButtonNode.addEventListener("click", this.embla.scrollNext, false)
             }
         })
-        console.log("UsuarioId: " + this.usuario)
     },
     methods: {
         async carregaDados() {
@@ -292,11 +391,35 @@ export default {
                 await this.carregaEmpresas()
                 this.carregandoDados = false
                 await this.carregaVideos()
+                await this.carregaReviews()
 
             } catch (error) {
                 console.error("Erro ao carregar dados do jogo: " + error)
             } finally {
                 this.carregandoDados = false
+            }
+        },
+
+        async carregaReviewDoUsuario() {
+            if (!this.id || !this.usuarioLogado) return
+            console.log("Entrou\nUsuario>", this.usuario)
+            try {
+                const response = await axios.get(`http://localhost:5000/review/get?idJogo=${this.id}&idUsuario=${this.usuario.id}`)
+                this.reviewDoUsuario = response.data
+            } catch (error) {
+                console.log("Erro ao carregar avaliação de usuário: ", error)
+            }
+        },
+
+        async carregaReviews() {
+            if (!this.id) return
+
+            try {
+                const response = await axios.get(`http://localhost:5000/review/get/${this.id}`)
+                this.reviews = response.data
+                console.log("Reviews: ", this.reviews)
+            } catch (error) {
+                console.log("Erro ao carregar reviews: ", error)
             }
         },
 
@@ -493,6 +616,54 @@ export default {
 </script>
 
 <style scoped>
+.degradeVermelho {
+    background: #FF0000;
+    background: linear-gradient(to right, #FF0000 0%, #FF9500 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.degradeAmarelo {
+    background: #ECE80D;
+    background: linear-gradient(to right, #ECE80D 35%, #FF9604 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.degradeAzul {
+    background: #10AAD5;
+    background: linear-gradient(to right, #10AAD5 0%, #0BFBFF 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.degradeRoxo {
+    background: #DB1BEC;
+    background: linear-gradient(to right, #DB1BEC 35%, #FF09FB 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.brilhoAzul {
+    filter: drop-shadow(0px 0px 26px #10AAD5);
+}
+
+.brilhoCinza {
+    filter: drop-shadow(0px 0px 26px #878787);
+}
+
+.brilhoVermelho {
+    filter: drop-shadow(0px 0px 26px #c90303);
+}
+
+.brilhoAmarelo {
+    filter: drop-shadow(0px 0px 26px #e38a0d);
+}
+
+.brilhoRoxo {
+    filter: drop-shadow(0px 0px 26px #a800b8);
+}
+
 .filtro-branco {
     filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%) hue-rotate(168deg) brightness(103%) contrast(103%);
 }

@@ -14,8 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties.Jwt;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 
 @RestController
@@ -47,5 +49,24 @@ public class UsuarioController {
             return response;
         }
         return null;
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> validaToken(@RequestHeader("Authorization") String token){
+        try {
+            String jwt = token.replace("Bearer ", "");
+    
+            String email = jwtService.validateTokenAndGetUsername(jwt);
+    
+            Usuario usuario = usuarioService.loginToken(email);
+    
+            if (usuario != null) {
+                return ResponseEntity.ok(usuario);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token inválido ou expirado");
+        }
     }
 }
