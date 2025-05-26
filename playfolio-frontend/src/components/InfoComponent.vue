@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full pt-6 min-[1800px]:px-40 lg:px-20">
+    <div class="w-full pt-6 lg:px-40">
         <div class="w-full">
             <h1 class="text-start text-[30px] py-8">PRÓXIMOS LANÇAMENTOS ⏳</h1>
         </div>

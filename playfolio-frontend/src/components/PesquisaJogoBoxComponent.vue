@@ -2,16 +2,16 @@
     <div class="w-full h-screen fixed start-0 top-0 overflow-y-hidden z-[1000]">
         <div class="w-full h-full bg-black/80 z-[100] absolute top-0 start-0" @click="fechaBox"></div>
         <div
-            class="w-[500px] max-h-[600px] z-[110] fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-2xl flex flex-col overflow-hidden border border-zinc-600 pl-4 pr-2 py-4 bg-[#262729]/90">
-            <div class="w-full flex justify-between px-2">
-                <h1 class="text-start max-[1800px]:text-xl text-2xl">Pesquisar Jogos</h1>
+            class="w-[500px] max-h-[600px] z-[110] fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-2xl flex flex-col overflow-hidden border border-zinc-600 px-4 py-4 bg-zinc-900/90">
+            <div class="w-full flex justify-between items-center px-2">
+                <h1 class="text-start text-xl">Pesquisar Jogos</h1>
                 <button @click="fechaBox" class="cursor-pointer">
                     <img src="../assets/Imagens/close.svg" class="size-[25px] filtro-branco">
                 </button>
             </div>
             <div class="w-full relative">
                 <input type="text" class="rounded-full bg-zinc-900 px-4 py-2 mt-4 border border-zinc-600 w-full"
-                    placeholder="Pesquise pelo nome" v-model="tituloPesquisado" @input="parouDeDigitar">
+                    placeholder="Título do jogo..." v-model="tituloPesquisado" @input="parouDeDigitar">
             </div>
 
             <div class="w-full flex justify-center items-center h-[100px]" v-if="carregandoPesquisa">
@@ -51,7 +51,7 @@
                                         <div class="max-w-[55%] line-clamp-2 text-left">
                                             <h1 class="text-start pr-4 text-md min-[1800px]:text-lg">{{
                                                 jogo.name
-                                                }}</h1>
+                                            }}</h1>
                                         </div>
                                         <div v-if="jogo.first_release_date" class="w-fit">
                                             <h2 class="text-left text-zinc-500 text-xs min-[1800px]:text-sm">{{

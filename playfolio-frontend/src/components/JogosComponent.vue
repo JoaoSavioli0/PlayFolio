@@ -14,15 +14,12 @@
                         <router-link :to="`/game/${jogo.id}`" class="w-full h-full p-0">
                             <div class="w-full h-full relative overflow-hidden">
 
-                                <!-- 🎯 BG principal com blur -->
                                 <div class="absolute inset-0 z-10">
                                     <img :src="capasJogos[jogo.cover]" class="w-full h-full object-cover blur-lg" />
                                 </div>
 
-                                <!-- 🌫️ Gradiente por cima -->
                                 <div class="absolute inset-0 z-20 w-full h-full bg-black/60"></div>
 
-                                <!-- 🖼️ Miniatura frontal -->
                                 <div
                                     class="absolute top-1/2 start-[15px] z-30 -translate-y-1/2 w-[65px] h-[90px] overflow-hidden rounded-md shadow-md">
                                     <img :src="capasJogos[jogo.cover]" class="w-full h-full object-cover" />
@@ -100,15 +97,12 @@
                         <router-link :to="`/game/${jogo.id}`" class="w-full h-full p-0">
                             <div class="w-full h-full relative overflow-hidden">
 
-                                <!-- 🎯 BG principal com blur -->
                                 <div class="absolute inset-0 z-10">
                                     <img :src="capasJogos[jogo.cover]" class="w-full h-full object-cover blur-lg" />
                                 </div>
 
-                                <!-- 🌫️ Gradiente por cima -->
                                 <div class="absolute inset-0 z-20 w-full h-full bg-black/60"></div>
 
-                                <!-- 🖼️ Miniatura frontal -->
                                 <div
                                     class="absolute top-1/2 start-[15px] z-30 -translate-y-1/2 w-[65px] h-[90px] overflow-hidden rounded-md shadow-md">
                                     <img :src="capasJogos[jogo.cover]" class="w-full h-full object-cover" />
@@ -298,8 +292,8 @@ export default {
 
         async carregaInfo() {
             await this.carregaCapas(this.jogosIds)
-            setTimeout(await this.carregaTags(this.jogosGenres), 3000)
-            await this.carregaPlataformas(this.jogosPlatforms)
+            setTimeout(await this.carregaTags(this.jogosGenres), 2000)
+            setTimeout(await this.carregaPlataformas(this.jogosPlatforms), 4000)
         },
 
         async carregaCapas(jogosId) {

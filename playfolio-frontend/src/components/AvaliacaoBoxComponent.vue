@@ -58,7 +58,7 @@
                             <h1 class="w-full text-start text-xl mt-2 max-w-[80%] line-clamp-2">{{ dados.name }}</h1>
                             <span class="w-full text-start text-md text-zinc-500">{{
                                 formataDataUnix(dados.first_release_date)
-                            }}</span>
+                                }}</span>
                         </div>
                     </div>
                     <button class="self-start"><img src="../assets/Imagens/close.svg"
@@ -75,39 +75,38 @@
             <div class="w-full py-4 h-auto bg-[#262729]">
                 <div class="flex px-4 gap-x-2 h-[30px] items-center justify-between mt-4">
 
-                    <button
-                        class="flex grow-1 justify-center items-center rounded-full border py-[4px] px-4 bg-zinc-800 transition cursor-pointer"
-                        @click="() => { status != 1 ? status = 1 : status = 0 }"
-                        :class="status == 1 ? 'border-[#c31ef1] text-[#c31ef1] shadow-[0px_0px_26px_-4px_#c31ef1] -translate-y-[2px]' : 'border-zinc-500 text-zinc-400'">
-
+                    <button :disabled="statusDefault == 5"
+                        class="flex grow-1 justify-center items-center rounded-full border py-[4px] px-4 bg-zinc-800 transition"
+                        @click="status = 1" :class="[
+                            status == 1 ? 'border-[#c31ef1] text-[#c31ef1] shadow-[0px_0px_26px_-4px_#c31ef1] -translate-y-[2px]' : 'border-zinc-500 text-zinc-400',
+                            statusDefault == 5 ? 'border-zinc-700 text-zinc-700' : 'cursor-pointer'
+                        ]">
                         <img src="../assets/Imagens/joystick-2.svg" class="w-[20px] h-auto"
-                            :class="{ 'filtro-cinza': status != 1 }">
+                            :class="{ 'filtro-cinza': status != 1, 'filtro-cinza-escuro': statusDefault == 5 }">
                         <span class="ml-[6px] max-[1800px]:text-sm">Jogando</span>
                     </button>
 
-                    <button
-                        class="flex grow-1 justify-center h-min items-center rounded-full border py-[4px] px-4 bg-zinc-800 transition cursor-pointer"
-                        @click="() => { status != 2 ? status = 2 : status = 0 }"
-                        :class="status == 2 ? 'border-green-600 text-green-600 shadow-[0px_0px_26px_-4px_#0AA63E] -translate-y-[2px]' : 'border-zinc-500 text-zinc-400'">
-
+                    <button :disabled="statusDefault == 5"
+                        class="flex grow-1 justify-center h-min items-center rounded-full border py-[4px] px-4 bg-zinc-800 transition"
+                        @click="status = 2" :class="[status == 2 ? 'border-green-600 text-green-600 shadow-[0px_0px_26px_-4px_#0AA63E] -translate-y-[2px]' : 'border-zinc-500 text-zinc-400',
+                        statusDefault == 5 ? 'border-zinc-700 text-zinc-700' : 'cursor-pointer']">
                         <img src="../assets/Imagens/flag.svg" class="w-[17px] h-auto"
-                            :class="{ 'filtro-cinza-verde': status != 2 }">
+                            :class="{ 'filtro-cinza-verde': status != 2, 'filtro-cinza-escuro': statusDefault == 5 }">
                         <span class="ml-[4px] max-[1800px]:text-sm">Zerado</span>
                     </button>
 
-                    <button
-                        class="flex grow-1 justify-center items-center rounded-full border py-[4px] px-4 bg-zinc-800 transition cursor-pointer"
-                        @click="() => { status != 3 ? status = 3 : status = 0 }"
-                        :class="status == 3 ? 'border-[#d22d56] text-[#d22d56] shadow-[0px_0px_26px_-4px_#d22d56] -translate-y-[2px]' : 'border-zinc-500 text-zinc-400'">
-
+                    <button :disabled="statusDefault == 5"
+                        class="flex grow-1 justify-center items-center rounded-full border py-[4px] px-4 bg-zinc-800 transition"
+                        @click="status = 3" :class="[status == 3 ? 'border-[#d22d56] text-[#d22d56] shadow-[0px_0px_26px_-4px_#d22d56] -translate-y-[2px]' : 'border-zinc-500 text-zinc-400',
+                        statusDefault == 5 ? 'border-zinc-700 text-zinc-700' : 'cursor-pointer']">
                         <img src="../assets/Imagens/skull.svg" class="w-[18px] h-auto "
-                            :class="{ 'filtro-cinza': status != 3 }">
+                            :class="{ 'filtro-cinza': status != 3, 'filtro-cinza-escuro': statusDefault == 5 }">
                         <span class="ml-[6px] max-[1800px]:text-sm">Dropado</span>
                     </button>
 
                     <button
                         class="flex grow-1 justify-center items-center rounded-full border py-[4px] px-4 bg-zinc-800 transition cursor-pointer"
-                        @click="() => { status != 4 ? status = 4 : status = 0 }"
+                        @click="status = 4"
                         :class="status == 4 ? 'border-[#eebb17] text-[#eebb17] shadow-[0px_0px_26px_-4px_#eebb17] -translate-y-[2px]' : 'border-zinc-500 text-zinc-400'">
 
                         <img src="../assets/Imagens/shine.svg" class="w-[18px] h-auto pr-[2px]"
@@ -158,20 +157,58 @@
                 <!-- Comentário -->
                 <div class="w-full px-4 mt-2">
                     <div class="w-full relative rounded-xl border border-zinc-500" v-if="status != 4">
-                        <textarea
-                            class="resize-none w-full p-2 rounded-xl text-zinc-50 text-sm border-none outline-none h-[200px]"
-                            maxlength="5000" v-model="reviewText"
-                            placeholder="Escreva sua review em até 5000 caracteres"></textarea>
-                        <div class="w-full py-2 flex justify-start px-2">
-                            <span class="text-zinc-400 text-[12px]">{{ reviewText.length
-                            }}/5000</span>
+
+                        <form>
+                            <div class="w-full h-full">
+                                <div class="flex items-center justify-between px-3 pt-2 h-full">
+                                    <div
+                                        class="flex flex-wrap items-center divide-gray-200 sm:divide-x sm:rtl:divide-x-reverse dark:divide-gray-600">
+                                        <div class="flex items-center space-x-1 rtl:space-x-reverse sm:pe-4">
+                                            <button type="button"
+                                                class="p-2 text-gray-500 rounded-sm cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600">
+                                                <svg class="w-4 h-4" aria-hidden="true"
+                                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                                    viewBox="0 0 16 20">
+                                                    <path
+                                                        d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.96 2.96 0 0 0 .13 5H5Z" />
+                                                    <path
+                                                        d="M14.067 0H7v5a2 2 0 0 1-2 2H0v11a1.969 1.969 0 0 0 1.933 2h12.134A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.933-2ZM6.709 13.809a1 1 0 1 1-1.418 1.409l-2-2.013a1 1 0 0 1 0-1.412l2-2a1 1 0 0 1 1.414 1.414L5.412 12.5l1.297 1.309Zm6-.6-2 2.013a1 1 0 1 1-1.418-1.409l1.3-1.307-1.295-1.295a1 1 0 0 1 1.414-1.414l2 2a1 1 0 0 1-.001 1.408v.004Z" />
+                                                </svg>
+                                                <span class="sr-only">Format code</span>
+                                            </button>
+                                            <button type="button"
+                                                class="p-2 text-gray-500 rounded-sm cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600">
+                                                <svg class="w-4 h-4" aria-hidden="true"
+                                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                                    viewBox="0 0 20 20">
+                                                    <path
+                                                        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM13.5 6a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm-7 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm3.5 9.5A5.5 5.5 0 0 1 4.6 11h10.81A5.5 5.5 0 0 1 10 15.5Z" />
+                                                </svg>
+                                                <span class="sr-only">Add emoji</span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="px-4 pt-2 rounded-b-lg h-full">
+                                    <textarea id="editor" rows="8" v-model="reviewText"
+                                        class="block w-full text-sm bg-transparent border-0 outline-none text-zinc-50 resize-none"
+                                        placeholder="Escreva sua review..." required></textarea>
+                                </div>
+                            </div>
+
+                        </form>
+
+                        <div class="w-full pb-2 flex justify-start px-4">
+                            <span class="text-zinc-100 text-[10px]">{{ reviewText.length
+                                }}/5000</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="w-full mt-2 flex justify-end px-4" v-if="status != 4">
-                    <button class="px-4 py-2 text-zinc-50 border border-zinc-50 rounded-full text-xs cursor-pointer"
-                        @click="salvaRegistro">ENVIAR</button>
+                    <button class="px-8 py-4 text-zinc-900 bg-zinc-50 rounded-full text-xs cursor-pointer"
+                        @click="salvaRegistro">{{ avaliacaoUsuario ? 'Editar' : 'Enviar' }}</button>
                 </div>
 
                 <div class="w-full mt-10 grid grid-cols-4 px-4 gap-4" v-if="status == 4">
@@ -182,8 +219,16 @@
                         <h1 class="text-2xl max-[1800px]:text-xl">{{ dados.name }}</h1>
                         <span class="text-zinc-300 max-[1800px]:text-sm">Adicione {{ dados.name }} à sua lista de
                             espera</span>
-                        <button
-                            class="rounded-full text-zinc-900 bg-zinc-50 px-4 py-2 text-sm w-[90%] mt-4 cursor-pointer hover:-translate-y-[2px] hover:shadow-lg transition-all">Adicionar</button>
+                        <div class="w-[90%] flex mt-4">
+                            <button
+                                class="grow-1 rounded-full text-zinc-900 bg-zinc-50 px-4 py-2 text-sm cursor-pointer hover:-translate-y-[2px] hover:shadow-lg transition-all"
+                                @click="salvaWishlist">Adicionar</button>
+                            <router-link class="p-0 grow-1" to="/account/profile/5">
+                                <button
+                                    class="w-full rounded-full text-zinc-50 border border-zinc-50 px-4 py-2 text-sm ml-2 cursor-pointer hover:-translate-y-[2px] hover:shadow-lg transition-all ">Ver
+                                    lista</button>
+                            </router-link>
+                        </div>
                     </div>
                 </div>
 
@@ -198,14 +243,16 @@ import axios from 'axios';
 export default {
     name: "AvaliacaoBox",
     props: ["dados", "imagem", "statusDefault", "capa", "usuario", "avaliacaoUsuario"],
-
+    emits: ['fecha-avaliacaoBox'],
     mounted() {
         console.log("avaliacaoUsuario: ", this.avaliacaoUsuario)
-        this.updateOffset();
+        this.updateOffset()
+        this.verificaWishlist()
+        console.log("this.statusDefault: " + this.statusDefault + "\nstatus: " + this.status)
     },
     data() {
         return {
-            status: this.statusDefault,
+            status: this.statusDefault == 5 ? 4 : this.statusDefault,
             nota: this.avaliacaoUsuario?.nota || 0,
             imagens: [
                 '1.png',
@@ -265,19 +312,56 @@ export default {
             });
         },
         async salvaRegistro() {
+            if (!this.avaliacaoUsuario) {
+                try {
+                    const response = await axios.post("http://localhost:5000/review/new", {
+                        texto: this.reviewText,
+                        nota: this.nota,
+                        status: this.status,
+                        idJogo: this.dados.id,
+                        idUsuario: this.usuario.id
+                    })
+
+                    this.fechaBox()
+                    console.log(response.data)
+                } catch (error) {
+                    console.log("Erro ao salvar registro: " + error)
+                }
+            } else {
+                try {
+                    await axios.post("http://localhost:5000/review/update", {
+                        idUsuario: this.avaliacaoUsuario.idUsuario,
+                        idJogo: this.avaliacaoUsuario.idJogo,
+                        texto: this.reviewText,
+                        nota: this.nota,
+                        status: this.status,
+                    })
+
+                    this.fechaBox()
+                } catch (error) {
+                    console.log("Erro ao atualizar registro: " + error)
+                }
+            }
+        },
+
+        async salvaWishlist() {
             try {
-                const response = await axios.post("http://localhost:5000/review/new", {
-                    texto: this.reviewText,
-                    nota: this.nota,
-                    status: this.status,
-                    idJogo: this.dados.id,
-                    idUsuario: this.usuario.id
+                const response = await axios.post("http://localhost:5000/wishlist/adiciona", {
+                    idUsuario: this.usuario.id,
+                    idJogo: this.dados.id
                 })
 
-                this.fechaBox()
+            } catch (error) {
+                console.log("Erro ao adicionar jogo à wishlist: ", error)
+            }
+        },
+
+        async verificaWishlist() {
+            try {
+                const response = await axios.get(`http://localhost:5000/wishlist/get?idUsuario=${this.usuario.id}&idJogo=${this.dados.id}`)
                 console.log(response.data)
             } catch (error) {
-                console.log("Erro ao salvar registro: " + error)
+                console.log("Erro ao verificar estado do jogo na wishlist: ", error)
             }
         }
     },
@@ -307,6 +391,10 @@ export default {
 
 .filtro-cinza {
     filter: brightness(0) saturate(100%) invert(69%) sepia(3%) saturate(706%) hue-rotate(201deg) brightness(92%) contrast(89%);
+}
+
+.filtro-cinza-escuro {
+    filter: brightness(0) saturate(100%) invert(22%) sepia(7%) saturate(759%) hue-rotate(202deg) brightness(94%) contrast(86%);
 }
 
 .degradeCinza {

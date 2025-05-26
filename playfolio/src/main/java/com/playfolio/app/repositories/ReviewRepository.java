@@ -19,4 +19,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findAllByJogoIdComUsuario(@Param("idJogo") int idJogo);
 
     Optional<Review> findByJogoIdAndUsuarioId(int jogoId, Long usuarioId);
+
+    List<Review> findAllByUsuarioId(Long usuarioId);
 }

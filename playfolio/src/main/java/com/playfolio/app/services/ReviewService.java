@@ -2,6 +2,7 @@ package com.playfolio.app.services;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,9 +46,31 @@ public class ReviewService {
         return "Erro: erro desconhecido";
     }
 
+    public String atualizaReviewService(ReviewDto reviewDto){
+        System.out.println(reviewDto.getIdJogo() + " " + reviewDto.getIdUsuario());
+        Optional<Review> reviewOptional = reviewRepository.findByJogoIdAndUsuarioId(reviewDto.getIdJogo(), reviewDto.getIdUsuario());
+        if(reviewOptional.isPresent()){
+            Review review = reviewOptional.get();
+            review.setNota(reviewDto.getNota());
+            review.setReview(reviewDto.getTexto());
+            review.setStatus(reviewDto.getStatus());
+
+            if(reviewRepository.save(review)!=null){
+                System.out.println("Editou");
+                return "Review atualizada com sucesso.";
+            }
+        }
+        return "Erro desconhecido";
+    }
+
     public List<Review> getReviewsDoJogoService(int idJogo){
-        List<Review> reviews = reviewRepository.findAllByJogoIdComUsuario(idJogo);
-        return reviews;
+        return reviewRepository.findAllByJogoIdComUsuario(idJogo);
+    }
+
+    public List<ReviewDto> getReviewsDoUsuarioService(Long idUsuario){
+        return reviewRepository.findAllByUsuarioId(idUsuario).stream()
+        .map(r -> new ReviewDto(r.getJogoId(), r.getUsuario().getId(), r.getReview(), r.getNota(), r.getStatus()))
+        .collect(Collectors.toList());
     }
 
     public ReviewDto getReviewDoUsuarioPorJogoService(int idJogo, Long idUsuario){
@@ -56,5 +79,10 @@ public class ReviewService {
 
         Review reviewEncontrada = reviewOptional.get();
         return new ReviewDto(idJogo, idUsuario, reviewEncontrada.getReview(), reviewEncontrada.getNota(), reviewEncontrada.getStatus());
+    }
+
+    public void deleteReviewService(Long idReview){
+        Optional<Review> reviewOptional = reviewRepository.findById(idReview);
+        if(reviewOptional.isPresent()) reviewRepository.delete(reviewOptional.get());
     }
 }

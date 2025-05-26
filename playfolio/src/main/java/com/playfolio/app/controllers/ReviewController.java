@@ -27,13 +27,30 @@ public class ReviewController {
         return reviewService.registraReviewService(review);
     }
 
+    @PostMapping("/update")
+    public String updateReviewController(@RequestBody ReviewDto review) {
+        return reviewService.atualizaReviewService(review);
+    }
+
     @GetMapping("/get/{idJogo}")
     public List<Review> getReviewsDoJogoController(@PathVariable int idJogo) {
         return reviewService.getReviewsDoJogoService(idJogo);
+    }
+
+    @GetMapping("/user")
+    public List<ReviewDto> getReviewsDoUsuarioController(@RequestParam Long id) {
+        return reviewService.getReviewsDoUsuarioService(id);
     }
 
     @GetMapping("/get")
     public ReviewDto getReviewDoUsuarioPorJogoController(@RequestParam int idJogo, @RequestParam Long idUsuario) {
         return reviewService.getReviewDoUsuarioPorJogoService(idJogo, idUsuario);
     }
+
+    @GetMapping("/delete/{idReview}")
+    public void deleteReviewController(@PathVariable Long idReview) {
+        System.out.println("id: --------------" + idReview);
+        reviewService.deleteReviewService(idReview);
+    }
+    
 }

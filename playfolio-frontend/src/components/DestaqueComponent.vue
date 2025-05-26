@@ -3,7 +3,7 @@
         <div class="flex w-full items-center">
             <div class="whitespace-nowrap flex items-center justify-between w-full">
                 <div class="flex">
-                    <h2 class="text-[30px] text-start text-zinc-50">DESTAQUES 🔥</h2>
+                    <h1 class="text-[30px] text-start text-zinc-50">DESTAQUES 🔥</h1>
                 </div>
 
                 <div class="flex justify-end gap-2">

@@ -35,15 +35,20 @@
                         <label class="w-full text-start">
                             <span class="text-zinc-400 text-[13px] ml-4">Email</span>
                             <input type="text" v-model="emailLogin"
-                                class="w-full rounded-full text-sm min-[1800px]:p-4 px-4 py-[10px] text-zinc-50 border-[1px] border-zinc-500 outline-none focus:border-zinc-400 transition-all">
+                                class="w-full rounded-full text-sm min-[1800px]:px-4 py-[10px] text-zinc-50 border-[1px] border-zinc-500 outline-none focus:border-zinc-400 transition-all">
                         </label>
-                        <label class="w-full text-start mt-4">
+                        <label class="w-full text-start mt-4 relative">
                             <span class="text-zinc-400 text-[13px] ml-4">Senha</span>
-                            <input type="text" v-model="senhaLogin"
-                                class="w-full rounded-full text-sm min-[1800px]:p-4 px-4 py-[10px] text-zinc-50 border-[1px] border-zinc-500 outline-none focus:border-zinc-400 transition-all">
+                            <input :type="senhaVisivel ? 'text' : 'password'" v-model="senhaLogin" maxlength="20"
+                                class="w-full rounded-full text-sm min-[1800px]:px-4 py-[10px] text-zinc-50 border-[1px] border-zinc-500 outline-none focus:border-zinc-400 transition-all pr-[35px]">
+                            <button class="absolute end-[15px] top-[35px] z-[100] cursor-pointer"
+                                @click="senhaVisivel = !senhaVisivel">
+                                <img src="../assets/Imagens/eye.svg" class="w-[20px] h-auto" v-if="senhaVisivel">
+                                <img src="../assets/Imagens/eye-closed.svg" class="w-[20px] h-auto" v-else>
+                            </button>
                         </label>
                         <button
-                            class="rounded-full w-full min-[1800px]:py-4 py-[10px] text-center bg-zinc-50 mt-8 cursor-pointer"
+                            class="rounded-full w-full min-[1800px]:py-3 py-[10px] text-center bg-zinc-50 mt-8 cursor-pointer"
                             @click="fazLogin()">
                             <h2 class="text-zinc-800">LOGIN</h2>
                         </button>
@@ -73,42 +78,80 @@
                         <h1 class="text-xl xl:text-4xl mt-2">FAÇA PARTE!</h1>
                         <span class="text-zinc-500 text-[12px]">Registre-se com seus dados</span>
                     </div>
-                    <div class="w-full flex flex-col py-4 grid grid-cols-2 gap-y-2 gap-x-4">
+                    <div class="w-full flex flex-col py-4 grid grid-cols-2 gap-y-2 gap-x-4" v-if="!contaCriada">
                         <label class="w-full text-start">
                             <span class="text-zinc-400 text-[13px] ml-4">Nome pessoal</span>
-                            <input type="text" v-model="emailLogin"
-                                class="w-full rounded-full text-sm min-[1800px]:p-4 px-4 py-[10px] text-zinc-50 border-[1px] border-zinc-500 outline-none focus:border-zinc-400 transition-all">
+                            <input type="text" v-model="nomeRegistro"
+                                class="w-full rounded-full text-sm px-4 py-[10px] text-zinc-50 border-[1px] outline-none focus:border-zinc-400 transition-all"
+                                :class="nomeValido ? 'border-zinc-500' : 'border-rose-700'">
                         </label>
                         <label class="w-full text-start">
                             <span class="text-zinc-400 text-[13px] ml-4">Nome de usuário</span>
                             <div class="relative w-full">
-                                <input type="text" v-model="senhaLogin"
-                                    class="w-full rounded-full text-sm min-[1800px]:py-4 pl-8 pr-4 py-[10px] text-zinc-50 border-[1px] border-zinc-500 outline-none focus:border-zinc-400 transition-all">
-                                <span class="absolute top-[11px] start-[11px] text-zinc-400 text-sm">@</span>
+                                <input type="text" v-model="userRegistro"
+                                    class="w-full rounded-full text-sm pl-8 pr-4 py-[10px] text-zinc-50 border-[1px] outline-none focus:border-zinc-400 transition-all"
+                                    :class="userValido ? 'border-zinc-500' : 'border-rose-700'">
+                                <span class="absolute top-[11px] start-[11px] text-zinc-500 text-sm">@</span>
                             </div>
                         </label>
                         <label class="w-full text-start col-span-2">
                             <span class="text-zinc-400 text-[13px] ml-4">Email</span>
-                            <input type="text" v-model="emailLogin"
-                                class="w-full rounded-full text-sm min-[1800px]:p-4 px-4 py-[10px] text-zinc-50 border-[1px] border-zinc-500 outline-none focus:border-zinc-400 transition-all">
+                            <input type="text" v-model="emailRegistro"
+                                class="w-full rounded-full text-sm px-4 py-[10px] text-zinc-50 border-[1px] outline-none focus:border-zinc-400 transition-all"
+                                :class="emailValido ? 'border-zinc-500' : 'border-rose-700'">
                         </label>
-                        <label class="w-full text-start">
+                        <label class="w-full text-start relative">
                             <span class="text-zinc-400 text-[13px] ml-4">Senha</span>
-                            <input type="text" v-model="emailLogin"
-                                class="w-full rounded-full text-sm min-[1800px]:p-4 px-4 py-[10px] text-zinc-50 border-[1px] border-zinc-500 outline-none focus:border-zinc-400 transition-all">
+                            <input :type="senhaRegistroVisivel ? 'text' : 'password'" v-model="senhaRegistro"
+                                maxlength="20"
+                                class="w-full rounded-full text-sm px-4 py-[10px] text-zinc-50 border-[1px] outline-none focus:border-zinc-400 transition-all pr-[45px]"
+                                :class="senhaValido ? 'border-zinc-500' : 'border-rose-700'">
+                            <ul class="mt-1 ml-2">
+                                <li v-for="erroSenha in errosSenhaRegistro"
+                                    class="text-start text-[10px] text-rose-700">-{{
+                                        erroSenha
+                                    }}</li>
+                            </ul>
+                            <button class="absolute end-[15px] top-[35px] z-[100] cursor-pointer"
+                                @click="senhaRegistroVisivel = !senhaRegistroVisivel">
+                                <img src="../assets/Imagens/eye.svg" class="w-[20px] h-auto"
+                                    v-if="senhaRegistroVisivel">
+                                <img src="../assets/Imagens/eye-closed.svg" class="w-[20px] h-auto" v-else>
+                            </button>
                         </label>
-                        <label class="w-full text-start">
+                        <label class="w-full text-start relative">
                             <span class="text-zinc-400 text-[13px] ml-4">Confirme a senha</span>
-                            <input type="text" v-model="senhaLogin"
-                                class="w-full rounded-full text-sm min-[1800px]:p-4 px-4 py-[10px] text-zinc-50 border-[1px] border-zinc-500 outline-none focus:border-zinc-400 transition-all">
+                            <input :type="confirmaSenhaRegistroVisivel ? 'text' : 'password'"
+                                v-model="confirmaSenhaRegistro" maxlength="20"
+                                class="w-full rounded-full text-sm px-4 py-[10px] text-zinc-50 border-[1px] outline-none focus:border-zinc-400 transition-all"
+                                :class="senhaConfirmaValido ? 'border-zinc-500' : 'border-rose-700'">
+                            <ul class="mt-1 px-2">
+                                <li v-for="erroSenha in errosConfirmaSenhaRegistro"
+                                    class="text-start text-[10px] text-rose-700">-{{
+                                        erroSenha
+                                    }}</li>
+                            </ul>
+                            <button class="absolute end-[15px] top-[35px] z-[100] cursor-pointer"
+                                @click="confirmaSenhaRegistroVisivel = !confirmaSenhaRegistroVisivel">
+                                <img src="../assets/Imagens/eye.svg" class="w-[20px] h-auto"
+                                    v-if="confirmaSenhaRegistroVisivel">
+                                <img src="../assets/Imagens/eye-closed.svg" class="w-[20px] h-auto" v-else>
+                            </button>
                         </label>
                         <button
-                            class="mt-4 col-span-2 rounded-full w-full min-[1800px]:py-4 py-[10px] text-center bg-zinc-50 cursor-pointer"
-                            @click="fazLogin()">
+                            class="mt-4 col-span-2 rounded-full w-full py-3 py-[10px] text-center bg-zinc-50 cursor-pointer"
+                            @click="fazCadastro()">
                             <h2 class="text-zinc-800">CADASTRAR</h2>
                         </button>
                     </div>
-                    <div class="w-full flex justify-center items-center">
+
+                    <div class="w-full flex items-center justify-center pt-32 pb-20" v-if="contaCriada">
+                        <h1 class="text-zinc-50 text-3xl text-start">Sua conta foi criada com sucesso!<br><span
+                                class="text-sm">Faça login para acessar sua
+                                conta.</span></h1>
+                    </div>
+
+                    <div class="w-full flex justify-center items-center" v-if="!contaCriada">
                         <div class="grow-1 w-full bg-zinc-500 h-[1px]"></div>
                         <span class="text-[12px] text-zinc-50 px-4 inline-block whitespace-nowrap">Já possui uma
                             conta?</span>
@@ -143,7 +186,23 @@ export default {
                 senha: ""
             },
             emailLogin: "",
-            senhaLogin: ""
+            senhaLogin: "",
+            nomeRegistro: "",
+            nomeValido: true,
+            userRegistro: "",
+            userValido: true,
+            emailRegistro: "",
+            emailValido: true,
+            senhaRegistro: "",
+            senhaValido: true,
+            confirmaSenhaRegistro: "",
+            senhaConfirmaValido: true,
+            errosSenhaRegistro: [],
+            errosConfirmaSenhaRegistro: [],
+            contaCriada: false,
+            senhaRegistroVisivel: false,
+            confirmaSenhaRegistroVisivel: false,
+            senhaVisivel: false
         }
     },
     mounted() {
@@ -159,9 +218,6 @@ export default {
             if (!this.emailLogin) {
                 return
             }
-            if (!this.senhaLogin) {
-                return
-            }
 
             this.usuarioObj.email = this.emailLogin
             this.usuarioObj.senha = this.senhaLogin
@@ -175,6 +231,79 @@ export default {
                 console.log("logou")
                 this.$router.push("/")
             }
+        },
+
+        async fazCadastro() {
+            if (!this.validaCampos()) {
+                return
+            }
+            try {
+                const response = await axios.post("http://localhost:5000/usuario/registro", {
+                    email: this.emailRegistro,
+                    senha: this.senhaRegistro,
+                    nome: this.nomeRegistro,
+                    usuario: this.userRegistro
+                })
+
+                if (response != null) {
+                    this.contaCriada = true
+                }
+            } catch (error) {
+                if (error.response) {
+                    console.log("Erro: ", error.response.status)
+                    console.log("Descrição: ", error.response.data)
+                }
+            }
+        },
+
+        validaCampos() {
+            if (!this.validaSenha() || !this.validaEmail || !this.validaNome || !this.validaUser) {
+                this.userValido = this.validaUser
+                this.nomeValido = this.validaNome
+                this.emailValido = this.validaEmail
+                this.senhaValido = this.validaSenha()
+                this.senhaConfirmaValido = !this.errosConfirmaSenhaRegistro.length > 0
+                return false
+            }
+            return true
+        },
+
+        validaSenha() {
+            this.errosSenhaRegistro = []
+            this.errosConfirmaSenhaRegistro = []
+
+            if (!this.senhaRegistro) {
+                this.errosSenhaRegistro.push("Digite uma senha")
+                return false;
+            }
+
+            if (this.senhaRegistro.length < 8) this.errosSenhaRegistro.push("Mínimo de 8 caracteres")
+            if (this.senhaRegistro.toLowerCase() === this.senhaRegistro) this.errosSenhaRegistro.push("Pelo menos 1 caracter maíusculo")
+            if (!/\d/.test(this.senhaRegistro)) this.errosSenhaRegistro.push("Pelo menos 1 número")
+            if (/^\d+$/.test(this.senhaRegistro)) this.errosSenhaRegistro.push("Pelo menos 1 letra")
+            if (this.confirmaSenhaRegistro !== this.senhaRegistro) this.errosConfirmaSenhaRegistro.push("As senhas devem ser iguais")
+            if (this.errosSenhaRegistro.length > 0 || this.errosConfirmaSenhaRegistro.length > 0) return false
+            return true
+        },
+
+    },
+    computed: {
+
+        validaNome() {
+            if (!this.nomeRegistro || this.nomeRegistro.length < 10) return false
+            return true
+        },
+
+        validaUser() {
+            if (!this.userRegistro || this.userRegistro.length < 8) return false
+            return true
+        },
+
+        validaEmail() {
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!regex.test(this.emailRegistro)) return false
+            if (this.emailRegistro.split("@")[0].length < 3) return false
+            return true
         }
     }
 }

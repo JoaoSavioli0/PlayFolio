@@ -3,7 +3,7 @@ import axios from 'axios';
 
 export const useUserStore = defineStore('usuario', {
   state: () => ({
-    usuario: null, // Armazena informações do usuário
+    usuario: null,
     token: localStorage.getItem("token") || null
   }),
   actions: {
@@ -46,7 +46,9 @@ export const useUserStore = defineStore('usuario', {
         const response = await axios.get("http://localhost:5000/usuario/me", {
           headers: { Authorization: `Bearer ${this.token}` },
         })
+        if(response.data && response.data.id)
         this.usuario = response.data
+      
       } catch (error) {
         console.error("Sua sessão está expirada, deslogando...")
         this.logout()

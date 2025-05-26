@@ -3,6 +3,7 @@ import com.playfolio.app.entities.Usuario;
 import com.playfolio.app.services.UsuarioService;
 import com.playfolio.app.dtos.LoginDto;
 import com.playfolio.app.services.JwtService;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
+import com.playfolio.app.dtos.RegistroDto;
+
 
 @RestController
 @RequestMapping("/usuario")
@@ -30,9 +33,10 @@ public class UsuarioController {
     JwtService jwtService;
 
     @PostMapping("/registro")
-    public ResponseEntity<?> cadastroUsuarioController(@RequestBody Usuario usuario) {
-        usuarioService.cadastraUsuarioService(usuario);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<Usuario> cadastroUsuarioController(@RequestBody RegistroDto usuario) {
+        Usuario usuarioRegistrado = usuarioService.cadastraUsuarioService(usuario);
+        if(usuarioRegistrado!=null) return ResponseEntity.ok(usuarioRegistrado); 
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
     @PostMapping("/login")
