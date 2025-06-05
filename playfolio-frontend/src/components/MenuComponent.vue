@@ -1,8 +1,7 @@
 <template>
     <PesquisaJogoBoxComponent v-if="pesquisaJogoBoxOpen" @fechar-box="pesquisaJogoBoxOpen = false" />
 
-
-    <div class="w-[300px] h-screen relative pt-4">
+    <div class="w-[300px] h-screen relative pt-4 max-xl:hidden">
         <div class="fixed w-[280px]">
             <div class="flex w-full justify-between items-center">
                 <button @click="voltarRota"
@@ -18,13 +17,23 @@
             </div>
 
             <div class="w-full mt-8 flex flex-col" v-if="usuario">
-                <div class="flex w-full h-max">
-                    <div class="size-[45px] rounded-full bg-zinc-500 border-[1px] border-zinc-300"></div>
-                    <div class="flex flex-col ml-2 text-start justify-center">
-                        <span class="text-zinc-50 text-sm line-clamp-1">{{ usuario.nome }}</span>
-                        <span class="text-zinc-400 text-[10px]">@{{ usuario.usuario }}</span>
+                <router-link class="w-full p-0" :to="`/account/profile/${usuario.usuario}`">
+                    <div class="flex w-full h-max hover:cursor-pointer">
+                        <div
+                            class="flex items-center justify-center size-[45px] rounded-full bg-gradient-to-br from-amber-500 to-pink-500 ">
+                            <div
+                                class="size-[41px] bg-zinc-900 text-black rounded-full flex items-center justify-center overflow-hidden">
+                                <img :src="`data:image/png;base64,${usuario.imagem}`" class="w-full h-full object-cover"
+                                    v-if="usuario.imagem">
+                                <h1 class="text-2xl text-zinc-50" v-else>{{ primeiraLetraUsuario }}</h1>
+                            </div>
+                        </div>
+                        <div class="flex flex-col ml-2 text-start justify-center">
+                            <span class="text-zinc-50 text-sm line-clamp-1">{{ usuario.nome }}</span>
+                            <span class="text-zinc-400 text-[10px]">@{{ usuario.usuario }}</span>
+                        </div>
                     </div>
-                </div>
+                </router-link>
             </div>
 
             <div class="w-full mt-8 flex flex-col rounded-xl overflow-hidden relative shadow-lg" v-if="!usuario">
@@ -70,7 +79,7 @@
                             <img :src="item.img" class="w-[23px] h-auto transition-all duration-200"
                                 :class="[itemAtivo == item.id ? 'filtro-branco' : 'filtro-cinza']">
                             <span class="ml-4 transition" :class="{ 'text-zinc-50': itemAtivo == item.id }">{{ item.name
-                                }}</span>
+                            }}</span>
                         </li>
                     </router-link>
 
@@ -101,33 +110,31 @@ export default {
     props: ["selected"],
     data() {
         return {
-            itemsNav: [
-                { id: 1, name: "Início", img: require("../assets/Imagens/home.svg"), needLogin: false, rota: "/" },
-                { id: 2, name: "Meus jogos", img: require("../assets/Imagens/joystick.svg"), needLogin: true, rota: "/account/profile/1" },
-                { id: 3, name: "Comunidade", img: require("../assets/Imagens/community.svg"), needLogin: false, rota: "/" },
-                { id: 4, name: "Configurações", img: require("../assets/Imagens/settings.svg"), needLogin: true, rota: "/account/settings" },
-            ],
+            itemsNav: [],
             itemAtivo: this.selected,
             usuario: null,
             pesquisaJogoBoxOpen: false,
-            carregouUsuario: false
+            carregouUsuario: false,
+            userStore: useUserStore()
         }
     },
     async mounted() {
-
-        if (useUserStore().usuario != null) {
-            this.usuario = useUserStore().usuario
+        if (this.userStore.usuario != null) {
+            this.usuario = this.userStore.usuario
         } else {
-            await useUserStore().reconectaSessao()
-            if (useUserStore().usuario != null) {
-                this.usuario = useUserStore().usuario
+            await this.userStore.reconectaSessao()
+            if (this.userStore.usuario != null) {
+                this.usuario = this.userStore.usuario
             }
         }
         this.carregouUsuario = true
-        setTimeout(() => {
-            console.log("Usuario View> ", this.usuario)
-        }, 2000)
 
+        this.itemsNav = [
+            { id: 1, name: "Início", img: require("../assets/Imagens/home.svg"), needLogin: false, rota: "/" },
+            { id: 2, name: "Meus jogos", img: require("../assets/Imagens/joystick.svg"), needLogin: true, rota: `/account/profile/${this.usuario?.usuario}` },
+            { id: 3, name: "Comunidade", img: require("../assets/Imagens/community.svg"), needLogin: false, rota: "/community" },
+            { id: 4, name: "Configurações", img: require("../assets/Imagens/settings.svg"), needLogin: true, rota: "/account/settings" },
+        ]
     },
     methods: {
         voltarRota() {
@@ -148,7 +155,12 @@ export default {
                 return this.itemsNav.filter(i => !i.needLogin)
             }
             return this.itemsNav
+        },
+
+        primeiraLetraUsuario() {
+            return this.usuario?.usuario?.charAt(0).toUpperCase() || ''
         }
+
     },
 }
 </script>

@@ -69,8 +69,12 @@ public class ReviewService {
 
     public List<ReviewDto> getReviewsDoUsuarioService(Long idUsuario){
         return reviewRepository.findAllByUsuarioId(idUsuario).stream()
-        .map(r -> new ReviewDto(r.getJogoId(), r.getUsuario().getId(), r.getReview(), r.getNota(), r.getStatus()))
+        .map(r -> new ReviewDto(r.getJogoId(), r.getUsuario().getId(), r.getReview(), r.getNota(), r.getStatus(), r.getDataInclusao()))
         .collect(Collectors.toList());
+    }
+
+    public int contaReviewsDoUsuarioService(Long idUsuario){
+        return reviewRepository.findAllByUsuarioId(idUsuario).size();
     }
 
     public ReviewDto getReviewDoUsuarioPorJogoService(int idJogo, Long idUsuario){
@@ -78,7 +82,7 @@ public class ReviewService {
         if(reviewOptional.isEmpty()) return null;
 
         Review reviewEncontrada = reviewOptional.get();
-        return new ReviewDto(idJogo, idUsuario, reviewEncontrada.getReview(), reviewEncontrada.getNota(), reviewEncontrada.getStatus());
+        return new ReviewDto(idJogo, idUsuario, reviewEncontrada.getReview(), reviewEncontrada.getNota(), reviewEncontrada.getStatus(), reviewEncontrada.getDataInclusao());
     }
 
     public void deleteReviewService(Long idReview){

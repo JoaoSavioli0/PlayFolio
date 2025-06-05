@@ -16,6 +16,7 @@ public class Usuario {
     private String email;
     private String senha;
     private String usuario;
+    private String bio;
 
     @Column(insertable = false)
     private Character tipo = 'U';
@@ -81,5 +82,12 @@ public class Usuario {
         this.imagem = imagem;
     }
 
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
     
 }

@@ -6,7 +6,7 @@
         </button>
 
         <div class="w-max h-max z-[110]">
-            <img :src="url" class="max-w-[1300px] h-auto">
+            <img :src="url" class="w-full xl:max-w-[1300px] h-auto">
         </div>
     </div>
 </template>

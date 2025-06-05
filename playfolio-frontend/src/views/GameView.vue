@@ -4,11 +4,19 @@
     <AvaliacaoBoxComponent v-if="avaliacaoBoxOpen" :dados="dados" :imagem="imagens[0]" :statusDefault="statusDefault"
         :usuario="usuario" :capa="capasJogos[id]" @fecha-avaliacaoBox="recarregaDados"
         :avaliacaoUsuario="reviewDoUsuario" />
-    <div class="w-full h-full pb-6 pt-4 px-24 flex justify-center gap-x-4">
+    <div class="w-full h-full pb-6 pt-4 xl:px-24 px-4 flex xl:flex-row flex-col justify-center xl:gap-x-4">
+        <MenuMobileComponent />
         <MenuComponent />
         <div
-            class="w-[820px] h-min rounded-2xl border-[1px] border-zinc-600 overflow-hidden flex flex-col bg-[#1B1D1F]">
-            <div class="w-full h-[450px] z-40 relative">
+            class="xl:w-[820px] w-full h-min rounded-2xl border-[1px] border-zinc-600 overflow-hidden flex flex-col bg-[#1B1D1F]">
+            <div class="w-full xl:h-[450px] h-[210px] z-40 relative">
+
+                <button @click="voltarRota"
+                    class="w-[90px] py-2 bg-zinc-50 px-2 rounded-full flex justify-around items-center cursor-pointer absolute top-[10px] start-[10px] min-xl:hidden">
+                    <img src="../assets/Imagens/arrow.svg" class="w-[21px] h-auto">
+                    <span class="text-sm text-[#1b1d1f]">Voltar</span>
+                </button>
+
                 <img :src="imagens[0]" class="w-full h-full" v-if="!carregandoDados && imagens[0]">
 
                 <div class="w-full h-full flex justify-center items-center" v-if="!carregandoDados && !imagens[0]">
@@ -20,12 +28,12 @@
                 </div>
                 <div class="absolute bottom-0 w-full h-[25%] gradiente-cinza-transparente"></div>
             </div>
-            <div class="w-full z-50 flex px-2">
+            <div class="w-full z-50 flex px-2 xl:flex-row flex-col">
 
                 <!-- Caixa esquerda -->
-                <div class="w-max pl-4 pr-2">
+                <div class="xl:w-max w-full xl:pl-4 xl:pr-2 px-2">
                     <div
-                        class="w-full h-[105px] px-4 flex items-center rounded-2xl border-[2px] border-zinc-700 mt-[-100px] bg-[#1b1d1f]/60">
+                        class="w-full h-[105px] px-4 flex items-center rounded-2xl border-[2px] border-zinc-700 xl:mt-[-100px] mt-[-50px] bg-[#1b1d1f]/60">
 
                         <img :src="capasJogos[id]" class="w-[65px] h-auto rounded-lg shadow-md"
                             v-if="!carregandoDados && capasJogos[id]">
@@ -61,9 +69,9 @@
                 </div>
 
                 <!-- Caixa direita -->
-                <div class="w-max pl-4 pr-2" v-if="!usuarioLogado">
+                <div class="xl:w-max w-full xl:pl-4 xl:pr-2 px-2 max-xl:mt-4" v-if="!usuarioLogado">
                     <div
-                        class="w-full h-[105px] px-4 py-2 flex justify-around flex-col rounded-2xl border-[2px] border-zinc-700 mt-[-100px] bg-[#1b1d1f]/60">
+                        class="w-full h-[105px] px-4 py-2 flex justify-around flex-col rounded-2xl border-[2px] border-zinc-700 xl:mt-[-100px] bg-[#1b1d1f]/60">
 
                         <div class="w-full">
                             <span class="text-[10px] text-zinc-400">Crie uma conta e salve seus jogos favoritos</span>
@@ -82,30 +90,48 @@
                     </div>
                 </div>
 
-                <div class="w-max pl-4 pr-2" v-else-if="usuario && !reviewDoUsuario">
+                <!-- Está logado mas não tem review -->
+                <div class="xl:w-1/2 w-full xl:pl-4 xl:pr-2 px-2 max-xl:mt-4" v-else-if="usuario && !reviewDoUsuario">
                     <div
-                        class="w-full h-[105px] px-4 py-2 flex justify-around flex-col rounded-2xl border-[2px] border-zinc-700 mt-[-100px] bg-[#1b1d1f]/90">
+                        class="w-full relative h-[105px] px-4 py-2 flex justify-around flex-col rounded-2xl border-[2px] border-zinc-700 xl:mt-[-100px] bg-[#1b1d1f]/90 overflow-hidden">
 
-                        <div class="w-full text-start">
-                            <span class="text-[10px] text-zinc-400">
+                        <div class="w-full text-start z-20">
+                            <span class="text-[12px] text-zinc-200">
                                 {{ jogoLancado ? "Avalie esse jogo" : "Adicione à lista de desejos" }}</span>
+                            <span v-if="estaNaWishlist" class="block text-[10px] text-zinc-400">Esse jogo já esta na sua
+                                wishlist!</span>
                         </div>
-                        <div class="w-full flex justify-start items-center">
+                        <div class="w-full flex justify-start items-center z-20" :class="{ 'mt-2': estaNaWishlist }">
                             <button class="py-2 px-4 rounded-xl border-[1px] border-zinc-500 text-sm cursor-pointer"
                                 @click="() => { avaliacaoBoxOpen = true, statusDefault = 1 }"
                                 v-if="jogoLancado">Avaliar</button>
-                            <button
-                                class="py-2 px-4 rounded-xl border-[1px] border-zinc-500 text-xs cursor-pointer ml-4"
+                            <button class="py-2 px-4 rounded-xl border-[1px] border-zinc-500 text-sm cursor-pointer"
+                                v-if="!estaNaWishlist" :class="{ 'ml-2': jogoLancado }"
                                 @click="() => { avaliacaoBoxOpen = true, statusDefault = jogoLancado ? 4 : 5 }">Quero
                                 jogar</button>
+
+                            <router-link :to="{ path: `/account/profile/${usuario.usuario}`, query: { filtro: 5 } }"
+                                class="p-0" v-else>
+                                <button class="py-2 px-4 rounded-xl border-[1px] border-zinc-500 text-sm cursor-pointer"
+                                    :class="{ 'ml-2': jogoLancado }"
+                                    @click="() => { avaliacaoBoxOpen = true, statusDefault = jogoLancado ? 4 : 5 }">Ver
+                                    wishlist</button>
+                            </router-link>
                         </div>
+
+                        <img src="../assets/Imagens/expressoes/6.png" v-if="estaNaWishlist"
+                            class="absolute end-[-40px] xl:bottom-[-40px] bottom-[-20px] xl:w-[150px] w-[120px] h-auto opacity-[0.5] z-10 brilhoCinza">
+                        <img src="../assets/Imagens/expressoes/1.png" v-else
+                            class="absolute end-[-40px] xl:bottom-[-40px] bottom-[-20px] xl:w-[150px] w-[120px] h-auto opacity-[0.5] z-10 brilhoCinza">
                     </div>
                 </div>
 
-                <div class="w-[50%] pl-4 pr-2 cursor-pointer" v-else-if="usuario && reviewDoUsuario"
+                <!-- Está logado e tem review -->
+                <div class="xl:w-max w-full xl:pl-4 xl:pr-2 px-2 max-xl:mt-4 cursor-pointer"
+                    v-else-if="usuario && reviewDoUsuario"
                     @click="() => { avaliacaoBoxOpen = true, statusDefault = reviewDoUsuario.status }">
                     <div
-                        class="w-full h-[105px] px-2 py-2 flex justify-around flex-col rounded-2xl border-[2px] border-zinc-700 mt-[-100px] bg-[#1b1d1f]/90 relative overflow-hidden">
+                        class="w-full h-[105px] px-2 py-2 flex justify-around flex-col rounded-2xl border-[2px] border-zinc-700 xl:mt-[-100px] bg-[#1b1d1f]/90 relative overflow-hidden">
 
                         <div class="w-full flex items-center text-start z-20">
                             <div class="px-4">
@@ -142,8 +168,8 @@
 
             <div class="py-6 px-6 text-start">
                 <div class="flex items-center">
-                    <h2 class="text-3xl pr-2 max-w-[70%] line-clamp-3">{{ dados.name }}</h2>
-                    <span class="text-xl text-zinc-400 pl-2 border-l-[2px] border-zinc-400"
+                    <h2 class="xl:text-3xl text-xl pr-2 xl:max-w-[70%] w-full line-clamp-3">{{ dados.name }}</h2>
+                    <span class="xl:text-xl text-md text-zinc-400 pl-2 border-l-[2px] border-zinc-400"
                         v-if="dados.first_release_date">{{
                             formataDataUnix(dados.first_release_date, 1) }}</span>
 
@@ -151,7 +177,7 @@
                 </div>
                 <div class="w-full">
                     <span class="text-[10px] text-zinc-400">{{ dados.parent_game ? "Jogo Relacionado" : "Jogo Principal"
-                        }}</span>
+                    }}</span>
                 </div>
                 <div class="w-full mt-4" v-if="!carregandoDados">
                     <ul>
@@ -159,7 +185,7 @@
                             <span class="text-xs text-zinc-400">Data de Lançamento: </span>
                             <span class="inline text-zinc-50 text-xs" v-if="dados.first_release_date"> {{
                                 formataDataUnix(dados.first_release_date, 2)
-                                }}</span>
+                            }}</span>
                             <span class="inline text-zinc-50 text-xs" v-else>Não encontrado</span>
                         </li>
                         <li>
@@ -169,7 +195,7 @@
                         <li>
                             <span class="text-xs text-zinc-400">Plataformas: </span>
                             <span class="inline text-zinc-50 text-xs"> {{ plataformas?.join(", ") || "Não encontrado"
-                                }}</span>
+                            }}</span>
                         </li>
                         <li>
                             <span class="text-xs text-zinc-400">Desenvolvedores: </span>
@@ -211,7 +237,7 @@
                     <div class="embla mt-2">
                         <div class="embla__viewport" ref="viewport">
                             <div class="embla__container">
-                                <div class="embla__slide h-[450px] rounded-xl overflow-hidden cursor-pointer"
+                                <div class="embla__slide aspect-video rounded-xl overflow-hidden cursor-pointer"
                                     v-for="img in imagens" @click="imagemUrl = img">
                                     <img :src="img" class="w-full h-full object-fit rounded-xl" />
                                 </div>
@@ -317,6 +343,8 @@ import AvaliacaoBoxComponent from '@/components/AvaliacaoBoxComponent.vue'
 import SubmenuReviewComponent from '@/components/SubmenuReviewComponent.vue'
 import { useUserStore } from '@/stores/UserStore'
 import MenuComponent from '@/components/MenuComponent.vue'
+import { useTwitchTokenStore } from '@/stores/TwitchTokenStore'
+import MenuMobileComponent from '@/components/MenuMobileComponent.vue'
 
 export default {
     name: "Game",
@@ -325,13 +353,17 @@ export default {
             type: String,
             required: true
         },
+        avaliacaoBoxOpenDefault: {
+            type: Boolean,
+        }
     },
     components: {
         VideoPlayerComponent,
         ImageComponent,
         AvaliacaoBoxComponent,
         SubmenuReviewComponent,
-        MenuComponent
+        MenuComponent,
+        MenuMobileComponent
     },
     data() {
         return {
@@ -362,11 +394,13 @@ export default {
                 4: 'Quero jogar'
             },
             exibeSub: false,
+            twitchToken: useTwitchTokenStore(),
+            estaNaWishlist: false,
         }
     },
 
     async mounted() {
-
+        if (this.twitchToken.access_token == '') await this.twitchToken.buscaToken()
         if (this.userStore.usuario != null) {
             this.usuario = this.userStore.usuario
         } else {
@@ -376,9 +410,10 @@ export default {
             }
         }
         this.usuarioLogado = this.userStore.usuario ? true : false
-        console.log("usuarioLogado: " + this.usuarioLogado + "\nUsuario: ", this.usuario.id != null)
+
         this.carregaDados()
         this.carregaReviewDoUsuario()
+        this.verificaSeEstaNaWishlist()
         this.$nextTick(() => {
             const viewportNode = this.$refs.viewport
             if (viewportNode) {
@@ -394,9 +429,19 @@ export default {
                 nextButtonNode.addEventListener("click", this.embla.scrollNext, false)
             }
         })
+
+        if (this.usuarioLogado && this.avaliacaoBoxOpenDefault) this.avaliacaoBoxOpen = true
     },
 
     methods: {
+        async verificaSeEstaNaWishlist() {
+            try {
+                const response = await axios.get(`http://localhost:5000/wishlist/get?idUsuario=${this.usuario.id}&idJogo=${this.id}`)
+                this.estaNaWishlist = response.data
+            } catch (error) {
+                console.log("Erro ao verificar se jogo está na wishlist do usuário: ", error)
+            }
+        },
         async carregaDados() {
             this.carregandoDados = true
             const body = `fields *; where id = ${this.id};`;
@@ -406,7 +451,7 @@ export default {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer h6v8ywcqhwyyhj140u70v95rss6sga`,
+                        'Authorization': `Bearer ${this.twitchToken.access_token}`,
                         'Content-Type': 'text/plain'
                     }
                 })
@@ -463,7 +508,7 @@ export default {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer h6v8ywcqhwyyhj140u70v95rss6sga`,
+                        'Authorization': `Bearer ${this.twitchToken.access_token}`,
                         'Content-Type': 'text/plain'
                     }
                 })
@@ -489,7 +534,7 @@ export default {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer h6v8ywcqhwyyhj140u70v95rss6sga`,
+                        'Authorization': `Bearer ${this.twitchToken.access_token}`,
                         'Content-Type': 'text/plain'
                     }
                 })
@@ -508,7 +553,7 @@ export default {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer h6v8ywcqhwyyhj140u70v95rss6sga`,
+                        'Authorization': `Bearer ${this.twitchToken.access_token}`,
                         'Content-Type': 'text/plain'
                     }
                 })
@@ -535,7 +580,7 @@ export default {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer h6v8ywcqhwyyhj140u70v95rss6sga`,
+                        'Authorization': `Bearer ${this.twitchToken.access_token}`,
                         'Content-Type': 'text/plain'
                     }
                 })
@@ -563,7 +608,7 @@ export default {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer h6v8ywcqhwyyhj140u70v95rss6sga`,
+                        'Authorization': `Bearer ${this.twitchToken.access_token}`,
                         'Content-Type': 'text/plain'
                     }
                 })
@@ -585,7 +630,7 @@ export default {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer h6v8ywcqhwyyhj140u70v95rss6sga`,
+                        'Authorization': `Bearer ${this.twitchToken.access_token}`,
                         'Content-Type': 'text/plain'
                     }
                 })
@@ -609,7 +654,7 @@ export default {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer h6v8ywcqhwyyhj140u70v95rss6sga`,
+                        'Authorization': `Bearer ${this.twitchToken.access_token}`,
                         'Content-Type': 'text/plain'
                     }
                 })

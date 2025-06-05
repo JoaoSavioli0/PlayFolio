@@ -27,7 +27,7 @@ export const useUserStore = defineStore('usuario', {
         }
 
       } catch (error) {
-        console.error("Erro ao efeturar login: " + error)
+        return error.response
       }
     },
     logout() {

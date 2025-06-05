@@ -1,18 +1,19 @@
 <template>
-    <div class="w-full min-[1800px]:px-40 px-20 py-16" v-if="jogosDestaque.length">
+    <div class="w-full min-[1800px]:px-40 xl:px-20 px-6 xl:py-16 pt-16 pb-6" v-if="jogosDestaque.length">
         <div class="flex w-full items-center">
             <div class="whitespace-nowrap flex items-center justify-between w-full">
                 <div class="flex">
-                    <h1 class="text-[30px] text-start text-zinc-50">DESTAQUES 🔥</h1>
+                    <h1 class="xl:text-[30px] text-[20px] text-start text-zinc-50">DESTAQUES 🔥</h1>
                 </div>
 
                 <div class="flex justify-end gap-2">
                     <button @click="embla.scrollPrev()" class="p-[4px] rounded-full hover:bg-zinc-800">
-                        <img src="../assets/Imagens/arrow-2.svg" class="w-[35px] h-auto cursor-pointer filtro-branco">
+                        <img src="../assets/Imagens/arrow-2.svg"
+                            class="xl:w-[35px] w-[25px] h-auto cursor-pointer filtro-branco">
                     </button>
                     <button @click="embla.scrollNext()" class="p-[4px] rounded-full hover:bg-zinc-800">
                         <img src="../assets/Imagens/arrow-2.svg"
-                            class="w-[35px] h-auto cursor-pointer filtro-branco -rotate-180">
+                            class="xl:w-[35px] w-[25px] h-auto cursor-pointer filtro-branco -rotate-180">
                     </button>
                 </div>
 
@@ -22,7 +23,7 @@
         <div class="embla mt-6">
             <div class="embla__viewport" ref="viewport">
                 <div class="embla__container">
-                    <div class="embla__slide h-[420px] w-[250px] clip-card bg-[#262729] flex flex-col shrink-0 relative card-area rounded-xl overflow-hidden border-[1px] border-zinc-600"
+                    <div class="embla__slide xl:h-[420px] h-[320px] clip-card bg-[#262729] flex flex-col shrink-0 relative card-area rounded-xl overflow-hidden border-[1px] border-zinc-600"
                         v-for="(jogo, index) in jogosDestaque" :key="index">
                         <router-link class="w-full h-[400px] xl:mb-2 relative overflow-hidden relative image-area z-40"
                             :to="`/game/${jogo.id}`">
@@ -67,10 +68,13 @@
                                             formataDataUnix(jogo.first_release_date) }}</span>
                                 </div>
 
-                                <button
-                                    class="border-[1px] w-[40px] h-[40px] shrink-0 flex items-center justify-center border-zinc-500 rounded-full cursor-pointer shadow-sm transition-all peer hover:border-zinc-50">
-                                    <span class="text-zinc-200 text-xs peer:hover:text-white xl:text-xl">+</span>
-                                </button>
+                                <router-link class="p-0"
+                                    :to="{ path: `/game/${jogo.id}`, query: { avaliacaoBoxOpenDefault: true } }">
+                                    <button
+                                        class="border-[1px] w-[40px] h-[40px] shrink-0 flex items-center justify-center border-zinc-500 rounded-full cursor-pointer shadow-sm transition-all peer hover:border-zinc-50">
+                                        <span class="text-zinc-200 text-xs peer:hover:text-white xl:text-xl">+</span>
+                                    </button>
+                                </router-link>
                             </div>
                         </div>
 
@@ -86,6 +90,7 @@
 </template>
 
 <script>
+import { useTwitchTokenStore } from '@/stores/TwitchTokenStore';
 import axios from 'axios';
 import EmblaCarousel from 'embla-carousel'
 
@@ -100,12 +105,15 @@ export default {
             isDown: false,
             startX: 0,
             scrollLeft: 0,
-            embla: null
+            embla: null,
+            twitchTokenStore: useTwitchTokenStore()
         }
     },
-    mounted() {
+    async mounted() {
+        if (this.twitchTokenStore.access_token == '') {
+            await this.twitchTokenStore.buscaToken()
+        }
         this.encontraJogos()
-
     },
     methods: {
 
@@ -117,7 +125,7 @@ export default {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer h6v8ywcqhwyyhj140u70v95rss6sga`,
+                        'Authorization': `Bearer ${this.twitchTokenStore.access_token}`,
                         'Content-Type': 'text/plain'
                     }
                 })
@@ -154,7 +162,7 @@ export default {
                         headers: {
                             'Accept': 'application/json',
                             'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                            'Authorization': `Bearer h6v8ywcqhwyyhj140u70v95rss6sga`,
+                            'Authorization': `Bearer ${this.twitchTokenStore.access_token}`,
                             'Content-Type': 'text/plain'
                         }
                     })
@@ -184,7 +192,7 @@ export default {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer h6v8ywcqhwyyhj140u70v95rss6sga`,
+                        'Authorization': `Bearer ${this.twitchTokenStore.access_token}`,
                         'Content-Type': 'text/plain'
                     }
                 })
@@ -274,5 +282,11 @@ export default {
     flex: 0 0 250px;
     /* Largura do card */
     min-width: 0;
+}
+
+@media screen and (max-width: 1280px) {
+    .embla__slide {
+        flex: 0 0 200px;
+    }
 }
 </style>

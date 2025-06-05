@@ -3,6 +3,8 @@ import HomeView from '../views/HomeView.vue'
 import GameView from '@/views/GameView.vue'
 import LoginView from '@/views/LoginView.vue'
 import ProfileView from '@/views/ProfileView.vue'
+import SettingsView from '@/views/SettingsView.vue'
+import CommunityView from '@/views/CommunityView.vue'
 
 const routes = [
   {
@@ -14,7 +16,10 @@ const routes = [
     path: '/game/:id',
     name: 'game',
     component: GameView,
-    props: true,
+    props: route => ({
+      id: route.params.id,
+      avaliacaoBoxOpenDefault: route.query.avaliacaoBoxOpenDefault === 'true'
+    })
   },
   {
     path: '/account/:tipo',
@@ -23,10 +28,22 @@ const routes = [
     props: true
   },
   {
-    path: '/account/profile/:filtro',
+    path: '/account/profile/:username',
     name: 'profile',
     component: ProfileView,
-    props: true
+    props: route => ({
+      filtro: route.query.filtro,
+      username: route.params.username
+    })
+  },
+  {
+    path: '/account/settings',
+    name: 'settings',
+    component: SettingsView
+  },{
+    path: '/community',
+    name: 'community',
+    component: CommunityView
   }
 ]
 

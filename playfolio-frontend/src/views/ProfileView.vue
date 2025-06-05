@@ -1,32 +1,44 @@
 <template>
-    <div class="w-full h-full pb-6 pt-4 px-24 flex justify-center gap-x-4">
+    <div class="w-full h-full pb-6 pt-4 xl:px-24 px-4 flex xl:flex-row flex-col justify-center gap-x-4">
         <MenuComponent :selected="2" />
-        <div class="w-[820px] h-min flex flex-col">
+        <MenuMobileComponent />
+        <div class="xl:w-[820px] w-full xl:h-min max-xl:min-h-screen flex flex-col">
             <div
                 class="w-full h-min rounded-xl pt-4 border-[1px] border-zinc-700 overflow-hidden flex flex-col bg-zinc-900">
                 <div class="flex w-full px-4 h-[80px] items-center relative">
-                    <button
+                    <router-link to="/account/settings" v-if="usuario.id == usuarioProfile.id"
                         class="absolute top-0 end-[15px] p-[3px] hover:bg-zinc-600/50 rounded-full cursor-pointer transition-all duration-100">
                         <img src="../assets/Imagens/pencil.svg" class="w-[20px] h-auto filtro-cinza">
-                    </button>
+                    </router-link>
                     <div
-                        class="flex items-center justify-center size-[75px] rounded-full bg-gradient-to-br from-amber-500 to-pink-500 ">
-                        <div class="size-[68px] bg-zinc-900 text-black rounded-full flex items-center justify-center">
-                            <h1 class="text-3xl text-zinc-50">{{ primeiraLetraUsuario }}</h1>
+                        class="flex items-center justify-center xl:size-[75px] size-[65px] rounded-full bg-gradient-to-br from-amber-500 to-pink-500 ">
+                        <div
+                            class="flex items-center justify-center xl:size-[75px] size-[65px] rounded-full bg-gradient-to-br from-amber-500 to-pink-500 ">
+                            <div
+                                class="xl:size-[69px] size-[57px] bg-zinc-900 text-black rounded-full flex items-center justify-center overflow-hidden">
+                                <img :src="`data:image/png;base64,${usuario.imagem}`" class="w-full h-full object-cover"
+                                    v-if="usuario.imagem">
+                                <h1 class="text-2xl text-zinc-50" v-else>{{ primeiraLetraUsuario }}</h1>
+                            </div>
                         </div>
                     </div>
                     <div class="flex flex-col text-start ml-2 h-full justify-center">
-                        <h1 class="text-lg text-zinc-50">{{ usuario.nome }}</h1>
-                        <span class="text-xs text-zinc-500">@{{ usuario.usuario }}</span>
+                        <h1 class="text-lg text-zinc-50">{{ usuarioProfile.nome }}</h1>
+                        <span class="text-xs text-zinc-500">@{{ usuarioProfile.usuario }}</span>
                     </div>
                 </div>
-                <div class="mt-4 flex *:w-[100px] *:px-4 *:cursor-pointer">
+                <div class="w-full py-4 flex flex-col text-start px-4" v-if="usuario.bio">
+                    <span class="text-[10px] text-zinc-400">
+                        {{ usuario.bio }}
+                    </span>
+                </div>
+                <div class="mt-4 flex *:w-[100px] *:px-4 *:cursor-pointer max-xl:overflow-x-scroll ">
 
                     <button @click="selectedStatus = 1" class="flex flex-col justify-center border-r border-zinc-600">
                         <div class="w-full pb-2" :class="{ 'border-b-2 border-zinc-50': selectedStatus == 1 }">
                             <div class="w-full flex items-center justify-center"><span class="text-[10px]">Todos</span>
                             </div>
-                            <h2 class="text-[13px] mt-1">{{ jogosReviewBackup.length }}</h2>
+                            <h2 class="text-[13px] mt-1">{{ usuario.numJogos }}</h2>
                         </div>
                     </button>
 
@@ -35,7 +47,7 @@
                         :class="{ 'text-[#d438ff]': selectedStatus == 2 }">
                         <div class="w-full pb-2" :class="{ 'border-b-2 border-[#d438ff]': selectedStatus == 2 }">
                             <div class="w-full flex items-center justify-center">
-                                <span class="text-[10px]">Jogando</span>
+                                <span class="text-[10px] whitespace-nowrap">Jogando</span>
                                 <img src="../assets/Imagens/joystick-2.svg"
                                     class="w-[15px] h-auto ml-1 transition-all duration-100"
                                     :class="{ 'filtro-cinza': selectedStatus != 2 }">
@@ -50,7 +62,7 @@
                         :class="{ 'text-green-600': selectedStatus == 3 }">
                         <div class="w-full pb-2" :class="{ 'border-b-2 border-green-600': selectedStatus == 3 }">
                             <div class="w-full flex items-center justify-center">
-                                <span class="text-[10px]">Zerado</span>
+                                <span class="text-[10px] whitespace-nowrap">Zerado</span>
                                 <img src="../assets/Imagens/flag.svg"
                                     class="w-[15px] h-auto ml-1 transition-all duration-100"
                                     :class="{ 'filtro-cinza': selectedStatus != 3 }">
@@ -65,7 +77,7 @@
                         :class="{ 'text-[#d22d56]': selectedStatus == 4 }">
                         <div class="w-full pb-2" :class="{ 'border-b-2 border-[#d22d56]': selectedStatus == 4 }">
                             <div class="w-full flex items-center justify-center">
-                                <span class="text-[10px]">Dropado</span>
+                                <span class="text-[10px] whitespace-nowrap">Dropado</span>
                                 <img src="../assets/Imagens/skull.svg"
                                     class="w-[15px] h-auto ml-1 transition-all duration-100"
                                     :class="{ 'filtro-cinza': selectedStatus != 4 }">
@@ -80,7 +92,7 @@
                         :class="{ 'text-[#eebb17]': selectedStatus == 5 }">
                         <div class="w-full pb-2" :class="{ 'border-b-2 border-[#eebb17]': selectedStatus == 5 }">
                             <div class="w-full flex items-center justify-center">
-                                <span class="text-[10px]">Na fila</span>
+                                <span class="text-[10px] whitespace-nowrap">Na fila</span>
                                 <img src="../assets/Imagens/shine.svg"
                                     class="w-[13px] h-auto ml-1 transition-all duration-100"
                                     :class="{ 'filtro-cinza': selectedStatus != 5 }">
@@ -129,7 +141,7 @@
                                             class="py-2 w-[50px] rounded-lg bg-zinc-800/30 flex items-center justify-center shrink-0">
                                             <span class="text-zinc-50 text-xl">{{
                                                 reviews[jogo.id]?.nota
-                                                }}</span>
+                                            }}</span>
                                         </div>
                                         <div class="flex flex-col items-center ml-2 w-full">
                                             <div class="w-full flex justify-start">
@@ -145,13 +157,20 @@
                                                 <div class="max-w-[70%] line-clamp-2 break-all text-left">
                                                     <span class="text-sm text-start pr-4 xl:text-md w-full">{{
                                                         jogo.name
-                                                        }}</span>
+                                                    }}</span>
                                                 </div>
-                                                <div class="pl-2 border-l-[1px] border-zinc-500"
+                                                <div class="pl-2 border-l-[1px] border-zinc-400"
                                                     v-if="jogo.first_release_date">
-                                                    <span class="text-xs text-zinc-500 xl:text-md">{{
+                                                    <span class="text-xs text-zinc-400 xl:text-md">{{
                                                         formataDataUnix(jogo.first_release_date) }}</span>
                                                 </div>
+                                            </div>
+                                            <div v-if="reviews[jogo.id] && reviews[jogo.id].dataInclusao"
+                                                class="block text-start w-full -mt-1">
+                                                <span class="text-[9px] text-zinc-400 text-start">{{ new
+                                                    Intl.DateTimeFormat('pt-BR').format(new
+                                                        Date(reviews[jogo.id].dataInclusao))
+                                                }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -197,7 +216,7 @@
                                                 <div class="max-w-[70%] line-clamp-2 break-all text-left">
                                                     <span class="text-sm text-start pr-4 xl:text-md w-full">{{
                                                         jogo.name
-                                                        }}</span>
+                                                    }}</span>
                                                 </div>
                                                 <div class="pl-2 border-l-[1px] border-zinc-500"
                                                     v-if="jogo.first_release_date">
@@ -219,16 +238,19 @@
 
 <script>
 import MenuComponent from '@/components/MenuComponent.vue';
+import MenuMobileComponent from '@/components/MenuMobileComponent.vue';
 import ProfileReviewTextComponent from '@/components/ProfileReviewTextComponent.vue';
+import { useTwitchTokenStore } from '@/stores/TwitchTokenStore';
 import { useUserStore } from '@/stores/UserStore';
 import axios from 'axios';
 
 export default {
     name: 'Profile',
-    props: ["filtro"],
+    props: ["filtro", "username"],
     data() {
         return {
             usuario: {},
+            usuarioProfile: {},
             selectedStatus: this.filtro ?? 1,
             reviews: {},
             wishlistIds: [],
@@ -246,14 +268,19 @@ export default {
             },
             pesquisaText: '',
             carregando: false,
+            twitchTokenStore: useTwitchTokenStore()
         }
     },
     components: {
         MenuComponent,
+        MenuMobileComponent,
         ProfileReviewTextComponent
     },
     async mounted() {
         this.carregando = true
+        if (this.twitchTokenStore.access_token == '') {
+            await this.twitchTokenStore.buscaToken()
+        }
         if (useUserStore().usuario != null) {
             this.usuario = useUserStore().usuario
         } else {
@@ -262,30 +289,45 @@ export default {
                 this.usuario = useUserStore().usuario
             }
         }
-        await this.carregaListaDeDesejo()
-        await this.carregaReviews()
-        setTimeout(() => this.carregaJogos(this.jogosIds), 1500)
+
+        await this.procuraUsuario()
+        if (this.usuarioProfile != null) {
+            await this.carregaListaDeDesejo()
+            await this.carregaReviews()
+            setTimeout(() => this.carregaJogos(this.jogosIds), 1500)
+        }
     },
     methods: {
+        async procuraUsuario() {
+            try {
+                const response = await axios.get(`http://localhost:5000/usuario/fromUsername/${this.username}`)
+                this.usuarioProfile = response.data
+                console.log("Usuario profile: ", this.usuarioProfile)
+            } catch (error) {
+                console.log("Erro ao carregar informações de usuário: ", error)
+            }
+        },
+
         async carregaListaDeDesejo() {
             try {
-                const response = await axios.get(`http://localhost:5000/wishlist/get/user?idUsuario=${this.usuario.id}`)
+                const response = await axios.get(`http://localhost:5000/wishlist/get/user?idUsuario=${this.usuarioProfile.id}`)
                 this.wishlistIds = response.data.map(w => w.idJogo)
-                this.jogosIds.push(...this.wishlistIds.toString().split(","))
+                this.jogosIds.push(...this.wishlistIds.toString().split(",").filter(w => w.length > 0))
             } catch (error) {
                 console.log("Erro ao carregar wishlist do usuário: ", error)
             }
         },
         async carregaReviews() {
             try {
-                const response = await axios.get(`http://localhost:5000/review/user?id=${this.usuario.id}`)
+                const response = await axios.get(`http://localhost:5000/review/user?id=${this.usuarioProfile.id}`)
 
                 response.data.forEach(r => {
                     this.reviews[r.idJogo] = r
                 })
-                console.log("RRRreviews: ", this.reviews)
-                this.jogosIds.push(...Object.keys(this.reviews))
 
+                console.log("Reviews> ", this.reviews)
+                this.jogosIds.push(...Object.keys(this.reviews).filter(r => r.length > 0))
+                console.log("JogosIds> ", this.jogosIds)
                 this.quantidadeReviewsPorStatus["Jogando"] = response.data.filter(r => r.status == 1).length
                 this.quantidadeReviewsPorStatus["Zerado"] = response.data.filter(r => r.status == 2).length
                 this.quantidadeReviewsPorStatus["Dropado"] = response.data.filter(r => r.status == 3).length
@@ -303,7 +345,7 @@ export default {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer h6v8ywcqhwyyhj140u70v95rss6sga`,
+                        'Authorization': `Bearer ${this.twitchTokenStore.access_token}`,
                         'Content-Type': 'text/plain'
                     }
                 })
@@ -330,7 +372,7 @@ export default {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer h6v8ywcqhwyyhj140u70v95rss6sga`,
+                        'Authorization': `Bearer ${this.twitchTokenStore.access_token}`,
                         'Content-Type': 'text/plain'
                     }
                 })
@@ -386,7 +428,7 @@ export default {
     },
     computed: {
         primeiraLetraUsuario() {
-            return this.usuario?.usuario?.charAt(0).toUpperCase() || ''
+            return this.usuarioProfile?.usuario?.charAt(0).toUpperCase() || ''
         }
     }
 }

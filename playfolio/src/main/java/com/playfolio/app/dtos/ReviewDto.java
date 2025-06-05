@@ -1,18 +1,22 @@
 package com.playfolio.app.dtos;
 
+import java.time.LocalDateTime;
+
 public class ReviewDto {
     private String texto;
     private Double nota;
     private int status;
     private int idJogo;
     private Long idUsuario;
+    private LocalDateTime dataInclusao;
 
-    public ReviewDto(int idJogo, Long idUsuario, String texto, Double nota, int status){
+    public ReviewDto(int idJogo, Long idUsuario, String texto, Double nota, int status, LocalDateTime dataInclusao){
         this.idJogo = idJogo;
         this.idUsuario = idUsuario;
         this.texto = texto;
         this.nota = nota;
         this.status = status;
+        this.dataInclusao = dataInclusao;
     }
 
     //Getters e Setters
@@ -45,6 +49,14 @@ public class ReviewDto {
     }
     public void setIdUsuario(Long idUsuario) {
         this.idUsuario = idUsuario;
+    }
+
+    public LocalDateTime getDataInclusao() {
+        return dataInclusao;
+    }
+
+    public void setDataInclusao(LocalDateTime dataInclusao) {
+        this.dataInclusao = dataInclusao;
     }
 
     

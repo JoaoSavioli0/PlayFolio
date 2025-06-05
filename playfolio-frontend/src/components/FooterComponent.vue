@@ -1,12 +1,13 @@
 <template>
-    <div class="w-full py-12 border-t border-zinc-600 grid grid-cols-2 px-40 mt-12">
+    <div
+        class="w-full xl:py-12 py-6 border-t border-zinc-600 grid xl:grid-cols-2 grid-cols-1 xl:px-40 px-4 xl:mt-12 mt-4">
         <div class="flex items-center h-full">
-            <img src="../assets/Imagens/logo.png" class="size-[45px] shrink-0 filtro-cinza">
-            <h1 class="text-zinc-50 ml-2 lg:text-[60px]">PlayFolio</h1>
+            <img src="../assets/Imagens/logo.png" class="xl:size-[45px] size-[25px] shrink-0 filtro-cinza">
+            <h1 class="text-zinc-50 ml-2 xl:text-[60px] text-[25px]">PlayFolio</h1>
         </div>
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-2 gap-4 max-xl:mt-4">
 
-            <div class="px-6">
+            <div class="xl:px-6">
                 <h2 class="text-start">[Sociais]</h2>
                 <ul>
                     <li v-for="social in socials" :key="social.id"
@@ -36,7 +37,7 @@
                 </ul>
             </div>
 
-            <div class="px-6 pt-2 col-span-2 text-start">
+            <div class="xl:px-6 pt-2 col-span-2 text-start">
                 <span class="text-zinc-500 text-left text-xs">Desenvolvido por: João Savioli</span>
             </div>
         </div>

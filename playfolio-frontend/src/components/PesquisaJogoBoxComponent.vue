@@ -2,20 +2,29 @@
     <div class="w-full h-screen fixed start-0 top-0 overflow-y-hidden z-[1000]">
         <div class="w-full h-full bg-black/80 z-[100] absolute top-0 start-0" @click="fechaBox"></div>
         <div
-            class="w-[500px] max-h-[600px] z-[110] fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-2xl flex flex-col overflow-hidden border border-zinc-600 px-4 py-4 bg-zinc-900/90">
+            class="xl:w-[500px] w-[90%] max-h-[600px] z-[110] fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-2xl flex flex-col overflow-hidden border border-zinc-600 px-4 py-4 bg-zinc-900/90">
             <div class="w-full flex justify-between items-center px-2">
-                <h1 class="text-start text-xl">Pesquisar Jogos</h1>
+                <h1 class="text-start xl:text-xl text-lg">Pesquisar</h1>
                 <button @click="fechaBox" class="cursor-pointer">
                     <img src="../assets/Imagens/close.svg" class="size-[25px] filtro-branco">
                 </button>
             </div>
-            <div class="w-full relative">
-                <input type="text" class="rounded-full bg-zinc-900 px-4 py-2 mt-4 border border-zinc-600 w-full"
-                    placeholder="Título do jogo..." v-model="tituloPesquisado" @input="parouDeDigitar">
+            <div class="w-full rounded-xl border-[1px] border-zinc-800 bg-zinc-900/70 my-1 flex items-center mt-4">
+                <input type="text" v-model="tituloPesquisado" @input="parouDeDigitar"
+                    placeholder="Pesquise seus jogos..."
+                    class="w-full py-3 w-full outline-0 border-0 pl-4 pr-8 text-xs text-zinc-50">
+                <div class="px-4 ml-auto"><img src="../assets/Imagens/lupa.svg"
+                        class="w-[18px] h-auto filtro-cinza rotate-y-180">
+                </div>
             </div>
 
-            <div class="w-full flex justify-center items-center h-[100px]" v-if="carregandoPesquisa">
-                <span class="loading loading-ring loading-xl"></span>
+            <div class="w-full flex justify-center" v-if="carregandoPesquisa">
+                <span class="loading loading-ring loading-xl py-8"></span>
+            </div>
+
+            <div class="w-full flex justify-center items-center xl:h-[100px] h-[80px]"
+                v-else-if="!carregandoPesquisa && tituloPesquisado && jogosPesquisados.length == 0">
+                <span class="text-zinc-50 text-xs">Nenhum título encontrado!</span>
             </div>
 
             <div class="grid grid-cols-1 mt-6 gap-2 overflow-y-scroll" v-else>
@@ -51,7 +60,7 @@
                                         <div class="max-w-[55%] line-clamp-2 text-left">
                                             <h1 class="text-start pr-4 text-md min-[1800px]:text-lg">{{
                                                 jogo.name
-                                            }}</h1>
+                                                }}</h1>
                                         </div>
                                         <div v-if="jogo.first_release_date" class="w-fit">
                                             <h2 class="text-left text-zinc-500 text-xs min-[1800px]:text-sm">{{
@@ -69,6 +78,7 @@
 </template>
 
 <script>
+import { useTwitchTokenStore } from '@/stores/TwitchTokenStore'
 import axios from 'axios'
 export default {
     name: "PesquisaJogoBox",
@@ -77,8 +87,12 @@ export default {
             tituloPesquisado: '',
             jogosPesquisados: [],
             capasJogosPesquisados: {},
-            carregandoPesquisa: false
+            carregandoPesquisa: false,
+            twitchToken: useTwitchTokenStore()
         }
+    },
+    async mounted() {
+        if (this.twitchToken.access_token == '') await this.twitchToken.buscaToken()
     },
     methods: {
         fechaBox() {
@@ -87,6 +101,7 @@ export default {
         parouDeDigitar() {
             this.carregandoPesquisa = true
             let tituloBackup = ''
+            this.jogosPesquisados = []
 
             if (tituloBackup == '') tituloBackup = this.tituloPesquisado
 
@@ -103,20 +118,18 @@ export default {
 
         async pesquisaTitulo() {
             const tituloFormatado = this.tituloPesquisado.toLowerCase().replace(/" /g, '\\"')
-            const body = `search "${tituloFormatado}"; fields name, first_release_date, cover, total_rating_count; limit 50;`
+            const body = `fields name, first_release_date, cover, total_rating_count; where name ~ *"${tituloFormatado}"*; sort total_rating_count desc; limit 50;`
             try {
                 const response = await axios.post("/v4/games", body, {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer h6v8ywcqhwyyhj140u70v95rss6sga`,
+                        'Authorization': `Bearer ${this.twitchToken.access_token}`,
                         'Content-Type': 'text/plain'
                     }
                 })
 
                 this.jogosPesquisados = response.data
-
-                console.log("Jogos desordenados: ", this.jogosPesquisados)
 
                 this.jogosPesquisados = response.data.sort((a, b) => {
                     const aCount = a.total_rating_count ?? 0;
@@ -127,14 +140,12 @@ export default {
                     return bCount - aCount;
                 });
 
-                console.log("Jogos ordenados: ", this.jogosPesquisados)
+                this.carregandoPesquisa = false
 
                 await this.carregaCapas(this.jogosPesquisados.map(j => j.id))
 
             } catch (error) {
                 console.error("Erro pesquisando titulo: " + error)
-            } finally {
-                this.carregandoPesquisa = false
             }
         },
 
@@ -147,7 +158,7 @@ export default {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer h6v8ywcqhwyyhj140u70v95rss6sga`,
+                        'Authorization': `Bearer ${this.twitchToken.access_token}`,
                         'Content-Type': 'text/plain'
                     }
                 })

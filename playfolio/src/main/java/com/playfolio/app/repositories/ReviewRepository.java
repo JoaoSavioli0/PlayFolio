@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.playfolio.app.dtos.UsuarioDto;
 import com.playfolio.app.entities.Review;
 
 @Repository
@@ -21,4 +22,15 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     Optional<Review> findByJogoIdAndUsuarioId(int jogoId, Long usuarioId);
 
     List<Review> findAllByUsuarioId(Long usuarioId);
+
+    @Query("SELECT new com.playfolio.app.dtos.UsuarioDto(r.usuario.id, r.usuario.nome, r.usuario.email, r.usuario.usuario, r.usuario.bio, r.usuario.imagem, COUNT(r.id)) " +
+    "FROM Review r "+
+    "GROUP BY r.usuario.id, r.usuario.nome, r.usuario.usuario, r.usuario.bio")
+    List<UsuarioDto> buscarTodosUsuariosComNumReview();
+
+    @Query("SELECT new com.playfolio.app.dtos.UsuarioDto(r.usuario.id, r.usuario.nome, r.usuario.email, r.usuario.usuario, r.usuario.bio, r.usuario.imagem, COUNT(r.id)) " +
+    "FROM Review r " +
+    "WHERE r.usuario.id = :idUsuario " +
+    "GROUP BY r.usuario.id, r.usuario.nome, r.usuario.usuario, r.usuario.bio")
+    UsuarioDto buscarUsuarioComNumReview(@Param("idUsuario") Long idUsuario);
 }

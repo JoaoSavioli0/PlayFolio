@@ -41,7 +41,6 @@ export default {
     },
     methods: {
         handleClickOutside(event) {
-            console.log(event.target)
             if (this.$refs.menu && !this.$refs.menu.contains(event.target)) {
                 this.exibeSub = false
             }

@@ -38,6 +38,6 @@ public class WishlistService {
     }
 
     public List<WishlistDto> getWishlistUsuarioService(Long idUsuario){
-        return wishlistRepository.findByUsuarioId(idUsuario).stream().map(w -> new WishlistDto(w.getUsuario().getId(), w.getIdJogo())).collect(Collectors.toList());
+        return wishlistRepository.findByUsuarioId(idUsuario).stream().map(w -> new WishlistDto(w.getUsuario().getId(), w.getIdJogo(), w.getDataInclusao())).collect(Collectors.toList());
     }
 }

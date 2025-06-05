@@ -1,31 +1,34 @@
 <template>
-    <div class="w-full h-screen flex justify-center items-center ">
-        <div class="flex min-[1800px]:w-[70%] md:w-[85%] h-[75%] rounded-3xl overflow-hidden shadow-lg">
-            <div class="grow-1 h-full overflow-hidden relative">
+    <div class="w-full min-h-screen flex justify-center xl:items-center">
+        <div
+            class="flex min-[1800px]:w-[70%] xl:w-[85%] xl:h-[75%] w-full xl:rounded-3xl max-xl:min-h-screen xl:flex-row flex-col overflow-hidden shadow-lg ">
+            <div class="xl:h-full h-[120px] overflow-hidden relative w-full">
                 <div class="w-full h-full bg-black/80 absolute z-20"></div>
 
-                <div class="w-full top-[40px] start-[40px] absolute z-30 flex justify-start">
+                <div class="w-full top-[40px] xl:start-[40px] start-[20px] absolute z-30 flex justify-start">
                     <router-link to="/">
                         <button
-                            class="pr-4 pl-2 py-[3px] rounded-full text-zinc-900 flex items-end cursor-pointer shadow-md">
+                            class="pr-4 xl:pl-2 py-[3px] rounded-full text-zinc-900 flex items-end cursor-pointer shadow-md">
                             <img src="../assets/Imagens/arrow-2.svg" class="w-[21px] h-auto filtro-branco">
                             <span class="text-sm text-zinc-50">Voltar</span>
                         </button>
                     </router-link>
                 </div>
 
-                <div class="w-full absolute start-[40px] bottom-[20px] z-30">
-                    <img src="../assets/Imagens/logo.png" class="w-[90px] h-auto filtro-cinza ml-[4px]">
-                    <h1 class="text-[80px] text-start text-zinc-50">PLAYFOLIO</h1>
+                <div
+                    class="w-full absolute xl:start-[40px] xl:bottom-[20px] start-[45%] max-xl:top-[40px] z-30 flex xl:flex-col flex-row">
+                    <img src="../assets/Imagens/logo.png"
+                        class="xl:size-[90px] size-[21px]  filtro-cinza xl:ml-[4px] mr-2 shrink-0">
+                    <h1 class="xl:text-[80px] text-xl text-start text-zinc-50">PLAYFOLIO</h1>
                 </div>
 
                 <img src="../assets/Imagens/login_image.jpeg" class="w-full h-full object-cover relative z-10">
             </div>
 
-            <div class="px-6 w-[500px] h-full bg-[#262729] rounded-3xl rounded-l-none flex items-center"
+            <div class="px-6 xl:w-[500px] w-full bg-[#262729] max-xl:h-full xl:rounded-r-3xl flex items-center"
                 v-if="tipo == 'login'">
 
-                <div class="w-full">
+                <div class="w-full max-xl:py-4">
                     <div class="w-full text-start">
                         <img src="../assets/Imagens/logo.png" class="w-[30px] h-auto filtro-cinza">
                         <h1 class="text-xl xl:text-4xl mt-2">BEM VINDO DE VOLTA!</h1>
@@ -35,18 +38,23 @@
                         <label class="w-full text-start">
                             <span class="text-zinc-400 text-[13px] ml-4">Email</span>
                             <input type="text" v-model="emailLogin"
-                                class="w-full rounded-full text-sm min-[1800px]:px-4 py-[10px] text-zinc-50 border-[1px] border-zinc-500 outline-none focus:border-zinc-400 transition-all">
+                                class="w-full rounded-full text-sm px-4 py-[10px] text-zinc-50 border-[1px] border-zinc-500 outline-none focus:border-zinc-400 transition-all">
                         </label>
                         <label class="w-full text-start mt-4 relative">
                             <span class="text-zinc-400 text-[13px] ml-4">Senha</span>
                             <input :type="senhaVisivel ? 'text' : 'password'" v-model="senhaLogin" maxlength="20"
-                                class="w-full rounded-full text-sm min-[1800px]:px-4 py-[10px] text-zinc-50 border-[1px] border-zinc-500 outline-none focus:border-zinc-400 transition-all pr-[35px]">
+                                class="w-full rounded-full text-sm px-4 py-[10px] text-zinc-50 border-[1px] border-zinc-500 outline-none focus:border-zinc-400 transition-all pr-[35px]">
                             <button class="absolute end-[15px] top-[35px] z-[100] cursor-pointer"
                                 @click="senhaVisivel = !senhaVisivel">
                                 <img src="../assets/Imagens/eye.svg" class="w-[20px] h-auto" v-if="senhaVisivel">
                                 <img src="../assets/Imagens/eye-closed.svg" class="w-[20px] h-auto" v-else>
                             </button>
                         </label>
+
+                        <div class="w-full pt-2 text-start" v-if="erroAviso">
+                            <span class="text-[10px] text-rose-700">{{ erroAviso }}</span>
+                        </div>
+
                         <button
                             class="rounded-full w-full min-[1800px]:py-3 py-[10px] text-center bg-zinc-50 mt-8 cursor-pointer"
                             @click="fazLogin()">
@@ -54,10 +62,10 @@
                         </button>
                     </div>
                     <div class="w-full py-2 flex justify-center items-center">
-                        <div class="grow-1 w-full bg-zinc-500 h-[1px]"></div>
+                        <div class="grow w-full bg-zinc-500 h-[1px]"></div>
                         <span class="text-[12px] text-zinc-50 px-4 inline-block whitespace-nowrap">Não tem uma
                             conta?</span>
-                        <div class="grow-1 w-full bg-zinc-500 h-[1px]"></div>
+                        <div class="grow w-full bg-zinc-500 h-[1px]"></div>
                     </div>
                     <div class="w-full mt-4">
                         <router-link to="/account/registro" class="p-0">
@@ -70,22 +78,22 @@
                 </div>
             </div>
 
-            <div class="px-6 w-[600px] h-full bg-[#262729] rounded-3xl rounded-l-none flex items-center"
+            <div class="px-6 xl:w-[600px] w-full max-xl:h-full bg-[#262729] xl:rounded-r-3xl flex items-center"
                 v-if="tipo == 'registro'">
-                <div class="w-full">
+                <div class="w-full max-xl:py-4">
                     <div class="w-full text-start">
-                        <img src="../assets/Imagens/logo.png" class="w-[30px] h-auto filtro-cinza">
+                        <img src="../assets/Imagens/logo.png" class="xl:size-[30px] size-[20px] filtro-cinza">
                         <h1 class="text-xl xl:text-4xl mt-2">FAÇA PARTE!</h1>
                         <span class="text-zinc-500 text-[12px]">Registre-se com seus dados</span>
                     </div>
                     <div class="w-full flex flex-col py-4 grid grid-cols-2 gap-y-2 gap-x-4" v-if="!contaCriada">
-                        <label class="w-full text-start">
+                        <label class="w-full text-start max-xl:col-span-2">
                             <span class="text-zinc-400 text-[13px] ml-4">Nome pessoal</span>
                             <input type="text" v-model="nomeRegistro"
                                 class="w-full rounded-full text-sm px-4 py-[10px] text-zinc-50 border-[1px] outline-none focus:border-zinc-400 transition-all"
                                 :class="nomeValido ? 'border-zinc-500' : 'border-rose-700'">
                         </label>
-                        <label class="w-full text-start">
+                        <label class="w-full text-start max-xl:col-span-2">
                             <span class="text-zinc-400 text-[13px] ml-4">Nome de usuário</span>
                             <div class="relative w-full">
                                 <input type="text" v-model="userRegistro"
@@ -100,7 +108,7 @@
                                 class="w-full rounded-full text-sm px-4 py-[10px] text-zinc-50 border-[1px] outline-none focus:border-zinc-400 transition-all"
                                 :class="emailValido ? 'border-zinc-500' : 'border-rose-700'">
                         </label>
-                        <label class="w-full text-start relative">
+                        <label class="w-full text-start relative max-xl:col-span-2">
                             <span class="text-zinc-400 text-[13px] ml-4">Senha</span>
                             <input :type="senhaRegistroVisivel ? 'text' : 'password'" v-model="senhaRegistro"
                                 maxlength="20"
@@ -119,7 +127,7 @@
                                 <img src="../assets/Imagens/eye-closed.svg" class="w-[20px] h-auto" v-else>
                             </button>
                         </label>
-                        <label class="w-full text-start relative">
+                        <label class="w-full text-start relative max-xl:col-span-2">
                             <span class="text-zinc-400 text-[13px] ml-4">Confirme a senha</span>
                             <input :type="confirmaSenhaRegistroVisivel ? 'text' : 'password'"
                                 v-model="confirmaSenhaRegistro" maxlength="20"
@@ -202,19 +210,19 @@ export default {
             contaCriada: false,
             senhaRegistroVisivel: false,
             confirmaSenhaRegistroVisivel: false,
-            senhaVisivel: false
+            senhaVisivel: false,
+            erroAviso: ''
         }
     },
     mounted() {
-        console.log("Tipol " + this.tipo)
         useUserStore().reconectaSessao()
-        console.log("Usuario: " + useUserStore().usuario)
         if (useUserStore().usuario != null) {
             this.$router.push("/account")
         }
     },
     methods: {
         async fazLogin() {
+            this.erroAviso = ''
             if (!this.emailLogin) {
                 return
             }
@@ -222,13 +230,10 @@ export default {
             this.usuarioObj.email = this.emailLogin
             this.usuarioObj.senha = this.senhaLogin
 
-            await useUserStore().login(this.usuarioObj)
-
-            console.log(this.usuarioObj)
-            console.log(useUserStore().usuario)
+            const response = await useUserStore().login(this.usuarioObj)
+            if (response != null) this.erroAviso = response.data
 
             if (useUserStore().usuario != null) {
-                console.log("logou")
                 this.$router.push("/")
             }
         },

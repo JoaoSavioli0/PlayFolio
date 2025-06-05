@@ -1,18 +1,19 @@
 <template>
-    <div class="w-full h-screen flex justify-center items-center fixed start-0 top-0 overflow-y-hidden z-[1000]">
+    <div
+        class="w-full h-screen flex justify-center items-center fixed start-0 top-0 overflow-y-hidden z-[1000] max-xl:px-2">
         <div class="w-full h-full bg-black/80 z-[100] absolute top-0 start-0" @click="fechaBox"></div>
 
-        <div class="w-[700px] h-max z-[110] rounded-2xl flex flex-col overflow-hidden">
-            <div class="w-full flex flex-col relative min-h-[80px] items-start">
-                <div class="w-full py-6 flex justify-between z-50">
-                    <div class="px-4 grid grid-cols-4 gap-4 z-[60]">
-                        <div class="flex justify-center">
-                            <img :src="capa" class="w-[110px] h-auto rounded-md shadow-md">
+        <div class="xl:w-[700px] w-full h-max z-[110] rounded-2xl flex flex-col overflow-hidden">
+            <div class="w-full flex flex-col relative xl:min-h-[80px] items-start">
+                <div class="w-full xl:py-6 py-2 flex justify-between z-50">
+                    <div class="px-4 max-xl:flex xl:grid grid-cols-4 items-center xl:gap-4 z-[60]">
+                        <div class="flex justify-center shrink-0">
+                            <img :src="capa" class="xl:w-[110px] w-[90px] h-[130px] xl:h-auto rounded-md shadow-md">
                         </div>
 
-                        <div class="col-span-3 relative flex flex-col justify-center h-[150px] ">
+                        <div class="col-span-3 relative flex flex-col justify-center h-[150px] max-xl:ml-2">
                             <div class="flex w-full text-start items-center relative h-[40px]">
-                                <div class="size-[42px] overflow-hidden">
+                                <div class="xl:size-[42px] size-[35px] overflow-hidden">
                                     <img src="../assets/Imagens/expressoes/1.png" v-if="nota == 0"
                                         class="w-full h-full objet-cover">
                                     <img src="../assets/Imagens/expressoes/2.png" v-else-if="nota > 0 && nota <= 4"
@@ -25,7 +26,7 @@
                                         class="w-full h-full objet-cover">
                                 </div>
                                 <div
-                                    class="relative overflow-hidden h-[80px] w-[120px] z-[60] text-4xl top-[20px] start-[10px]">
+                                    class="relative overflow-hidden h-[80px] w-[120px] z-[60] xl:text-4xl text-2xl top-[20px] start-[10px]">
 
                                     <h1 class="absolute start-0 top-0 transition-opacity duration-500" :class="{
                                         'opacity-100 degradeCinza': nota == 0,
@@ -55,10 +56,13 @@
                                     }">{{ nota }}</h1>
                                 </div>
                             </div>
-                            <h1 class="w-full text-start text-xl mt-2 max-w-[80%] line-clamp-2">{{ dados.name }}</h1>
+                            <h1
+                                class="w-full text-start xl:text-xl text-md mt-2 xl:max-w-[80%] max-w-[90%] line-clamp-2">
+                                {{ dados.name
+                                }}</h1>
                             <span class="w-full text-start text-md text-zinc-500">{{
                                 formataDataUnix(dados.first_release_date)
-                                }}</span>
+                            }}</span>
                         </div>
                     </div>
                     <button class="self-start"><img src="../assets/Imagens/close.svg"
@@ -73,7 +77,8 @@
 
             <!-- Status -->
             <div class="w-full py-4 h-auto bg-[#262729]">
-                <div class="flex px-4 gap-x-2 h-[30px] items-center justify-between mt-4">
+                <div
+                    class="flex px-4 gap-x-2 xl:h-[30px] h-[70px] items-center justify-between xl:mt-4 max-xl:overflow-x-scroll">
 
                     <button :disabled="statusDefault == 5"
                         class="flex grow-1 justify-center items-center rounded-full border py-[4px] px-4 bg-zinc-800 transition"
@@ -83,7 +88,7 @@
                         ]">
                         <img src="../assets/Imagens/joystick-2.svg" class="w-[20px] h-auto"
                             :class="{ 'filtro-cinza': status != 1, 'filtro-cinza-escuro': statusDefault == 5 }">
-                        <span class="ml-[6px] max-[1800px]:text-sm">Jogando</span>
+                        <span class="ml-[6px] max-[1800px]:text-sm whitespace-nowrap">Jogando</span>
                     </button>
 
                     <button :disabled="statusDefault == 5"
@@ -92,7 +97,7 @@
                         statusDefault == 5 ? 'border-zinc-700 text-zinc-700' : 'cursor-pointer']">
                         <img src="../assets/Imagens/flag.svg" class="w-[17px] h-auto"
                             :class="{ 'filtro-cinza-verde': status != 2, 'filtro-cinza-escuro': statusDefault == 5 }">
-                        <span class="ml-[4px] max-[1800px]:text-sm">Zerado</span>
+                        <span class="ml-[4px] max-[1800px]:text-sm whitespace-nowrap">Zerado</span>
                     </button>
 
                     <button :disabled="statusDefault == 5"
@@ -101,7 +106,7 @@
                         statusDefault == 5 ? 'border-zinc-700 text-zinc-700' : 'cursor-pointer']">
                         <img src="../assets/Imagens/skull.svg" class="w-[18px] h-auto "
                             :class="{ 'filtro-cinza': status != 3, 'filtro-cinza-escuro': statusDefault == 5 }">
-                        <span class="ml-[6px] max-[1800px]:text-sm">Dropado</span>
+                        <span class="ml-[6px] max-[1800px]:text-sm whitespace-nowrap">Dropado</span>
                     </button>
 
                     <button
@@ -111,7 +116,7 @@
 
                         <img src="../assets/Imagens/shine.svg" class="w-[18px] h-auto pr-[2px]"
                             :class="{ 'filtro-cinza': status != 4 }">
-                        <span class="ml-[6px] max-[1800px]:text-sm">Quero jogar</span>
+                        <span class="ml-[6px] max-[1800px]:text-sm whitespace-nowrap">Quero jogar</span>
                     </button>
 
                 </div>
@@ -201,13 +206,13 @@
 
                         <div class="w-full pb-2 flex justify-start px-4">
                             <span class="text-zinc-100 text-[10px]">{{ reviewText.length
-                                }}/5000</span>
+                            }}/5000</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="w-full mt-2 flex justify-end px-4" v-if="status != 4">
-                    <button class="px-8 py-4 text-zinc-900 bg-zinc-50 rounded-full text-xs cursor-pointer"
+                    <button class="px-8 xl:py-4 py-2 text-zinc-900 bg-zinc-50 rounded-full text-xs cursor-pointer"
                         @click="salvaRegistro">{{ avaliacaoUsuario ? 'Editar' : 'Enviar' }}</button>
                 </div>
 
@@ -216,16 +221,19 @@
                         <img :src="capa" class="w-[150px] h-auto rounded-md shadow-md">
                     </div>
                     <div class="col-span-3 flex flex-col justify-center text-start">
-                        <h1 class="text-2xl max-[1800px]:text-xl">{{ dados.name }}</h1>
-                        <span class="text-zinc-300 max-[1800px]:text-sm">Adicione {{ dados.name }} à sua lista de
-                            espera</span>
+                        <h1 class="xl:text-2xl text-sm line-clamp-2">{{ dados.name }}</h1>
+                        <span v-if="!estaNaWishlist" class="text-zinc-300 xl:text-md text-xs">Adicione {{ dados.name }}
+                            à sua
+                            Wishlist</span>
+                        <span v-else class="text-zinc-300 xl:text-md text-xs">{{ dados.name }} já está na sua
+                            Wishlist</span>
                         <div class="w-[90%] flex mt-4">
                             <button
-                                class="grow-1 rounded-full text-zinc-900 bg-zinc-50 px-4 py-2 text-sm cursor-pointer hover:-translate-y-[2px] hover:shadow-lg transition-all"
-                                @click="salvaWishlist">Adicionar</button>
-                            <router-link class="p-0 grow-1" to="/account/profile/5">
+                                class="grow-1 rounded-full text-zinc-900 bg-zinc-50 px-4 xl:py-2 py-1 xl:text-sm text-xs cursor-pointer hover:-translate-y-[2px] hover:shadow-lg transition-all"
+                                @click="salvaWishlist" v-if="!estaNaWishlist">Adicionar</button>
+                            <router-link class="p-0 grow-1" :to="`/account/profile/${usuario.usuario}/5`">
                                 <button
-                                    class="w-full rounded-full text-zinc-50 border border-zinc-50 px-4 py-2 text-sm ml-2 cursor-pointer hover:-translate-y-[2px] hover:shadow-lg transition-all ">Ver
+                                    class="w-full rounded-full text-zinc-50 border border-zinc-50 px-4 xl:py-2 py-1 xl:text-sm text-xs ml-2 cursor-pointer hover:-translate-y-[2px] hover:shadow-lg transition-all ">Ver
                                     lista</button>
                             </router-link>
                         </div>
@@ -244,12 +252,6 @@ export default {
     name: "AvaliacaoBox",
     props: ["dados", "imagem", "statusDefault", "capa", "usuario", "avaliacaoUsuario"],
     emits: ['fecha-avaliacaoBox'],
-    mounted() {
-        console.log("avaliacaoUsuario: ", this.avaliacaoUsuario)
-        this.updateOffset()
-        this.verificaWishlist()
-        console.log("this.statusDefault: " + this.statusDefault + "\nstatus: " + this.status)
-    },
     data() {
         return {
             status: this.statusDefault == 5 ? 4 : this.statusDefault,
@@ -263,7 +265,14 @@ export default {
             ],
             opacidades: [1, 0, 0, 0, 0],
             reviewText: this.avaliacaoUsuario?.texto || '',
+            estaNaWishlist: false,
         }
+    },
+    mounted() {
+        console.log("avaliacaoUsuario: ", this.avaliacaoUsuario)
+        this.updateOffset()
+        this.estaNaWishlist = this.verificaWishlist()
+        console.log("this.statusDefault: " + this.statusDefault + "\nstatus: " + this.status)
     },
     methods: {
         updateOffset() {

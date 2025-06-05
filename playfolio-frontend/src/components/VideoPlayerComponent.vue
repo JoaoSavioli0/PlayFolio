@@ -5,7 +5,7 @@
             <img src="../assets/Imagens/close.svg" class="w-[30px] h-auto filtro-cinza">
         </button>
 
-        <div class="aspect-video w-[800px] h-auto z-[110]">
+        <div class="aspect-video xl:w-[800px] w-[95%] h-auto z-[110]">
             <iframe v-if="url" class="top-0 left-0 w-full h-full" :src="`https://www.youtube.com/embed/${url}`"
                 title="YouTube video player" frameborder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

@@ -1,5 +1,7 @@
 package com.playfolio.app.entities;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -18,6 +20,9 @@ public class Review {
     @JoinColumn(name="usuario_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Usuario usuario;
+
+    @Column(name="data_inclusao", insertable=false, updatable = false)
+    private LocalDateTime dataInclusao;
 
     @Column(name="jogo_id")
     private int jogoId;
@@ -76,6 +81,14 @@ public class Review {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public LocalDateTime getDataInclusao() {
+        return dataInclusao;
+    }
+
+    public void setDataInclusao(LocalDateTime dataInclusao) {
+        this.dataInclusao = dataInclusao;
     }
 
 

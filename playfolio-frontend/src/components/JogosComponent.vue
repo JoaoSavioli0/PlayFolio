@@ -1,11 +1,11 @@
 <template>
-    <div class="py-6 min-[1800px]:px-40 px-20 h-full">
-        <div class="flex h-full">
+    <div class="py-6 min-[1800px]:px-40 xl:px-20 px-4 h-full">
+        <div class="flex h-full xl:flex-row flex-col">
 
             <!-- Coluna esquerda -->
-            <div class="w-[50%] pr-6 py-4">
-                <div class="flex flex-col gap-y-2 pr-2">
-                    <h1 class="text-end text-[30px]">📈 MAIS REVIEWS</h1>
+            <div class="xl:w-[50%] xl:pr-6 w-full py-4">
+                <div class="flex flex-col gap-y-2 xl:pr-2">
+                    <h1 class="xl:text-end text-start xl:text-[30px] text-[20px]">📈 MAIS REVIEWS</h1>
                     <!-- Card -->
 
                     <div class="mt-[1px] w-full h-[120px] flex rounded-2xl overflow-hidden"
@@ -29,18 +29,18 @@
                                     <div class="flex absolute end-[20px] top-[20px] items-center">
                                         <img src="../assets/Imagens/stack.svg" class="w-[17px] h-auto filtro-branco">
                                         <span class="ml-2 text-[12px] xl:text-[15px]">{{ jogo.total_rating_count
-                                            }}</span>
+                                        }}</span>
                                     </div>
                                     <div class="flex flex-col w-full justify-center h-full">
                                         <div class="flex items-center">
                                             <div
                                                 class="w-[29px] h-[29px] rounded-lg bg-zinc-800/30 flex items-center justify-center shrink-0">
                                                 <span class="text-zinc-50 text-[10px] xl:text-[14px]">{{ index + 1
-                                                    }}</span>
+                                                }}</span>
                                             </div>
                                             <div class="max-w-[55%] line-clamp-1 text-left">
                                                 <span class="text-sm text-start ml-2 pr-4 xl:text-md">{{ jogo.name
-                                                    }}</span>
+                                                }}</span>
                                             </div>
                                             <div class="pl-4 border-l-[1px] border-zinc-500"
                                                 v-if="jogo.first_release_date">
@@ -87,9 +87,9 @@
             </div>
 
             <!-- Coluna direita -->
-            <div class="w-[50%] pl-6 py-4 border-l-[1px] border-zinc-800">
-                <div class="flex flex-col gap-y-2 pl-2">
-                    <h1 class="text-start text-[30px]">MELHORES NOTAS 💎</h1>
+            <div class="xl:w-[50%] w-full xl:pl-6 py-4 xl:border-l-[1px] border-zinc-800">
+                <div class="flex flex-col gap-y-2 xl:pl-2">
+                    <h1 class="text-start xl:text-[30px] text-[20px]">MELHORES NOTAS 💎</h1>
                     <!-- Card -->
                     <div class="mt-[1px] w-full h-[120px] flex rounded-2xl overflow-hidden"
                         v-for="(jogo, index) in jogosNota" :key="jogo.id">
@@ -118,12 +118,12 @@
                                             <div
                                                 class="w-[29px] h-[29px] rounded-lg bg-zinc-800/30 flex items-center justify-center shrink-0">
                                                 <span class="text-zinc-50 text-[10px] xl:text-[14px]">{{ index + 1
-                                                    }}</span>
+                                                }}</span>
                                             </div>
                                             <div class="max-w-[55%] line-clamp-1 break-all text-left">
                                                 <span class="text-sm text-start ml-2 pr-4 xl:text-md w-full">{{
                                                     jogo.name
-                                                }}</span>
+                                                    }}</span>
                                             </div>
                                             <div class="pl-4 border-l-[1px] border-zinc-500"
                                                 v-if="jogo.first_release_date">
@@ -178,6 +178,7 @@
 </template>
 
 <script>
+import { useTwitchTokenStore } from '@/stores/TwitchTokenStore';
 import axios from 'axios';
 
 export default {
@@ -198,10 +199,14 @@ export default {
                 3: "PC",
                 4: "Mobile"
             },
-            jogosIds: []
+            jogosIds: [],
+            twitchTokenStore: useTwitchTokenStore()
         }
     },
-    mounted() {
+    async mounted() {
+        if (this.twitchTokenStore.access_token == '') {
+            await this.twitchTokenStore.buscaToken()
+        }
         this.carregaDados()
     },
     methods: {
@@ -219,7 +224,7 @@ export default {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer h6v8ywcqhwyyhj140u70v95rss6sga`,
+                        'Authorization': `Bearer ${this.twitchTokenStore.access_token}`,
                         'Content-Type': 'text/plain'
                     }
                 })
@@ -259,7 +264,7 @@ export default {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer h6v8ywcqhwyyhj140u70v95rss6sga`,
+                        'Authorization': `Bearer ${this.twitchTokenStore.access_token}`,
                         'Content-Type': 'text/plain'
                     }
                 })
@@ -292,8 +297,8 @@ export default {
 
         async carregaInfo() {
             await this.carregaCapas(this.jogosIds)
-            setTimeout(await this.carregaTags(this.jogosGenres), 2000)
-            setTimeout(await this.carregaPlataformas(this.jogosPlatforms), 4000)
+            setTimeout(await this.carregaTags(this.jogosGenres), 3000)
+            setTimeout(await this.carregaPlataformas(this.jogosPlatforms), 5000)
         },
 
         async carregaCapas(jogosId) {
@@ -303,7 +308,7 @@ export default {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer h6v8ywcqhwyyhj140u70v95rss6sga`,
+                        'Authorization': `Bearer ${this.twitchTokenStore.access_token}`,
                         'Content-Type': 'text/plain'
                     }
                 })
@@ -325,7 +330,7 @@ export default {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer h6v8ywcqhwyyhj140u70v95rss6sga`,
+                        'Authorization': `Bearer ${this.twitchTokenStore.access_token}`,
                         'Content-Type': 'text/plain'
                     }
                 })
@@ -356,7 +361,7 @@ export default {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer h6v8ywcqhwyyhj140u70v95rss6sga`,
+                        'Authorization': `Bearer ${this.twitchTokenStore.access_token}`,
                         'Content-Type': 'text/plain'
                     }
                 })

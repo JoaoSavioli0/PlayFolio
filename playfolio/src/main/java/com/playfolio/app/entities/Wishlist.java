@@ -1,5 +1,9 @@
 package com.playfolio.app.entities;
 
+import java.time.LocalDateTime;
+
+import org.hibernate.annotations.GenerationTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -21,6 +25,10 @@ public class Wishlist {
 
     @Column(name="jogo_id")
     private int idJogo;
+
+    @Column(name="data_inclusao", insertable=false, updatable = false)
+    private LocalDateTime dataInclusao;
+
 
     //Getters e Setters
     public Long getId() {
@@ -46,6 +54,12 @@ public class Wishlist {
     public void setIdJogo(int idJogo) {
         this.idJogo = idJogo;
     }
+    public LocalDateTime getDataInclusao() {
+        return dataInclusao;
+    }
 
+    public void setDataInclusao(LocalDateTime dataInclusao) {
+        this.dataInclusao = dataInclusao;
+    }
     
 }
