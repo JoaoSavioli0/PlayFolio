@@ -1,6 +1,6 @@
 <template>
     <PesquisaJogoBoxComponent v-if="pesquisaJogoBoxOpen" @fechar-box="pesquisaJogoBoxOpen = false" />
-    <div class="w-full relative min-xl:hidden">
+    <div class="w-full relative min-xl:hidden z-[1000]">
         <div class="w-full px-2 flex items-center py-4 justify-between ">
             <router-link to="/" class="flex items-center">
                 <img src="../assets/Imagens/logo.png" class="size-[20px] filtro-zinc-50">
@@ -15,7 +15,7 @@
         <div class="w-full h-screen bg-black/80 flex justify-center items-center fixed start-0 top-0 z-[200]"
             v-if="menuMobileOpen">
 
-            <div class="w-[90%] bg-zinc-900 rounded-lg flex flex-col relative" ref="menuMobile">
+            <div class="w-[90%] bg-zinc-900 rounded-lg flex flex-col relative z-[300]" ref="menuMobile">
                 <button class="absolute top-[20px] end-[20px]" @click="menuMobileOpen = false">
                     <img src="../assets/Imagens/close.svg" class="size-[25px] filtro-zinc-50">
                 </button>
@@ -83,7 +83,7 @@
                                     :class="[itemAtivo == item.id ? 'filtro-zinc-50' : 'filtro-cinza']">
                                 <span class="ml-4 transition" :class="{ 'text-zinc-50': itemAtivo == item.id }">{{
                                     item.name
-                                }}</span>
+                                    }}</span>
                             </li>
                         </router-link>
 
@@ -123,7 +123,7 @@ export default {
         PesquisaJogoBoxComponent
     },
     async mounted() {
-        document.addEventListener("click", this.handleClickOutside)
+        document.addEventListener("click", this.verificaClick)
         if (this.userStore.usuario != null) {
             this.usuario = this.userStore.usuario
             console.log("usuario> ", this.usuario)
@@ -143,7 +143,7 @@ export default {
         ]
     },
     beforeUnmount() {
-        document.removeEventListener('click', this.handleClickOutside)
+        document.removeEventListener('click', this.verificaClick)
     },
     methods: {
         voltarRota() {
@@ -153,8 +153,7 @@ export default {
                 this.$router.push('/')
             }
         },
-        handleClickOutside(event) {
-            console.log(event.target)
+        verificaClick(event) {
             if (this.$refs.menuMobile && !this.$refs.menuMobile.contains(event.target) && this.$refs.menuMobileButton && !this.$refs.menuMobileButton.contains(event.target)) {
                 console.log("checa")
                 this.menuMobileOpen = false

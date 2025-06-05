@@ -1,9 +1,12 @@
 <template>
-    <div class="w-full flex  py-3 texto z-50 relative bg-zinc-900">
+    <div class="w-full flex py-3 texto z-50 relative bg-zinc-900">
         <div class="absolute w-full h-[50px] top-[-50px] gradiente-texto"></div>
-        <div class="flex pl-4 pr-24 gap-x-2">
-            <div>
-                <div class="size-[28px] rounded-full bg-zinc-400"></div>
+        <div class="flex pl-4 xl:pr-24 pr-4 gap-x-2">
+            <div
+                class="size-[28px] bg-zinc-800 text-black rounded-full flex items-center justify-center overflow-hidden">
+                <img :src="`data:image/png;base64,${usuario.imagem}`" class="w-full h-full object-cover"
+                    v-if="usuario.imagem">
+                <h1 class="text-[12px] text-zinc-50" v-else>{{ primeiraLetraUsuario }}</h1>
             </div>
             <div class="grow-1 text-start ">
                 <p ref="textoRef" class="text-[11px] text-zinc-100" :class="{ 'line-clamp-5': !mostrarMais }">
@@ -20,7 +23,7 @@
 
 <script>
 export default {
-    props: ["texto"],
+    props: ["texto", "usuario"],
     name: "ProfileReviewText",
     data() {
         return {
@@ -45,6 +48,11 @@ export default {
                 const alturaMaxima = alturaLinha * 5
                 this.mostrarBotao = el.scrollHeight > alturaMaxima
             })
+        }
+    },
+    computed: {
+        primeiraLetraUsuario() {
+            return this.usuario?.usuario?.charAt(0).toUpperCase() || 'P'
         }
     }
 }

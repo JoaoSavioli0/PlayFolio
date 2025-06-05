@@ -26,7 +26,8 @@
             <label class="text-xs text-zinc-400 px-4">Senha atual
             </label>
             <div class="w-full border-b border-white/10 outline-none">
-                <input type="text" class="w-full py-2 px-4 outline-none border-none" v-model="senhaAtual">
+                <input type="text" class="w-full py-2 px-4 outline-none border-none"
+                    placeholder="Digite sua senha atual" v-model="senhaAtual">
             </div>
         </div>
         <div class="w-full pt-2 text-start" v-if="errosSenhaAtual">
@@ -37,26 +38,34 @@
             <label class="text-xs text-zinc-400 px-4">Nova senha
             </label>
             <div class="w-full border-b border-white/10 outline-none">
-                <input type="text" class="w-full py-2 px-4 outline-none border-none" v-model="novaSenha">
+                <input type="text" class="w-full py-2 px-4 outline-none border-none" placeholder="Digite sua nova senha"
+                    v-model="novaSenha">
             </div>
         </div>
-        <ul class="mt-1 px-2">
+        <ul class="mt-1 px-2" v-if="errosNovaSenha.length > 0">
             <li v-for="erroSenha in errosNovaSenha" class="text-start text-[10px] text-rose-700">-{{
                 erroSenha
             }}</li>
         </ul>
+        <div class="w-full text-start" v-else>
+            <span class="text-[8px] text-zinc-400 leading-[0.3]">Sua senha deve ter no mínimo 8 caracteres, com 1
+                letra
+                maiúscula e 1
+                dígito.</span>
+        </div>
 
         <div class="w-full mt-8 text-start">
             <label class="text-xs text-zinc-400 px-4">Confirmar senha
             </label>
             <div class="w-full border-b border-white/10 outline-none">
-                <input type="text" class="w-full py-2 px-4 outline-none border-none" v-model="novaSenhaConfirma">
+                <input type="text" class="w-full py-2 px-4 outline-none border-none"
+                    placeholder="Confirme sua nova senha" v-model="novaSenhaConfirma">
             </div>
         </div>
         <div class="w-full pt-2 text-start" v-if="errosConfirmaNovaSenha">
             <span class="text-[10px] text-rose-700">{{ errosConfirmaNovaSenha }}</span>
         </div>
-        <div class="w-full pt-2 text-start" v-if="sucessoAtualizacaoSenha">
+        <div class="w-full pt-2 text-start" v-else-if="sucessoAtualizacaoSenha">
             <span class="text-[10px] text-lime-600">{{ sucessoAtualizacaoSenha }}</span>
         </div>
 

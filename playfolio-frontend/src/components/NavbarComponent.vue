@@ -1,7 +1,7 @@
 <template>
     <PesquisaJogoBoxComponent v-if="pesquisaJogoBoxOpen" @fechar-box="pesquisaJogoBoxOpen = false" />
     <div
-        class="w-full xl:h-[80px] xl:py-0 py-4 flex justify-between xl:px-40 px-4 items-center fixed z-[200] bg-[#161616]/60 backdrop-blur-md">
+        class="w-full xl:h-[80px] xl:py-0 py-4 flex justify-between min-[1800px]:px-40 xl:px-20 px-4 items-center fixed z-[200] bg-[#161616]/60 backdrop-blur-md">
         <div class="flex items-center">
             <img src="../assets/Imagens/logo.png" class="size-[13px] shrink-0 filtro-cinza">
             <h1 class="text-zinc-50 ml-2">PlayFolio</h1>
@@ -100,10 +100,10 @@ export default {
             }
         }
 
-        document.addEventListener("click", this.handleClickOutside)
+        document.addEventListener("click", this.verificaClick)
     },
     methods: {
-        handleClickOutside(event) {
+        verificaClick(event) {
             if ((this.$refs.menu && !this.$refs.menu.contains(event.target)) && (this.$refs.profile && !this.$refs.profile.contains(event.target))) {
                 this.profileSubmenuOpen = false
             }

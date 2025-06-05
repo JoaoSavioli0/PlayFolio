@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full h-screen flex justify-center items-center fixed start-0 top-0 overflow-y-hidden z-[1000]">
+    <div class="w-full h-screen flex justify-center items-center fixed start-0 top-0 overflow-y-hidden z-[2000]">
         <div class="w-full h-full bg-black/80 z-[100] absolute top-0 start-0" @click="fechaPlayer"></div>
         <button class="absolute top-[25px] end-[25px] z-[110] cursor-pointer" @click="fechaPlayer">
             <img src="../assets/Imagens/close.svg" class="w-[30px] h-auto filtro-cinza">

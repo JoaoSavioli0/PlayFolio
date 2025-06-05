@@ -4,6 +4,18 @@
     <AvaliacaoBoxComponent v-if="avaliacaoBoxOpen" :dados="dados" :imagem="imagens[0]" :statusDefault="statusDefault"
         :usuario="usuario" :capa="capasJogos[id]" @fecha-avaliacaoBox="recarregaDados"
         :avaliacaoUsuario="reviewDoUsuario" />
+
+    <div class="w-screen h-screen bg-black/50 flex justify-center items-center top-0 start-0 fixed z-[400]"
+        v-if="boxSucessoExclusao">
+        <div class="bg-zinc-800 rounded-lg px-6 w-[400px] py-12">
+            <h2 class="text-zinc-50 text-center">Review excluída!</h2>
+            <div class="flex w-full justify-center mt-6">
+                <button @click="() => { console.log(boxSucessoExclusao); boxSucessoExclusao = false }"
+                    class="w-[40%] rounded-md bg-zinc-700 text-zinc-50 h-[50px] text-sm cursor-pointer">Ok</button>
+            </div>
+        </div>
+    </div>
+
     <div class="w-full h-full pb-6 pt-4 xl:px-24 px-4 flex xl:flex-row flex-col justify-center xl:gap-x-4">
         <MenuMobileComponent />
         <MenuComponent />
@@ -68,12 +80,12 @@
                     </div>
                 </div>
 
-                <!-- Caixa direita -->
-                <div class="xl:w-max w-full xl:pl-4 xl:pr-2 px-2 max-xl:mt-4" v-if="!usuarioLogado">
+                <!-- Não está logado -->
+                <div class="xl:w-1/2 w-full xl:pl-4 xl:pr-2 px-2 max-xl:mt-4" v-if="!usuarioLogado">
                     <div
-                        class="w-full h-[105px] px-4 py-2 flex justify-around flex-col rounded-2xl border-[2px] border-zinc-700 xl:mt-[-100px] bg-[#1b1d1f]/60">
+                        class="w-full h-[105px] px-4 py-2 flex justify-around flex-col rounded-2xl border-[2px] border-zinc-700 xl:mt-[-100px] bg-[#1b1d1f]/60 relative overflow-hidden">
 
-                        <div class="w-full">
+                        <div class="w-full text-start">
                             <span class="text-[10px] text-zinc-400">Crie uma conta e salve seus jogos favoritos</span>
                         </div>
                         <div class="w-full flex justify-start items-center">
@@ -87,6 +99,9 @@
                                     class="p-2 px-4 rounded-xl border-[1px] border-zinc-500 text-sm cursor-pointer">Cadastre-se</button>
                             </router-link>
                         </div>
+
+                        <img src="../assets/Imagens/ghost.svg"
+                            class="absolute end-[-40px] xl:bottom-[-40px] bottom-[-20px] xl:w-[150px] w-[120px] h-auto opacity-[0.5] z-10 brilhoCinza filtro-cinza rotate-[-35deg]">
                     </div>
                 </div>
 
@@ -127,7 +142,7 @@
                 </div>
 
                 <!-- Está logado e tem review -->
-                <div class="xl:w-max w-full xl:pl-4 xl:pr-2 px-2 max-xl:mt-4 cursor-pointer"
+                <div class="xl:w-1/2 w-full xl:pl-4 xl:pr-2 px-2 max-xl:mt-4 cursor-pointer"
                     v-else-if="usuario && reviewDoUsuario"
                     @click="() => { avaliacaoBoxOpen = true, statusDefault = reviewDoUsuario.status }">
                     <div
@@ -168,7 +183,8 @@
 
             <div class="py-6 px-6 text-start">
                 <div class="flex items-center">
-                    <h2 class="xl:text-3xl text-xl pr-2 xl:max-w-[70%] w-full line-clamp-3">{{ dados.name }}</h2>
+                    <h2 class="xl:text-3xl text-xl pr-2 xl:max-w-[70%] w-fit line-clamp-3">{{ dados.name }}
+                    </h2>
                     <span class="xl:text-xl text-md text-zinc-400 pl-2 border-l-[2px] border-zinc-400"
                         v-if="dados.first_release_date">{{
                             formataDataUnix(dados.first_release_date, 1) }}</span>
@@ -281,52 +297,30 @@
                 </div>
 
                 <div class="w-full grid grid-cols-1 gap-4 mt-6">
-                    <div class="w-full flex flex-col pb-8 border-b border-zinc-800 " v-for="review in reviews">
+                    <div class="w-full flex flex-col xl:pb-8 pb-4 border-b border-zinc-800 " v-for="review in reviews">
                         <!-- Dados usuário -->
-                        <div class="w-full">
-                            <div class="flex gap-x-2">
-                                <div class="rounded-full size-[40px] bg-zinc-400"></div>
+                        <div class="w-full flex justify-between">
+                            <router-link :to="`/account/profile/${review.usuario.usuario}`"
+                                class="flex gap-x-2 cursor-pointer">
+                                <div
+                                    class="xl:size-[40px] size-[28px] bg-zinc-800 text-black rounded-full flex items-center justify-center overflow-hidden">
+                                    <img :src="`data:image/png;base64,${review.usuario.imagem}`"
+                                        class="w-full h-full object-cover" v-if="review.usuario.imagem">
+                                    <h1 class="text-[12px] text-zinc-50" v-else>{{
+                                        primeiraLetraUsuario(review.usuario.usuario) }}</h1>
+                                </div>
                                 <div class="flex flex-col justify-center">
-                                    <h2 class="text-zinc-50 text-sm">{{ review.usuario.nome }}</h2>
-                                    <span class="text-[10px] text-zinc-500">@{{ review.usuario.usuario }}</span>
+                                    <h2 class="text-zinc-50 xl:text-sm text-[11px]">{{ review.usuario.nome }}</h2>
+                                    <span class="xl:text-[10px] text-[8px] text-zinc-500">@{{ review.usuario.usuario
+                                        }}</span>
                                 </div>
-                            </div>
-                        </div>
-
-                        <!-- Review  -->
-                        <div class="w-full flex mt-2">
-                            <!-- Nota -->
-                            <div class="flex flex-col items-center gap-y-2 pr-4 border-r min-w-[100px]">
-                                <h1 class="text-4xl" :class="{
-                                    'degradeVermelho': review.nota < 4,
-                                    'degradeAmarelo': review.nota >= 4 && review.nota < 7,
-                                    'degradeAzul': review.nota >= 7 && review.nota < 9,
-                                    'degradeRoxo': review.nota >= 9
-                                }">
-                                    {{ review.nota }}
-                                </h1>
-                                <!-- Status -->
-                                <div class="w-full border rounded-md flex items-center justify-center py-[2px] px-2"
-                                    :class="{
-                                        'border-[#c31ef1]': review.status == 1,
-                                        'border-zinc-300': review.status == 2,
-                                        'border-[#d22d56]': review.status == 3,
-                                    }">
-                                    <span class="text-zinc-300 text-[10px]" v-if="review.status == 1">Jogando</span>
-                                    <span class="text-zinc-300 text-[10px]"
-                                        v-else-if="review.status == 2">Concluído</span>
-                                    <span class="text-[#d22d56] text-[10px]"
-                                        v-else-if="review.status == 3">Dropado</span>
-                                </div>
-                            </div>
-                            <!-- Texto -->
-                            <div class="pl-4 text-zinc-400 text-xs">
-                                {{ review.review }}
-                            </div>
+                            </router-link>
 
                             <SubmenuReviewComponent :idUsuario="usuario.id" :review="review"
                                 @recarrega-dados="recarregaDados" />
                         </div>
+
+                        <ReviewTextComponent :usuario="usuario" :review="review" />
                     </div>
                 </div>
             </div>
@@ -338,6 +332,7 @@
 import EmblaCarousel from 'embla-carousel'
 import axios from 'axios'
 import VideoPlayerComponent from '@/components/VideoPlayerComponent.vue'
+import ReviewTextComponent from '@/components/ReviewTextComponent.vue'
 import ImageComponent from '@/components/ImageComponent.vue'
 import AvaliacaoBoxComponent from '@/components/AvaliacaoBoxComponent.vue'
 import SubmenuReviewComponent from '@/components/SubmenuReviewComponent.vue'
@@ -363,7 +358,8 @@ export default {
         AvaliacaoBoxComponent,
         SubmenuReviewComponent,
         MenuComponent,
-        MenuMobileComponent
+        MenuMobileComponent,
+        ReviewTextComponent,
     },
     data() {
         return {
@@ -396,6 +392,7 @@ export default {
             exibeSub: false,
             twitchToken: useTwitchTokenStore(),
             estaNaWishlist: false,
+            boxSucessoExclusao: false,
         }
     },
 
@@ -434,6 +431,13 @@ export default {
     },
 
     methods: {
+        voltarRota() {
+            if (window.history.length > 1) {
+                this.$router.back()
+            } else {
+                this.$router.push('/')
+            }
+        },
         async verificaSeEstaNaWishlist() {
             try {
                 const response = await axios.get(`http://localhost:5000/wishlist/get?idUsuario=${this.usuario.id}&idJogo=${this.id}`)
@@ -669,10 +673,11 @@ export default {
             }
         },
 
-        recarregaDados() {
+        recarregaDados(acao) {
             this.avaliacaoBoxOpen = false
             this.carregaReviewDoUsuario()
             this.carregaReviews()
+            if (acao == "Exclusao") this.boxSucessoExclusao = true
         },
 
         formataDataUnix(dataUnix, tipo) {
@@ -683,6 +688,9 @@ export default {
                 : { day: '2-digit', month: '2-digit', year: 'numeric' };
             return data.toLocaleString('pt-BR', options)
         },
+        primeiraLetraUsuario(usuario) {
+            return usuario.charAt(0).toUpperCase() || ''
+        }
     },
     computed: {
         dataAtualUnix() {

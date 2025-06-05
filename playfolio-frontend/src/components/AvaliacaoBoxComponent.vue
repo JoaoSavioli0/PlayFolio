@@ -1,6 +1,6 @@
 <template>
     <div
-        class="w-full h-screen flex justify-center items-center fixed start-0 top-0 overflow-y-hidden z-[1000] max-xl:px-2">
+        class="w-full h-screen flex justify-center items-center fixed start-0 top-0 overflow-y-hidden z-[2000] max-xl:px-2">
         <div class="w-full h-full bg-black/80 z-[100] absolute top-0 start-0" @click="fechaBox"></div>
 
         <div class="xl:w-[700px] w-full h-max z-[110] rounded-2xl flex flex-col overflow-hidden">
@@ -231,9 +231,10 @@
                             <button
                                 class="grow-1 rounded-full text-zinc-900 bg-zinc-50 px-4 xl:py-2 py-1 xl:text-sm text-xs cursor-pointer hover:-translate-y-[2px] hover:shadow-lg transition-all"
                                 @click="salvaWishlist" v-if="!estaNaWishlist">Adicionar</button>
-                            <router-link class="p-0 grow-1" :to="`/account/profile/${usuario.usuario}/5`">
+                            <router-link class="p-0 grow-1"
+                                :to="{ path: `/account/profile/${usuario.usuario}`, query: { filtro: 5 } }">
                                 <button
-                                    class="w-full rounded-full text-zinc-50 border border-zinc-50 px-4 xl:py-2 py-1 xl:text-sm text-xs ml-2 cursor-pointer hover:-translate-y-[2px] hover:shadow-lg transition-all ">Ver
+                                    class="w-full rounded-full text-zinc-50 border border-zinc-50 px-4 xl:py-2 py-1 xl:text-sm text-xs ml-2 cursor-pointer hover:-translate-y-[2px] hover:shadow-lg transition-all">Ver
                                     lista</button>
                             </router-link>
                         </div>

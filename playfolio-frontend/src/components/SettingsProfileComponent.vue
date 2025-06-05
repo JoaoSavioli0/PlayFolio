@@ -37,6 +37,11 @@
                     v-model="nomeUsuario">
             </div>
         </div>
+        <div class="w-full text-start">
+            <span class="text-[8px] text-zinc-400 leading-[0.3]">Esse nome será único e utilizado para identificar seu
+                perfil.</span>
+        </div>
+
         <div class="w-full mt-8 text-start">
             <label class="text-xs text-zinc-400 px-4">Nome de exibição
             </label>
@@ -45,13 +50,18 @@
                     v-model="nomeExibicao">
             </div>
         </div>
+        <div class="w-full text-start">
+            <span class="text-[8px] text-zinc-400 leading-[0.3]">Esse será o nome principal usado para exibição do seu
+                perfil.</span>
+        </div>
+
         <div class="w-full mt-8 text-start">
             <label class="text-xs text-zinc-400 px-4 w-full flex justify-between">
                 <span>Bio</span>
                 <span>{{ bio.length }}/100</span>
             </label>
             <div class="w-full border-b border-white/10 outline-none">
-                <textarea type="text" rows="3" v-model="bio"
+                <textarea type="text" rows="3" v-model="bio" placeholder="Se resuma em até 100 caracteres"
                     class="w-full py-2 px-4 outline-none border-none resize-none max-xl:text-sm"
                     maxlength="100"></textarea>
             </div>
@@ -80,7 +90,7 @@ export default {
         return {
             nomeUsuario: this.usuario.usuario,
             nomeExibicao: this.usuario.nome,
-            bio: this.usuario.bio,
+            bio: this.usuario?.bio || '',
             mensagemErro: '',
             mensagemErroFoto: '',
             mensagemSucessoFoto: '',
@@ -121,18 +131,38 @@ export default {
             return true
         },
         fotoUpload(event) {
-            let tipo = event.target.files[0].type
-            let tamanho = event.target.files[0].size
+            if (!event.target?.files[0]) return
+            const tipo = event.target.files[0].type
+            const tamanho = event.target.files[0].size
+            let larguraImagem = 0
+            let alturaImagem = 0
 
-            if (tipo !== "image/png" && tipo !== "image/jpg" && tipo !== "image/jpeg") {
-                this.mensagemErroFoto = "A imagem precisa ser em formato JPG, JPEG ou PNG"
-                return
-            } else if (tamanho > 2100000) {
-                this.mensagemErroFoto = "A imagem deve ter menos de 2mb!"
-                return
+            let objectUrl = URL.createObjectURL(event.target.files[0])
+
+            const img = new Image()
+            img.src = objectUrl
+            img.onload = () => {
+                larguraImagem = img.width
+                alturaImagem = img.height
+
+                if (tipo !== "image/png" && tipo !== "image/jpg" && tipo !== "image/jpeg") {
+                    this.mensagemErroFoto = "A imagem precisa ser em formato JPG, JPEG ou PNG"
+                    return
+                } else if (tamanho > 2100000) {
+                    this.mensagemErroFoto = "A imagem deve ter menos de 2mb!"
+                    return
+                } else if (larguraImagem < 98 || alturaImagem < 98) {
+                    this.mensagemErroFoto = "A imagem deve ter um tamanho mínimo de 98x98!"
+                    return
+                }
+                this.imagemPreview = objectUrl
+                this.salvarFoto(event.target.files[0])
             }
-            this.imagemPreview = URL.createObjectURL(event.target.files[0])
-            this.salvarFoto(event.target.files[0])
+
+            img.onerror = () => {
+                this.mensagemErroFoto = "Erro ao carregar imagem.";
+                URL.revokeObjectURL(objectUrl);
+            };
         },
         async salvarFoto(imagemUpada) {
             if (imagemUpada) {

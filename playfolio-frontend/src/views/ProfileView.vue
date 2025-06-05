@@ -15,7 +15,7 @@
                         <div
                             class="flex items-center justify-center xl:size-[75px] size-[65px] rounded-full bg-gradient-to-br from-amber-500 to-pink-500 ">
                             <div
-                                class="xl:size-[69px] size-[57px] bg-zinc-900 text-black rounded-full flex items-center justify-center overflow-hidden">
+                                class="xl:size-[68.5px] size-[57px] bg-zinc-900 text-black rounded-full flex items-center justify-center overflow-hidden">
                                 <img :src="`data:image/png;base64,${usuario.imagem}`" class="w-full h-full object-cover"
                                     v-if="usuario.imagem">
                                 <h1 class="text-2xl text-zinc-50" v-else>{{ primeiraLetraUsuario }}</h1>
@@ -104,11 +104,61 @@
                 </div>
 
             </div>
-            <div class="w-full rounded-xl border-[1px] border-zinc-800 bg-zinc-900/70 my-1 flex items-center">
-                <input type="text" v-model="pesquisaText" placeholder="Pesquise seus jogos..."
-                    class="w-full py-3 w-full outline-0 border-0 pl-4 pr-8 text-xs text-zinc-50">
-                <div class="px-4 ml-auto"><img src="../assets/Imagens/lupa.svg"
-                        class="w-[18px] h-auto filtro-cinza rotate-y-180">
+            <div class="w-full my-1 flex gap-x-1">
+                <div class="w-full rounded-xl border-[1px] border-zinc-800 bg-zinc-900/70 flex items-center">
+                    <input type="text" v-model="pesquisaText" placeholder="Pesquise seus jogos..."
+                        class="w-full py-3 w-full outline-0 border-0 pl-4 pr-8 text-xs text-zinc-50">
+                    <div class="px-4 ml-auto"><img src="../assets/Imagens/lupa.svg"
+                            class="w-[18px] h-auto filtro-cinza rotate-y-180">
+                    </div>
+                </div>
+
+                <!-- Filtros -->
+                <div
+                    class="w-[200px]  rounded-xl border-[1px] border-zinc-800 bg-zinc-900/70 flex text-xs text-zinc-200 justify-between items-center relative">
+                    <span class="w-full px-4 text-start cursor-pointer py-auto" ref="filtroBoxButton"
+                        @click="filtroBoxOpen = !filtroBoxOpen">Avaliação</span>
+
+                    <div v-if="filtroBoxOpen" ref="filtroBox"
+                        class="absolute top-[45px] end-0 w-max flex flex-col gap-y-3 p-4 rounded-2xl border border-zinc-700 bg-zinc-800 z-[1100] shadow-md">
+                        <div class="grid grid-cols-3 gap-x-1 items-center">
+                            <span class="pr-4 text-start">Nome</span>
+                            <button
+                                class="filter-button px-4 py-1 rounded-full hover:bg-zinc-600 cursor-pointer flex items-center justify-center">
+                                <img src="../assets/Imagens/filtros/letter_up.svg" class="w-[20px] h-auto filtro-cinza">
+                            </button>
+                            <button
+                                class="filter-button px-4 py-1 rounded-full hover:bg-zinc-600 cursor-pointer flex items-center justify-center"><img
+                                    src="../assets/Imagens/filtros/letter_down.svg"
+                                    class="w-[20px] h-auto filtro-cinza"></button>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-x-1 items-center">
+                            <span class="pr-4 text-start">Nota</span>
+                            <button
+                                class="filter-button px-4 py-1 rounded-full hover:bg-zinc-600 cursor-pointer flex items-center justify-center">
+                                <img src="../assets/Imagens/filtros/arrow_down.svg"
+                                    class="w-[20px] h-auto filtro-cinza">
+                            </button>
+                            <button
+                                class="filter-button px-4 py-1 rounded-full hover:bg-zinc-600 cursor-pointer flex items-center justify-center"><img
+                                    src="../assets/Imagens/filtros/arrow_up.svg"
+                                    class="w-[20px] h-auto filtro-cinza"></button>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-x-1 items-center">
+                            <span class="pr-4 text-start">Data</span>
+                            <button
+                                class="filter-button px-4 py-1 rounded-full hover:bg-zinc-600 cursor-pointer flex items-center justify-center">
+                                <img src="../assets/Imagens/filtros/calendar_down.svg"
+                                    class="w-[20px] h-auto filtro-cinza">
+                            </button>
+                            <button
+                                class="filter-button px-4 py-1 rounded-full hover:bg-zinc-600 cursor-pointer flex items-center justify-center"><img
+                                    src="../assets/Imagens/filtros/calendar_up.svg"
+                                    class="w-[20px] h-auto filtro-cinza"></button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -116,10 +166,15 @@
                 <span class="loading loading-ring loading-xl"></span>
             </div>
 
+            <!-- Reviews -->
             <div class="w-full grid-cols-1 grid gap-y-1" v-if="selectedStatus != 5 && !carregando">
-                <div class="mt-[1px] w-full min-h-[120px] flex rounded-2xl overflow-hidden"
+                <div class="mt-[1px] w-full min-h-[120px] flex rounded-2xl overflow-hidden relative"
                     v-for="(jogo, index) in jogosReview" :key="jogo.id">
 
+                    <div class="absolute top-[15px] end-[15px] z-[300]">
+                        <SubmenuReviewComponent :idUsuarioAutor="usuarioProfile.id" :idUsuarioLogado="usuario.id"
+                            :review="reviews[jogo.id]" @recarrega-dados="recarregaDados" />
+                    </div>
 
                     <div class="w-full h-full relative overflow-hidden">
 
@@ -141,7 +196,7 @@
                                             class="py-2 w-[50px] rounded-lg bg-zinc-800/30 flex items-center justify-center shrink-0">
                                             <span class="text-zinc-50 text-xl">{{
                                                 reviews[jogo.id]?.nota
-                                            }}</span>
+                                                }}</span>
                                         </div>
                                         <div class="flex flex-col items-center ml-2 w-full">
                                             <div class="w-full flex justify-start">
@@ -154,12 +209,12 @@
                                                 </div>
                                             </div>
                                             <div class="flex w-full">
-                                                <div class="max-w-[70%] line-clamp-2 break-all text-left">
-                                                    <span class="text-sm text-start pr-4 xl:text-md w-full">{{
+                                                <div class="max-w-[70%] w-fit line-clamp-2 pr-2 break-all text-left">
+                                                    <span class="text-sm text-start xl:text-md w-full">{{
                                                         jogo.name
-                                                    }}</span>
+                                                        }}</span>
                                                 </div>
-                                                <div class="pl-2 border-l-[1px] border-zinc-400"
+                                                <div class="pl-2 border-l-[1px] border-zinc-400 flex items-center"
                                                     v-if="jogo.first_release_date">
                                                     <span class="text-xs text-zinc-400 xl:text-md">{{
                                                         formataDataUnix(jogo.first_release_date) }}</span>
@@ -178,15 +233,21 @@
 
                             </div>
                         </router-link>
-                        <ProfileReviewTextComponent :texto="reviews[jogo.id].texto" />
+                        <ProfileReviewTextComponent :texto="reviews[jogo.id].texto" :usuario="usuario" />
                     </div>
 
                 </div>
             </div>
 
+            <!-- Wishlist -->
             <div class="w-full grid-cols-1 grid gap-y-1" v-else-if="selectedStatus == 5 && !carregando">
-                <div class="mt-[1px] w-full h-[120px] flex rounded-2xl overflow-hidden"
+                <div class="mt-[1px] w-full h-[120px] flex rounded-2xl overflow-hidden relative"
                     v-for="(jogo, index) in jogosWishlist" :key="jogo.id">
+
+                    <div class="absolute top-[15px] end-[15px] z-[300]" v-if="usuario.id == usuarioProfile.id">
+                        <SubmenuReviewComponent :idUsuarioAutor="usuarioProfile.id" :idUsuarioLogado="usuario.id"
+                            :review="reviews[jogo.id]" @recarrega-dados="recarregaDados" :wishlist="true" />
+                    </div>
 
                     <router-link :to="`/game/${jogo.id}`" class="w-full h-full p-0">
                         <div class="w-full h-full relative overflow-hidden">
@@ -213,16 +274,22 @@
                                                 </div>
                                             </div>
                                             <div class="flex w-full">
-                                                <div class="max-w-[70%] line-clamp-2 break-all text-left">
-                                                    <span class="text-sm text-start pr-4 xl:text-md w-full">{{
+                                                <div class="max-w-[70%] line-clamp-2 pr-2 break-all text-left">
+                                                    <span class="text-sm text-start xl:text-md w-full">{{
                                                         jogo.name
-                                                    }}</span>
+                                                        }}</span>
                                                 </div>
-                                                <div class="pl-2 border-l-[1px] border-zinc-500"
+                                                <div class="pl-2 border-l-[1px] border-zinc-400 flex items-center"
                                                     v-if="jogo.first_release_date">
-                                                    <span class="text-xs text-zinc-500 xl:text-md">{{
+                                                    <span class="text-xs text-zinc-400 xl:text-md">{{
                                                         formataDataUnix(jogo.first_release_date) }}</span>
                                                 </div>
+                                            </div>
+                                            <div v-if="wishlists[jogo.id]" class="block text-start w-full -mt-1">
+                                                <span class="text-[9px] text-zinc-400 text-start">{{ new
+                                                    Intl.DateTimeFormat('pt-BR').format(new
+                                                        Date(wishlists[jogo.id]))
+                                                }}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -240,6 +307,7 @@
 import MenuComponent from '@/components/MenuComponent.vue';
 import MenuMobileComponent from '@/components/MenuMobileComponent.vue';
 import ProfileReviewTextComponent from '@/components/ProfileReviewTextComponent.vue';
+import SubmenuReviewComponent from '@/components/SubmenuReviewComponent.vue';
 import { useTwitchTokenStore } from '@/stores/TwitchTokenStore';
 import { useUserStore } from '@/stores/UserStore';
 import axios from 'axios';
@@ -253,6 +321,7 @@ export default {
             usuarioProfile: {},
             selectedStatus: this.filtro ?? 1,
             reviews: {},
+            wishlists: {},
             wishlistIds: [],
             jogosReview: [],
             jogosReviewBackup: [],
@@ -268,13 +337,15 @@ export default {
             },
             pesquisaText: '',
             carregando: false,
-            twitchTokenStore: useTwitchTokenStore()
+            twitchTokenStore: useTwitchTokenStore(),
+            filtroBoxOpen: false,
         }
     },
     components: {
         MenuComponent,
         MenuMobileComponent,
-        ProfileReviewTextComponent
+        ProfileReviewTextComponent,
+        SubmenuReviewComponent
     },
     async mounted() {
         this.carregando = true
@@ -296,8 +367,15 @@ export default {
             await this.carregaReviews()
             setTimeout(() => this.carregaJogos(this.jogosIds), 1500)
         }
+
+        document.addEventListener("click", this.verificaClick)
     },
     methods: {
+        verificaClick(event) {
+            if (this.$refs.filtroBox && !this.$refs.filtroBox.contains(event.target) && this.$refs.filtroBoxButton && !this.$refs.filtroBoxButton.contains(event.target)) {
+                this.filtroBoxOpen = false
+            }
+        },
         async procuraUsuario() {
             try {
                 const response = await axios.get(`http://localhost:5000/usuario/fromUsername/${this.username}`)
@@ -312,6 +390,12 @@ export default {
             try {
                 const response = await axios.get(`http://localhost:5000/wishlist/get/user?idUsuario=${this.usuarioProfile.id}`)
                 this.wishlistIds = response.data.map(w => w.idJogo)
+
+                response.data.forEach(w => {
+                    this.wishlists[w.idJogo] = w.dataInclusao
+                })
+
+                console.log("Wishlists: ", this.wishlists)
                 this.jogosIds.push(...this.wishlistIds.toString().split(",").filter(w => w.length > 0))
             } catch (error) {
                 console.log("Erro ao carregar wishlist do usuário: ", error)
@@ -325,9 +409,8 @@ export default {
                     this.reviews[r.idJogo] = r
                 })
 
-                console.log("Reviews> ", this.reviews)
                 this.jogosIds.push(...Object.keys(this.reviews).filter(r => r.length > 0))
-                console.log("JogosIds> ", this.jogosIds)
+
                 this.quantidadeReviewsPorStatus["Jogando"] = response.data.filter(r => r.status == 1).length
                 this.quantidadeReviewsPorStatus["Zerado"] = response.data.filter(r => r.status == 2).length
                 this.quantidadeReviewsPorStatus["Dropado"] = response.data.filter(r => r.status == 3).length
@@ -437,6 +520,10 @@ export default {
 <style scoped>
 .filtro-cinza {
     filter: brightness(0) saturate(100%) invert(69%) sepia(3%) saturate(706%) hue-rotate(201deg) brightness(92%) contrast(89%);
+}
+
+.filter-button:hover img {
+    filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(7479%) hue-rotate(180deg) brightness(82%) contrast(132%);
 }
 
 .gradiente-texto {

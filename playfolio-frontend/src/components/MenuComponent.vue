@@ -22,7 +22,7 @@
                         <div
                             class="flex items-center justify-center size-[45px] rounded-full bg-gradient-to-br from-amber-500 to-pink-500 ">
                             <div
-                                class="size-[41px] bg-zinc-900 text-black rounded-full flex items-center justify-center overflow-hidden">
+                                class="size-[40.2px] bg-zinc-900 text-black rounded-full flex items-center justify-center overflow-hidden">
                                 <img :src="`data:image/png;base64,${usuario.imagem}`" class="w-full h-full object-cover"
                                     v-if="usuario.imagem">
                                 <h1 class="text-2xl text-zinc-50" v-else>{{ primeiraLetraUsuario }}</h1>
@@ -79,7 +79,7 @@
                             <img :src="item.img" class="w-[23px] h-auto transition-all duration-200"
                                 :class="[itemAtivo == item.id ? 'filtro-branco' : 'filtro-cinza']">
                             <span class="ml-4 transition" :class="{ 'text-zinc-50': itemAtivo == item.id }">{{ item.name
-                            }}</span>
+                                }}</span>
                         </li>
                     </router-link>
 
