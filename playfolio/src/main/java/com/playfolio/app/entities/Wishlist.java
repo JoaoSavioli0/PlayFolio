@@ -19,11 +19,11 @@ public class Wishlist {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JoinColumn(name = "id_usuario")
+    @JoinColumn(name = "usuario_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Usuario usuario;
 
-    @Column(name = "id_jogo")
+    @Column(name = "jogo_id")
     private int idJogo;
 
     @Column(name = "data_inclusao", insertable = false, updatable = false)

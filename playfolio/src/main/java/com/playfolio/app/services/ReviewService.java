@@ -10,8 +10,10 @@ import org.springframework.stereotype.Service;
 import com.playfolio.app.dtos.ReviewDto;
 import com.playfolio.app.entities.Review;
 import com.playfolio.app.entities.Usuario;
+import com.playfolio.app.entities.Wishlist;
 import com.playfolio.app.repositories.ReviewRepository;
 import com.playfolio.app.repositories.UsuarioRepository;
+import com.playfolio.app.repositories.WishlistRepository;
 
 @Service
 public class ReviewService {
@@ -21,11 +23,22 @@ public class ReviewService {
     @Autowired
     UsuarioRepository usuarioRepository;
 
-    public String registraReviewService(ReviewDto review){
-        if(reviewRepository.reviewJaExistente(review.getIdJogo(), review.getIdUsuario()) != null) return "Erro: review de usuário para jogo já existe.";
+    @Autowired
+    WishlistRepository wishlistRepository;
 
-        Optional<Usuario> usuarioOptional = usuarioRepository.findById(review.getIdUsuario()); 
-        if(usuarioOptional.isEmpty()) return "Erro: usuário não encontrado";
+    public String registraReviewService(ReviewDto review) {
+        if (reviewRepository.reviewJaExistente(review.getIdJogo(), review.getIdUsuario()) != null)
+            return "Erro: review de usuário para jogo já existe.";
+
+        Optional<Wishlist> wishlistOptional = wishlistRepository.findByUsuarioIdAndIdJogo(review.getIdUsuario(),
+                review.getIdJogo());
+        if (wishlistOptional.isPresent()) {
+            wishlistRepository.delete(wishlistOptional.get());
+        }
+
+        Optional<Usuario> usuarioOptional = usuarioRepository.findById(review.getIdUsuario());
+        if (usuarioOptional.isEmpty())
+            return "Erro: usuário não encontrado";
 
         Usuario usuario = usuarioOptional.get();
 
@@ -36,26 +49,27 @@ public class ReviewService {
         novaReview.setStatus(review.getStatus());
         novaReview.setReview(review.getTexto());
 
-        try{
+        try {
             reviewRepository.save(novaReview);
             return "Review cadastrada com sucesso.";
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Erro: erro ao salvar review no banco de dados: " + e.getMessage());
         }
 
         return "Erro: erro desconhecido";
     }
 
-    public String atualizaReviewService(ReviewDto reviewDto){
+    public String atualizaReviewService(ReviewDto reviewDto) {
         System.out.println(reviewDto.getIdJogo() + " " + reviewDto.getIdUsuario());
-        Optional<Review> reviewOptional = reviewRepository.findByJogoIdAndUsuarioId(reviewDto.getIdJogo(), reviewDto.getIdUsuario());
-        if(reviewOptional.isPresent()){
+        Optional<Review> reviewOptional = reviewRepository.findByJogoIdAndUsuarioId(reviewDto.getIdJogo(),
+                reviewDto.getIdUsuario());
+        if (reviewOptional.isPresent()) {
             Review review = reviewOptional.get();
             review.setNota(reviewDto.getNota());
             review.setReview(reviewDto.getTexto());
             review.setStatus(reviewDto.getStatus());
 
-            if(reviewRepository.save(review)!=null){
+            if (reviewRepository.save(review) != null) {
                 System.out.println("Editou");
                 return "Review atualizada com sucesso.";
             }
@@ -63,30 +77,34 @@ public class ReviewService {
         return "Erro desconhecido";
     }
 
-    public List<Review> getReviewsDoJogoService(int idJogo){
+    public List<Review> getReviewsDoJogoService(int idJogo) {
         return reviewRepository.findAllByJogoIdComUsuario(idJogo);
     }
 
-    public List<ReviewDto> getReviewsDoUsuarioService(Long idUsuario){
+    public List<ReviewDto> getReviewsDoUsuarioService(Long idUsuario) {
         return reviewRepository.findAllByUsuarioId(idUsuario).stream()
-        .map(r -> new ReviewDto(r.getJogoId(), r.getUsuario().getId(), r.getReview(), r.getNota(), r.getStatus(), r.getDataInclusao()))
-        .collect(Collectors.toList());
+                .map(r -> new ReviewDto(r.getJogoId(), r.getUsuario().getId(), r.getReview(), r.getNota(),
+                        r.getStatus(), r.getDataInclusao()))
+                .collect(Collectors.toList());
     }
 
-    public int contaReviewsDoUsuarioService(Long idUsuario){
+    public int contaReviewsDoUsuarioService(Long idUsuario) {
         return reviewRepository.findAllByUsuarioId(idUsuario).size();
     }
 
-    public ReviewDto getReviewDoUsuarioPorJogoService(int idJogo, Long idUsuario){
+    public ReviewDto getReviewDoUsuarioPorJogoService(int idJogo, Long idUsuario) {
         Optional<Review> reviewOptional = reviewRepository.findByJogoIdAndUsuarioId(idJogo, idUsuario);
-        if(reviewOptional.isEmpty()) return null;
+        if (reviewOptional.isEmpty())
+            return null;
 
         Review reviewEncontrada = reviewOptional.get();
-        return new ReviewDto(idJogo, idUsuario, reviewEncontrada.getReview(), reviewEncontrada.getNota(), reviewEncontrada.getStatus(), reviewEncontrada.getDataInclusao());
+        return new ReviewDto(idJogo, idUsuario, reviewEncontrada.getReview(), reviewEncontrada.getNota(),
+                reviewEncontrada.getStatus(), reviewEncontrada.getDataInclusao());
     }
 
-    public void deleteReviewService(Long idReview){
+    public void deleteReviewService(Long idReview) {
         Optional<Review> reviewOptional = reviewRepository.findById(idReview);
-        if(reviewOptional.isPresent()) reviewRepository.delete(reviewOptional.get());
+        if (reviewOptional.isPresent())
+            reviewRepository.delete(reviewOptional.get());
     }
 }
