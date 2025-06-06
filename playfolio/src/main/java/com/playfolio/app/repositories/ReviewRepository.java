@@ -23,14 +23,18 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     List<Review> findAllByUsuarioId(Long usuarioId);
 
-    @Query("SELECT new com.playfolio.app.dtos.UsuarioDto(r.usuario.id, r.usuario.nome, r.usuario.email, r.usuario.usuario, r.usuario.bio, r.usuario.imagem, COUNT(r.id)) " +
-    "FROM Review r "+
-    "GROUP BY r.usuario.id, r.usuario.nome, r.usuario.usuario, r.usuario.bio")
+    @Query("SELECT new com.playfolio.app.dtos.UsuarioDto(r.usuario.id, r.usuario.nome, r.usuario.email, r.usuario.usuario, r.usuario.bio, r.usuario.imagem, COUNT(r.id)) "
+            +
+            "FROM Review r " +
+            "GROUP BY r.usuario.id, r.usuario.nome, r.usuario.usuario, r.usuario.bio")
     List<UsuarioDto> buscarTodosUsuariosComNumReview();
 
-    @Query("SELECT new com.playfolio.app.dtos.UsuarioDto(r.usuario.id, r.usuario.nome, r.usuario.email, r.usuario.usuario, r.usuario.bio, r.usuario.imagem, COUNT(r.id)) " +
-    "FROM Review r " +
-    "WHERE r.usuario.id = :idUsuario " +
-    "GROUP BY r.usuario.id, r.usuario.nome, r.usuario.usuario, r.usuario.bio")
+    @Query("SELECT new com.playfolio.app.dtos.UsuarioDto(r.usuario.id, r.usuario.nome, r.usuario.email, r.usuario.usuario, r.usuario.bio, r.usuario.imagem, COUNT(r.id)) "
+            +
+            "FROM Review r " +
+            "WHERE r.usuario.id = :idUsuario " +
+            "GROUP BY r.usuario.id, r.usuario.nome, r.usuario.usuario, r.usuario.bio")
     UsuarioDto buscarUsuarioComNumReview(@Param("idUsuario") Long idUsuario);
+
+    Boolean existsByUsuarioId(Long id);
 }

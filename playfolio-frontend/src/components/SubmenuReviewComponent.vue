@@ -6,7 +6,7 @@
             <div class="flex w-full justify-center mt-6">
                 <button @click="exibeExcluiReviewBox = false"
                     class="w-[40%] rounded-md bg-zinc-700 text-zinc-50 h-[50px] text-sm cursor-pointer">Cancelar</button>
-                <button @click="excluirReview"
+                <button @click="() => { wishlist ? excluirWishlist() : excluirReview() }"
                     class="w-[40%] rounded-md bg-zinc-700 text-rose-600 h-[50px] text-sm cursor-pointer ml-2 border-rose-700 border-2">Excluir</button>
             </div>
         </div>
@@ -79,13 +79,22 @@ export default {
                 this.exibeExcluiReviewBox = false
                 this.$emit("recarrega-dados", "Exclusao")
             }
+        },
+        async excluirWishlist() {
+            try {
+                console.log("excluir wishlist")
+                await axios.get(`http://localhost:5000/wishlist/delete/${this.wishlist}`)
+            } catch (error) {
+                console.log("Erro ao excluir wishlist: ", error)
+            } finally {
+                this.exibeExcluiReviewBox = false
+                this.$emit("recarrega-dados", "Exclusao")
+            }
         }
     },
     mounted() {
         document.addEventListener('click', this.verificaClick)
-        console.log("idUsuarioAutor: ", this.idUsuarioAutor)
-        console.log("idUsuarioLogado: ", this.idUsuarioLogado)
-        console.log("Review: ", this.review)
+        console.log("É wishlist: ", this.wishlist)
     },
     beforeUnmount() {
         document.removeEventListener('click', this.verificaClick)

@@ -1,4 +1,5 @@
 package com.playfolio.app.controllers;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,6 @@ import com.playfolio.app.repositories.UsuarioRepository;
 import com.playfolio.app.services.JwtService;
 import com.playfolio.app.services.UsuarioService;
 
-
 @RestController
 @RequestMapping("/usuario")
 public class UsuarioController {
@@ -49,15 +49,21 @@ public class UsuarioController {
     @PostMapping("/registro")
     public ResponseEntity<Usuario> cadastroUsuarioController(@RequestBody RegistroDto usuario) {
         Usuario usuarioRegistrado = usuarioService.cadastraUsuarioService(usuario);
-        if(usuarioRegistrado!=null) return ResponseEntity.ok(usuarioRegistrado); 
+        if (usuarioRegistrado != null)
+            return ResponseEntity.ok(usuarioRegistrado);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
     @PostMapping("/login")
     public ResponseEntity<Object> loginUsuarioController(@RequestBody LoginDto loginDto) {
         Usuario usuarioLogado = usuarioService.loginUsuarioService(loginDto.getEmail(), loginDto.getSenha());
-        if(usuarioLogado!=null){
-            UsuarioDto usuarioDto = usuarioService.buscaPorUsernameService(usuarioLogado.getUsuario());
+        if (usuarioLogado != null)
+            System.out.println("UsuarioLogado: " + usuarioLogado.getUsuario());
+        else
+            System.out.println("Usuario não encontrado");
+
+        if (usuarioLogado != null) {
+            UsuarioDto usuarioDto = usuarioService.buscaUsuarioDtoPorId(usuarioLogado.getId());
             String token = jwtService.generateToken(usuarioLogado.getEmail());
 
             Map<String, Object> response = new HashMap<>();
@@ -71,9 +77,10 @@ public class UsuarioController {
     }
 
     @PostMapping("/foto-perfil/{id}/nova")
-    public ResponseEntity<UsuarioDto> uploadFotoPerfil(@PathVariable Long id, @RequestParam("file") MultipartFile foto){
+    public ResponseEntity<UsuarioDto> uploadFotoPerfil(@PathVariable Long id,
+            @RequestParam("file") MultipartFile foto) {
         UsuarioDto usuarioDto = usuarioService.uploadFoto(id, foto);
-        if(usuarioDto != null){
+        if (usuarioDto != null) {
             return ResponseEntity.ok(usuarioDto);
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
@@ -81,14 +88,14 @@ public class UsuarioController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<?> validaToken(@RequestHeader("Authorization") String token){
+    public ResponseEntity<?> validaToken(@RequestHeader("Authorization") String token) {
         try {
             String jwt = token.replace("Bearer ", "");
-    
+
             String email = jwtService.validateTokenAndGetUsername(jwt);
-    
+
             Usuario usuario = usuarioService.loginToken(email);
-    
+
             if (usuario != null) {
                 UsuarioDto usuarioDto = usuarioService.buscaPorUsernameService(usuario.getUsuario());
                 return ResponseEntity.ok(usuarioDto);
@@ -101,12 +108,12 @@ public class UsuarioController {
     }
 
     @GetMapping("/fromUsername/{username}")
-    public UsuarioDto buscaPorUsernameController(@PathVariable String username){
+    public UsuarioDto buscaPorUsernameController(@PathVariable String username) {
         return usuarioService.buscaPorUsernameService(username);
     }
 
     @GetMapping("/all")
-    public List<UsuarioDto> buscaTodosUsuarios(){
+    public List<UsuarioDto> buscaTodosUsuarios() {
         return reviewRepository.buscarTodosUsuariosComNumReview();
     }
 
@@ -114,29 +121,32 @@ public class UsuarioController {
     public ResponseEntity<?> atualizaDadosController(@RequestBody UsuarioDto usuarioDto) {
         Optional<Usuario> usuarioAtualizadoOptional = usuarioRepository.findById(usuarioDto.getId());
 
-        if(usuarioAtualizadoOptional.isPresent()){
+        if (usuarioAtualizadoOptional.isPresent()) {
             Usuario usuarioAtualizado = usuarioAtualizadoOptional.get();
 
-            if(usuarioRepository.findByUsuario(usuarioDto.getUsuario()).isPresent()
-            && !usuarioAtualizado.getUsuario().equals(usuarioDto.getUsuario())) return ResponseEntity.status(HttpStatus.CONFLICT).body("Nome de usuário já cadastrado!");
+            if (usuarioRepository.findByUsuario(usuarioDto.getUsuario()).isPresent()
+                    && !usuarioAtualizado.getUsuario().equals(usuarioDto.getUsuario()))
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Nome de usuário já cadastrado!");
 
-            if(usuarioDto.getBio().length()>0) usuarioAtualizado.setBio(usuarioDto.getBio());
-            if(usuarioDto.getNome().length()>0) usuarioAtualizado.setNome(usuarioDto.getNome());
+            if (usuarioDto.getBio().length() > 0)
+                usuarioAtualizado.setBio(usuarioDto.getBio());
+            if (usuarioDto.getNome().length() > 0)
+                usuarioAtualizado.setNome(usuarioDto.getNome());
 
             String usernameAtualizado = usuarioDto.getUsuario();
-            if(usernameAtualizado.length()>0)
-            {
+            if (usernameAtualizado.length() > 0) {
                 usuarioAtualizado.setUsuario(usuarioDto.getUsuario());
             }
 
-            try{
+            try {
                 usuarioRepository.save(usuarioAtualizado);
-                UsuarioDto usuarioDtoAtualizado = usuarioService.buscaPorUsernameService(usuarioAtualizado.getUsuario());
+                UsuarioDto usuarioDtoAtualizado = usuarioService
+                        .buscaPorUsernameService(usuarioAtualizado.getUsuario());
 
                 return ResponseEntity.ok(usuarioDtoAtualizado);
-            }catch(IllegalArgumentException error){
+            } catch (IllegalArgumentException error) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
-            } 
+            }
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro: Usuário logado não encontrado");
     }

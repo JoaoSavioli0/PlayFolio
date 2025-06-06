@@ -26,13 +26,13 @@ public class UsuarioService {
     @Autowired
     ReviewRepository reviewRepository;
 
-    public Usuario cadastraUsuarioService(RegistroDto usuarioDto){
+    public Usuario cadastraUsuarioService(RegistroDto usuarioDto) {
 
-        if(usuarioRepository.existsByEmail(usuarioDto.getEmail())){
+        if (usuarioRepository.existsByEmail(usuarioDto.getEmail())) {
             throw new EmailJaCadastradoException("Esse email já está registrado!");
         }
-        if(usuarioRepository.existsByUsuario(usuarioDto.getUsuario())){
-            throw new EmailJaCadastradoException("Esse apelido já está registrado!");    
+        if (usuarioRepository.existsByUsuario(usuarioDto.getUsuario())) {
+            throw new EmailJaCadastradoException("Esse apelido já está registrado!");
         }
 
         Usuario usuario = new Usuario();
@@ -44,35 +44,52 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
-    public Usuario loginUsuarioService(String email, String senha){
+    public Usuario loginUsuarioService(String email, String senha) {
         Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(email);
-        if(usuarioOptional.isPresent()){
-            if(senha.equals(usuarioOptional.get().getSenha())){
+        if (usuarioOptional.isPresent()) {
+            if (senha.equals(usuarioOptional.get().getSenha())) {
                 return usuarioOptional.get();
             }
         }
         return null;
     }
 
-    public Usuario loginToken(String email){
+    public Usuario loginToken(String email) {
         Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(email);
         return usuarioOptional.isPresent() ? usuarioOptional.get() : null;
     }
 
-    public UsuarioDto buscaPorUsernameService(String username){
+    public UsuarioDto buscaPorUsernameService(String username) {
         Optional<Usuario> usuarioOptional = usuarioRepository.findByUsuario(username);
-        if(usuarioOptional.isPresent()){
-            return reviewRepository.buscarUsuarioComNumReview(usuarioOptional.get().getId());
+
+        if (usuarioOptional.isPresent()) {
+            Boolean temReview = reviewRepository.existsByUsuarioId(usuarioOptional.get().getId());
+            if (temReview) {
+                return reviewRepository.buscarUsuarioComNumReview(usuarioOptional.get().getId());
+            } else {
+                return usuarioRepository.buscarUsuarioDtoPorId(usuarioOptional.get().getId());
+            }
         }
         return null;
     }
 
-    public UsuarioDto uploadFoto(Long id, MultipartFile foto){
+    public UsuarioDto buscaUsuarioDtoPorId(Long id) {
+        Optional<Usuario> usuarioOptional = usuarioRepository.findById(id);
+
+        if (usuarioOptional.isPresent()) {
+            System.out.println("Usuario econtrado por usuario: " + usuarioOptional.get().getEmail() + " Id: "
+                    + usuarioOptional.get().getId());
+            return usuarioRepository.buscarUsuarioDtoPorId(usuarioOptional.get().getId());
+        }
+        return null;
+    }
+
+    public UsuarioDto uploadFoto(Long id, MultipartFile foto) {
         Optional<Usuario> usuarioEncontrado = usuarioRepository.findById(id);
 
-        if(usuarioEncontrado.isPresent()){
+        if (usuarioEncontrado.isPresent()) {
             Usuario usuario = usuarioEncontrado.get();
-            try{
+            try {
                 usuario.setImagem(foto.getBytes());
                 usuarioRepository.save(usuario);
                 return buscaPorUsernameService(usuario.getUsuario());
@@ -84,43 +101,43 @@ public class UsuarioService {
         }
     }
 
-    public String getFoto(Long id){
+    public String getFoto(Long id) {
         Optional<Usuario> usuarioEncontrado = usuarioRepository.findById(id);
 
-        if(usuarioEncontrado.isPresent()){
+        if (usuarioEncontrado.isPresent()) {
             Usuario usuario = usuarioEncontrado.get();
-            if(usuario.getImagem()!=null)
-            return Base64.getEncoder().encodeToString(usuario.getImagem());
+            if (usuario.getImagem() != null)
+                return Base64.getEncoder().encodeToString(usuario.getImagem());
         }
         return "sem foto";
     }
 
-    public ResponseEntity<?> atualizaSenhaService(NewSenhaDto newSenha){
+    public ResponseEntity<?> atualizaSenhaService(NewSenhaDto newSenha) {
         Optional<Usuario> usuarioOptional = usuarioRepository.findById(newSenha.getId());
 
-        if(usuarioOptional.isPresent()){
+        if (usuarioOptional.isPresent()) {
             Usuario usuario = usuarioOptional.get();
-            if(newSenha.senhaAtual.equals(usuario.getSenha())){
+            if (newSenha.senhaAtual.equals(usuario.getSenha())) {
                 usuario.setSenha(newSenha.getNovaSenha());
                 usuarioRepository.save(usuario);
                 return ResponseEntity.ok("Senha atualizada com sucesso!");
-            }else{
+            } else {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Senha atual incorreta!");
             }
-        }else{
+        } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado!");
         }
     }
 
-    public ResponseEntity<?> atualizaEmailService(NewEmailDto novoEmail){
+    public ResponseEntity<?> atualizaEmailService(NewEmailDto novoEmail) {
         Optional<Usuario> usuarioOptional = usuarioRepository.findById(novoEmail.getId());
 
-        if(usuarioOptional.isPresent()){
+        if (usuarioOptional.isPresent()) {
             Usuario usuario = usuarioOptional.get();
             usuario.setEmail(novoEmail.email);
             usuarioRepository.save(usuario);
             return ResponseEntity.ok("Email atualizado com sucesso!");
-        }else{
+        } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado!");
         }
     }

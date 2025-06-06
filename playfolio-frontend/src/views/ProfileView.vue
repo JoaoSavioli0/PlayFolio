@@ -32,22 +32,26 @@
                         {{ usuario.bio }}
                     </span>
                 </div>
-                <div class="mt-4 flex *:w-[100px] *:px-4 *:cursor-pointer max-xl:overflow-x-scroll ">
+                <div class="mt-4 flex *:w-[100px] *:px-4 *:cursor-pointer max-xl:overflow-x-scroll">
 
                     <button @click="selectedStatus = 1" class="flex flex-col justify-center border-r border-zinc-600">
                         <div class="w-full pb-2" :class="{ 'border-b-2 border-zinc-50': selectedStatus == 1 }">
-                            <div class="w-full flex items-center justify-center"><span class="text-[10px]">Todos</span>
+                            <div class="w-full flex items-center justify-center"><span class="text-[10px]"
+                                    :class="selectedStatus == 1 ? 'text-zinc-50' : 'text-zinc-300'">Todos</span>
                             </div>
-                            <h2 class="text-[13px] mt-1">{{ usuario.numJogos }}</h2>
+                            <h2 class="text-[13px] mt-1"
+                                :class="selectedStatus == 1 ? 'text-zinc-50' : 'text-zinc-300'">{{ usuario.numJogos || 0
+                                }}</h2>
                         </div>
                     </button>
 
                     <button @click="selectedStatus = 2"
                         class="flex flex-col justify-center transition-all duration-400 group"
-                        :class="{ 'text-[#d438ff]': selectedStatus == 2 }">
+                        :class="selectedStatus == 2 ? 'text-[#d438ff]' : 'text-zinc-300'">
                         <div class="w-full pb-2" :class="{ 'border-b-2 border-[#d438ff]': selectedStatus == 2 }">
                             <div class="w-full flex items-center justify-center">
                                 <span class="text-[10px] whitespace-nowrap">Jogando</span>
+
                                 <img src="../assets/Imagens/joystick-2.svg"
                                     class="w-[15px] h-auto ml-1 transition-all duration-100"
                                     :class="{ 'filtro-cinza': selectedStatus != 2 }">
@@ -59,7 +63,7 @@
 
                     <button @click="selectedStatus = 3"
                         class="flex flex-col justify-center transition-all duration-400 group"
-                        :class="{ 'text-green-600': selectedStatus == 3 }">
+                        :class="selectedStatus == 3 ? 'text-green-600' : 'text-zinc-300'">
                         <div class="w-full pb-2" :class="{ 'border-b-2 border-green-600': selectedStatus == 3 }">
                             <div class="w-full flex items-center justify-center">
                                 <span class="text-[10px] whitespace-nowrap">Zerado</span>
@@ -74,7 +78,7 @@
 
                     <button @click="selectedStatus = 4"
                         class="flex flex-col justify-center transition-all duration-400 group"
-                        :class="{ 'text-[#d22d56]': selectedStatus == 4 }">
+                        :class="selectedStatus == 4 ? 'text-[#d22d56]' : 'text-zinc-300'">
                         <div class="w-full pb-2" :class="{ 'border-b-2 border-[#d22d56]': selectedStatus == 4 }">
                             <div class="w-full flex items-center justify-center">
                                 <span class="text-[10px] whitespace-nowrap">Dropado</span>
@@ -89,7 +93,7 @@
 
                     <button @click="selectedStatus = 5"
                         class="flex flex-col justify-center transition-all duration-400 group"
-                        :class="{ 'text-[#eebb17]': selectedStatus == 5 }">
+                        :class="selectedStatus == 5 ? 'text-[#eebb17]' : 'text-zinc-300'">
                         <div class="w-full pb-2" :class="{ 'border-b-2 border-[#eebb17]': selectedStatus == 5 }">
                             <div class="w-full flex items-center justify-center">
                                 <span class="text-[10px] whitespace-nowrap">Na fila</span>
@@ -107,7 +111,7 @@
             <div class="w-full my-1 flex gap-x-1">
                 <div class="w-full rounded-xl border-[1px] border-zinc-800 bg-zinc-900/70 flex items-center">
                     <input type="text" v-model="pesquisaText" placeholder="Pesquise seus jogos..."
-                        class="w-full py-3 w-full outline-0 border-0 pl-4 pr-8 text-xs text-zinc-50">
+                        class="w-full py-3 w-full outline-0 border-0 pl-4 xl:pr-8 pr-4 text-xs text-zinc-50">
                     <div class="px-4 ml-auto"><img src="../assets/Imagens/lupa.svg"
                             class="w-[18px] h-auto filtro-cinza rotate-y-180">
                     </div>
@@ -166,9 +170,14 @@
                 <span class="loading loading-ring loading-xl"></span>
             </div>
 
+
             <!-- Reviews -->
             <div class="w-full grid-cols-1 grid gap-y-1" v-if="selectedStatus != 5 && !carregando">
-                <div class="mt-[1px] w-full min-h-[120px] flex rounded-2xl overflow-hidden relative"
+                <div class="w-full flex h-[250px] flex-col items-center mt-12" v-if="jogosReview.length == 0">
+                    <span class="text-zinc-400 italic font-xl">Sem reviews por enquanto...</span>
+                    <img src="../assets/Imagens/ghost.svg" class="w-[50px] h-auto filtro-cinza mt-4">
+                </div>
+                <div class="mt-[1px] w-full min-h-[120px] flex rounded-2xl overflow-hidden relative" v-else
                     v-for="(jogo, index) in jogosReview" :key="jogo.id">
 
                     <div class="absolute top-[15px] end-[15px] z-[300]">
@@ -196,7 +205,7 @@
                                             class="py-2 w-[50px] rounded-lg bg-zinc-800/30 flex items-center justify-center shrink-0">
                                             <span class="text-zinc-50 text-xl">{{
                                                 reviews[jogo.id]?.nota
-                                                }}</span>
+                                            }}</span>
                                         </div>
                                         <div class="flex flex-col items-center ml-2 w-full">
                                             <div class="w-full flex justify-start">
@@ -212,7 +221,7 @@
                                                 <div class="max-w-[70%] w-fit line-clamp-2 pr-2 break-all text-left">
                                                     <span class="text-sm text-start xl:text-md w-full">{{
                                                         jogo.name
-                                                        }}</span>
+                                                    }}</span>
                                                 </div>
                                                 <div class="pl-2 border-l-[1px] border-zinc-400 flex items-center"
                                                     v-if="jogo.first_release_date">
@@ -241,12 +250,17 @@
 
             <!-- Wishlist -->
             <div class="w-full grid-cols-1 grid gap-y-1" v-else-if="selectedStatus == 5 && !carregando">
-                <div class="mt-[1px] w-full h-[120px] flex rounded-2xl overflow-hidden relative"
+                <div class="w-full flex h-[250px] flex-col items-center mt-12" v-if="jogosWishlist.length == 0">
+                    <span class="text-zinc-400 italic font-xl">Lista vazia por enquanto...</span>
+                    <img src="../assets/Imagens/ghost.svg" class="w-[50px] h-auto filtro-cinza mt-4">
+                </div>
+                <div class="mt-[1px] w-full h-[120px] flex rounded-2xl overflow-hidden relative" v-else
                     v-for="(jogo, index) in jogosWishlist" :key="jogo.id">
 
                     <div class="absolute top-[15px] end-[15px] z-[300]" v-if="usuario.id == usuarioProfile.id">
                         <SubmenuReviewComponent :idUsuarioAutor="usuarioProfile.id" :idUsuarioLogado="usuario.id"
-                            :review="reviews[jogo.id]" @recarrega-dados="recarregaDados" :wishlist="true" />
+                            :review="reviews[jogo.id]" @recarrega-dados="recarregaDados"
+                            :wishlist="wishlists[jogo.id].id" />
                     </div>
 
                     <router-link :to="`/game/${jogo.id}`" class="w-full h-full p-0">
@@ -277,7 +291,7 @@
                                                 <div class="max-w-[70%] line-clamp-2 pr-2 break-all text-left">
                                                     <span class="text-sm text-start xl:text-md w-full">{{
                                                         jogo.name
-                                                        }}</span>
+                                                    }}</span>
                                                 </div>
                                                 <div class="pl-2 border-l-[1px] border-zinc-400 flex items-center"
                                                     v-if="jogo.first_release_date">
@@ -288,7 +302,7 @@
                                             <div v-if="wishlists[jogo.id]" class="block text-start w-full -mt-1">
                                                 <span class="text-[9px] text-zinc-400 text-start">{{ new
                                                     Intl.DateTimeFormat('pt-BR').format(new
-                                                        Date(wishlists[jogo.id]))
+                                                        Date(wishlists[jogo.id].dataInclusao))
                                                 }}</span>
                                             </div>
                                         </div>
@@ -339,6 +353,8 @@ export default {
             carregando: false,
             twitchTokenStore: useTwitchTokenStore(),
             filtroBoxOpen: false,
+            semReviews: false,
+            semWishlists: false
         }
     },
     components: {
@@ -348,6 +364,7 @@ export default {
         SubmenuReviewComponent
     },
     async mounted() {
+
         this.carregando = true
         if (this.twitchTokenStore.access_token == '') {
             await this.twitchTokenStore.buscaToken()
@@ -362,11 +379,20 @@ export default {
         }
 
         await this.procuraUsuario()
-        if (this.usuarioProfile != null) {
-            await this.carregaListaDeDesejo()
-            await this.carregaReviews()
+
+        console.log("usuario: ", this.usuario)
+        console.log("Usuario profile: ", this.usuarioProfile)
+
+        await this.carregaListaDeDesejo()
+        await this.carregaReviews()
+        if (this.usuarioProfile != null && (this.jogosIds.length > 0)) {
             setTimeout(() => this.carregaJogos(this.jogosIds), 1500)
         }
+
+        this.carregando = false
+
+        this.semReviews = !this.reviews.length > 0
+        this.semWishlists = !this.wishlists.length > 0
 
         document.addEventListener("click", this.verificaClick)
     },
@@ -377,6 +403,7 @@ export default {
             }
         },
         async procuraUsuario() {
+            console.log("Procurausuario")
             try {
                 const response = await axios.get(`http://localhost:5000/usuario/fromUsername/${this.username}`)
                 this.usuarioProfile = response.data
@@ -389,13 +416,13 @@ export default {
         async carregaListaDeDesejo() {
             try {
                 const response = await axios.get(`http://localhost:5000/wishlist/get/user?idUsuario=${this.usuarioProfile.id}`)
+
                 this.wishlistIds = response.data.map(w => w.idJogo)
 
                 response.data.forEach(w => {
-                    this.wishlists[w.idJogo] = w.dataInclusao
+                    this.wishlists[w.idJogo] = { dataInclusao: w.dataInclusao, id: w.id }
                 })
 
-                console.log("Wishlists: ", this.wishlists)
                 this.jogosIds.push(...this.wishlistIds.toString().split(",").filter(w => w.length > 0))
             } catch (error) {
                 console.log("Erro ao carregar wishlist do usuário: ", error)
@@ -411,9 +438,9 @@ export default {
 
                 this.jogosIds.push(...Object.keys(this.reviews).filter(r => r.length > 0))
 
-                this.quantidadeReviewsPorStatus["Jogando"] = response.data.filter(r => r.status == 1).length
-                this.quantidadeReviewsPorStatus["Zerado"] = response.data.filter(r => r.status == 2).length
-                this.quantidadeReviewsPorStatus["Dropado"] = response.data.filter(r => r.status == 3).length
+                this.quantidadeReviewsPorStatus["Jogando"] = response.data.filter(r => r.status == 1)?.length ?? 0
+                this.quantidadeReviewsPorStatus["Zerado"] = response.data.filter(r => r.status == 2)?.length ?? 0
+                this.quantidadeReviewsPorStatus["Dropado"] = response.data.filter(r => r.status == 3)?.length ?? 0
 
             } catch (error) {
                 console.log("Erro ao carregar reviews do usuário: ", error)

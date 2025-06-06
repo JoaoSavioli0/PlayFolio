@@ -62,7 +62,7 @@
                                 }}</h1>
                             <span class="w-full text-start text-md text-zinc-500">{{
                                 formataDataUnix(dados.first_release_date)
-                            }}</span>
+                                }}</span>
                         </div>
                     </div>
                     <button class="self-start"><img src="../assets/Imagens/close.svg"
@@ -206,7 +206,7 @@
 
                         <div class="w-full pb-2 flex justify-start px-4">
                             <span class="text-zinc-100 text-[10px]">{{ reviewText.length
-                            }}/5000</span>
+                                }}/5000</span>
                         </div>
                     </div>
                 </div>
@@ -269,11 +269,11 @@ export default {
             estaNaWishlist: false,
         }
     },
-    mounted() {
+    async mounted() {
         console.log("avaliacaoUsuario: ", this.avaliacaoUsuario)
         this.updateOffset()
-        this.estaNaWishlist = this.verificaWishlist()
-        console.log("this.statusDefault: " + this.statusDefault + "\nstatus: " + this.status)
+        this.estaNaWishlist = await this.verificaWishlist()
+        console.log("this.estaNaWishlist: ", this.estaNaWishlist)
     },
     methods: {
         updateOffset() {
@@ -369,9 +369,10 @@ export default {
         async verificaWishlist() {
             try {
                 const response = await axios.get(`http://localhost:5000/wishlist/get?idUsuario=${this.usuario.id}&idJogo=${this.dados.id}`)
-                console.log(response.data)
+                return response.data
             } catch (error) {
                 console.log("Erro ao verificar estado do jogo na wishlist: ", error)
+                return false
             }
         }
     },
