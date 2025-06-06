@@ -16,21 +16,20 @@ import jakarta.persistence.ManyToOne;
 @Entity
 public class Wishlist {
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JoinColumn(name="usuario_id")
+    @JoinColumn(name = "id_usuario")
     @ManyToOne(fetch = FetchType.LAZY)
     private Usuario usuario;
 
-    @Column(name="jogo_id")
+    @Column(name = "id_jogo")
     private int idJogo;
 
-    @Column(name="data_inclusao", insertable=false, updatable = false)
+    @Column(name = "data_inclusao", insertable = false, updatable = false)
     private LocalDateTime dataInclusao;
 
-
-    //Getters e Setters
+    // Getters e Setters
     public Long getId() {
         return id;
     }
@@ -54,6 +53,7 @@ public class Wishlist {
     public void setIdJogo(int idJogo) {
         this.idJogo = idJogo;
     }
+
     public LocalDateTime getDataInclusao() {
         return dataInclusao;
     }
@@ -61,5 +61,5 @@ public class Wishlist {
     public void setDataInclusao(LocalDateTime dataInclusao) {
         this.dataInclusao = dataInclusao;
     }
-    
+
 }
