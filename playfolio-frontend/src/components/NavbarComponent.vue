@@ -33,8 +33,8 @@
                             <h1 class="text-2xl text-zinc-50" v-else>{{ primeiraLetraUsuario }}</h1>
                         </div>
                     </div>
-                    <div class="flex flex-col ml-2 text-start h-full justify-center max-xl:hidden">
-                        <h1 class="text-xs text-zinc-50">{{ usuario.nome }}</h1>
+                    <div class="flex flex-col ml-2 text-start h-full justify-center max-xl:hidden max-w-[160px]">
+                        <h1 class="text-xs text-zinc-50 truncate ">{{ usuario.nome }}</h1>
                         <span class="text-zinc-400 text-[10px]">@{{ usuario.usuario }}</span>
                     </div>
                 </div>

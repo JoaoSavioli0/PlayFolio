@@ -18,7 +18,7 @@
                                 class="xl:size-[68.5px] size-[57px] bg-zinc-900 text-black rounded-full flex items-center justify-center overflow-hidden">
                                 <img :src="`data:image/png;base64,${usuario.imagem}`" class="w-full h-full object-cover"
                                     v-if="usuario.imagem">
-                                <h1 class="text-2xl text-zinc-50" v-else>{{ primeiraLetraUsuario }}</h1>
+                                <h1 class="xl:text-5xl text-2xl text-zinc-50" v-else>{{ primeiraLetraUsuario }}</h1>
                             </div>
                         </div>
                     </div>

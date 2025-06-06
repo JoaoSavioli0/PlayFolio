@@ -89,14 +89,14 @@
                     <div class="w-full flex flex-col py-4 grid grid-cols-2 gap-y-2 gap-x-4" v-if="!contaCriada">
                         <label class="w-full text-start max-xl:col-span-2">
                             <span class="text-zinc-400 text-[13px] ml-4">Nome pessoal</span>
-                            <input type="text" v-model="nomeRegistro"
+                            <input type="text" v-model="nomeRegistro" maxlength="20"
                                 class="w-full rounded-full text-sm px-4 py-[10px] text-zinc-50 border-[1px] outline-none focus:border-zinc-400 transition-all"
                                 :class="nomeValido ? 'border-zinc-500' : 'border-rose-700'">
                         </label>
                         <label class="w-full text-start max-xl:col-span-2">
                             <span class="text-zinc-400 text-[13px] ml-4">Nome de usuário</span>
                             <div class="relative w-full">
-                                <input type="text" v-model="userRegistro"
+                                <input type="text" v-model="userRegistro" maxlength="16"
                                     class="w-full rounded-full text-sm pl-8 pr-4 py-[10px] text-zinc-50 border-[1px] outline-none focus:border-zinc-400 transition-all"
                                     :class="userValido ? 'border-zinc-500' : 'border-rose-700'">
                                 <span class="absolute top-[11px] start-[11px] text-zinc-500 text-sm">@</span>
