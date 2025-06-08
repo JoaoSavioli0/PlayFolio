@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const api = axios.create({
   baseURL: process.env.NODE_ENV === 'production'
-    ? 'https://sua-api-render.com'
+    ? 'https://playfolio-hs4h.onrender.com'
     : 'http://localhost:5000'
 });
 
