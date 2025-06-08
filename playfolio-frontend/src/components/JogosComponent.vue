@@ -26,7 +26,7 @@
                                 </div>
 
                                 <div class="w-full pl-[90px] h-full z-[100] relative">
-                                    <div class="flex absolute end-[20px] top-[20px] items-center">
+                                    <div class="flex absolute end-[20px] xl:top-[20px] bottom-[10px] items-center">
                                         <img src="../assets/Imagens/stack.svg" class="w-[17px] h-auto filtro-branco">
                                         <span class="ml-2 text-[12px] xl:text-[15px]">{{ jogo.total_rating_count
                                         }}</span>
@@ -42,14 +42,14 @@
                                                 <span class="text-sm text-start ml-2 pr-4 xl:text-md">{{ jogo.name
                                                 }}</span>
                                             </div>
-                                            <div class="pl-4 border-l-[1px] border-zinc-500"
+                                            <div class="pl-4 border-l-[1px] border-zinc-400"
                                                 v-if="jogo.first_release_date">
-                                                <span class="text-xs text-zinc-500 xl:text-md">{{
+                                                <span class="text-xs text-zinc-400 xl:text-md">{{
                                                     formataDataUnix(jogo.first_release_date) }}</span>
                                             </div>
                                         </div>
                                         <div class="flex w-full" v-if="jogo.genres">
-                                            <div class="text-start w-full line-clamp-1 text-zinc-500 max-w-[60%]">
+                                            <div class="text-start w-full line-clamp-1 text-zinc-400 max-w-[60%]">
                                                 <span v-for="(genreId, index) in jogo.genres" :key="genreId"
                                                     class="text-[10px] xl:text-[13px]">{{
                                                         genresNomes[genreId] == "Role-playing (RPG)" ? "RPG" :
@@ -109,7 +109,7 @@
                                 </div>
 
                                 <div class="w-full pl-[90px] h-full z-[100] relative">
-                                    <div class="flex absolute end-[20px] top-[20px] items-center">
+                                    <div class="flex absolute end-[20px] xl:top-[20px] bottom-[10px] items-center">
                                         <img src="../assets/Imagens/star.png" class="w-[17px] h-auto filtro-branco">
                                         <span class="ml-2 text-[12px]">{{ (jogo.rating / 10).toFixed(1) }}</span>
                                     </div>
@@ -123,16 +123,16 @@
                                             <div class="max-w-[55%] line-clamp-1 break-all text-left">
                                                 <span class="text-sm text-start ml-2 pr-4 xl:text-md w-full">{{
                                                     jogo.name
-                                                    }}</span>
+                                                }}</span>
                                             </div>
-                                            <div class="pl-4 border-l-[1px] border-zinc-500"
+                                            <div class="pl-4 border-l-[1px] border-zinc-400"
                                                 v-if="jogo.first_release_date">
-                                                <span class="text-xs text-zinc-500 xl:text-md">{{
+                                                <span class="text-xs text-zinc-400 xl:text-md">{{
                                                     formataDataUnix(jogo.first_release_date) }}</span>
                                             </div>
                                         </div>
                                         <div class="flex w-full" v-if="jogo.genres">
-                                            <div class="text-start w-full line-clamp-1 text-zinc-500 max-w-[60%]">
+                                            <div class="text-start w-full line-clamp-1 text-zinc-400 max-w-[60%]">
                                                 <span v-for="(genreId, index) in jogo.genres" :key="genreId"
                                                     class="text-[10px] xl:text-[13px]">{{
                                                         genresNomes[genreId] == "Role-playing (RPG)" ? "RPG" :
@@ -200,7 +200,8 @@ export default {
                 4: "Mobile"
             },
             jogosIds: [],
-            twitchTokenStore: useTwitchTokenStore()
+            twitchTokenStore: useTwitchTokenStore(),
+            timeOutId: null
         }
     },
     async mounted() {
@@ -209,11 +210,16 @@ export default {
         }
         this.carregaDados()
     },
+    beforeUnmount() {
+        clearTimeout(this.timeoutId)
+    },
     methods: {
         async carregaDados() {
-            await this.carregaJogos()
-            await this.carregaJogos2()
-            setTimeout(await this.carregaInfo(), 1000)
+            this.timeOutId = setTimeout(async () => {
+                await this.carregaJogos()
+                await this.carregaJogos2()
+                await this.carregaInfo()
+            }, 1500)
         },
 
         async carregaJogos() {
@@ -297,8 +303,8 @@ export default {
 
         async carregaInfo() {
             await this.carregaCapas(this.jogosIds)
-            setTimeout(await this.carregaTags(this.jogosGenres), 3000)
-            setTimeout(await this.carregaPlataformas(this.jogosPlatforms), 5000)
+            await this.carregaTags(this.jogosGenres)
+            await this.carregaPlataformas(this.jogosPlatforms)
         },
 
         async carregaCapas(jogosId) {

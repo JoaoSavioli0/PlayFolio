@@ -51,7 +51,7 @@
                             </button>
                         </label>
 
-                        <div class="w-full pt-2 text-start" v-if="erroAviso">
+                        <div class="w-full pt-1 text-start" v-if="erroAviso">
                             <span class="text-[10px] text-rose-700">{{ erroAviso }}</span>
                         </div>
 
@@ -86,13 +86,18 @@
                         <h1 class="text-xl xl:text-4xl mt-2">FAÇA PARTE!</h1>
                         <span class="text-zinc-500 text-[12px]">Registre-se com seus dados</span>
                     </div>
-                    <div class="w-full flex flex-col py-4 grid grid-cols-2 gap-y-2 gap-x-4" v-if="!contaCriada">
+                    <div class="w-full flex flex-col py-4 grid xl:grid-cols-2 grid-cols-1 gap-y-2 gap-x-4"
+                        v-if="!contaCriada">
                         <label class="w-full text-start max-xl:col-span-2">
                             <span class="text-zinc-400 text-[13px] ml-4">Nome pessoal</span>
                             <input type="text" v-model="nomeRegistro" maxlength="20"
                                 class="w-full rounded-full text-sm px-4 py-[10px] text-zinc-50 border-[1px] outline-none focus:border-zinc-400 transition-all"
                                 :class="nomeValido ? 'border-zinc-500' : 'border-rose-700'">
                         </label>
+                        <div class="w-full text-start -mt-1" v-if="erroNomeRegistro">
+                            <span class="text-[10px] text-rose-700">{{ erroNomeRegistro }}</span>
+                        </div>
+
                         <label class="w-full text-start max-xl:col-span-2">
                             <span class="text-zinc-400 text-[13px] ml-4">Nome de usuário</span>
                             <div class="relative w-full">
@@ -102,12 +107,20 @@
                                 <span class="absolute top-[11px] start-[11px] text-zinc-500 text-sm">@</span>
                             </div>
                         </label>
+                        <div class="w-full text-start -mt-1" v-if="erroUsuarioRegistro">
+                            <span class="text-[10px] text-rose-700">{{ erroUsuarioRegistro }}</span>
+                        </div>
+
                         <label class="w-full text-start col-span-2">
                             <span class="text-zinc-400 text-[13px] ml-4">Email</span>
                             <input type="text" v-model="emailRegistro"
                                 class="w-full rounded-full text-sm px-4 py-[10px] text-zinc-50 border-[1px] outline-none focus:border-zinc-400 transition-all"
                                 :class="emailValido ? 'border-zinc-500' : 'border-rose-700'">
                         </label>
+                        <div class="w-full text-start -mt-1" v-if="erroEmailRegistro">
+                            <span class="text-[10px] text-rose-700">{{ erroEmailRegistro }}</span>
+                        </div>
+
                         <label class="w-full text-start relative max-xl:col-span-2">
                             <span class="text-zinc-400 text-[13px] ml-4">Senha</span>
                             <input :type="senhaRegistroVisivel ? 'text' : 'password'" v-model="senhaRegistro"
@@ -211,31 +224,45 @@ export default {
             senhaRegistroVisivel: false,
             confirmaSenhaRegistroVisivel: false,
             senhaVisivel: false,
-            erroAviso: ''
+            erroAviso: '',
+            userStore: useUserStore(),
+
+            erroUsuarioRegistro: '',
+            erroEmailRegistro: '',
+            erroNomeRegistro: '',
+            erroRegistro: ''
         }
     },
     mounted() {
-        useUserStore().reconectaSessao()
-        if (useUserStore().usuario != null) {
+        this.userStore.reconectaSessao()
+        if (this.userStore.usuario != null) {
             this.$router.push("/account")
         }
     },
     methods: {
         async fazLogin() {
+            console.log("fazLogin")
             this.erroAviso = ''
             if (!this.emailLogin) {
+                console.log("EmailLogin: ", this.emailLogin)
                 return
             }
 
             this.usuarioObj.email = this.emailLogin
             this.usuarioObj.senha = this.senhaLogin
 
-            const response = await useUserStore().login(this.usuarioObj)
-            if (response != null) this.erroAviso = response.data
+            try {
+                const response = await this.userStore.login(this.usuarioObj)
+                if (response != null) this.erroAviso = response.data
 
-            if (useUserStore().usuario != null) {
-                this.$router.push("/")
+                if (this.userStore.usuario != null) {
+                    this.$router.push("/")
+                }
+            } catch (error) {
+                this.erroAviso = error
             }
+
+
         },
 
         async fazCadastro() {
@@ -255,8 +282,9 @@ export default {
                 }
             } catch (error) {
                 if (error.response) {
-                    console.log("Erro: ", error.response.status)
-                    console.log("Descrição: ", error.response.data)
+                    console.log("Status -> ", error.response.status, "\nData -> ", error.response.data)
+                    if (error.response.status == 409) this.erroEmailRegistro = error.response.data
+                    if (error.response.status == 403) this.erroUsuarioRegistro = error.response.data
                 }
             }
         },
@@ -295,19 +323,27 @@ export default {
     computed: {
 
         validaNome() {
-            if (!this.nomeRegistro || this.nomeRegistro.length < 10) return false
+            if (!this.nomeRegistro || this.nomeRegistro.length < 3) {
+                this.erroNomeRegistro = "Seu nome deve ter no mínimo 3 caracteres!"
+                return false
+            }
             return true
         },
 
         validaUser() {
-            if (!this.userRegistro || this.userRegistro.length < 8) return false
+            if (!this.userRegistro) {
+                this.erroUsuarioRegistro = "Insira um nome de usuário!"
+                return false
+            }
             return true
         },
 
         validaEmail() {
             const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!regex.test(this.emailRegistro)) return false
-            if (this.emailRegistro.split("@")[0].length < 3) return false
+            if (!regex.test(this.emailRegistro) || this.emailRegistro.split("@")[0].length < 3) {
+                this.erroEmailRegistro = "Insira um email válido!"
+                return false
+            }
             return true
         }
     }

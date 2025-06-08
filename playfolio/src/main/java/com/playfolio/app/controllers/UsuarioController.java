@@ -114,7 +114,7 @@ public class UsuarioController {
 
     @GetMapping("/all")
     public List<UsuarioDto> buscaTodosUsuarios() {
-        return reviewRepository.buscarTodosUsuariosComNumReview();
+        return usuarioRepository.buscarTodosUsuariosComNumReview();
     }
 
     @PostMapping("/update-data")

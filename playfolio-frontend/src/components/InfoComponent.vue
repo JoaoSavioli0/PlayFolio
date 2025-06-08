@@ -79,7 +79,7 @@ export default {
                 })
 
                 this.jogosEsperados = response.data
-                setTimeout(await this.carregaCapas(this.jogosEsperados.map(e => e.id)), 1000)
+                await this.carregaCapas(this.jogosEsperados.map(e => e.id))
 
             } catch (error) {
                 console.error("Erro carregando hypes: " + error)

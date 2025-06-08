@@ -2,7 +2,7 @@
     <div
         class="w-full h-full max-xl:min-h-screen pb-6 pt-4 xl:px-24 px-4 flex xl:flex-row flex-col xl:justify-center gap-x-4">
         <MenuComponent :selected="4" :key="menuKey" />
-        <MenuMobileComponent :key="menuMobileKey" />
+        <MenuMobileComponent :selected="4" :key="menuMobileKey" />
         <div class="xl:w-[820px] w-full h-min flex flex-col items-center">
             <div class="xl:w-2/3 w-full grid grid-cols-2">
                 <button @click="menuSelected = 1"

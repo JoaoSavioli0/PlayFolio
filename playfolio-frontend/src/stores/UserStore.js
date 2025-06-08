@@ -18,7 +18,7 @@ export const useUserStore = defineStore('usuario', {
               "Content-Type": "application/json",
             },
           })
-
+          console.log("Response.data ",response?.data)
         if(response.data != null){
             this.usuario = response.data.usuario
             this.token = response.data.token

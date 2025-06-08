@@ -24,9 +24,9 @@
             <div class="w-full xl:h-[450px] h-[210px] z-40 relative">
 
                 <button @click="voltarRota"
-                    class="w-[90px] py-2 bg-zinc-50 px-2 rounded-full flex justify-around items-center cursor-pointer absolute top-[10px] start-[10px] min-xl:hidden">
+                    class="w-[90px] py-1 bg-zinc-50 px-2 rounded-full flex justify-around items-center cursor-pointer absolute top-[10px] start-[10px] min-xl:hidden">
                     <img src="../assets/Imagens/arrow.svg" class="w-[21px] h-auto">
-                    <span class="text-sm text-[#1b1d1f]">Voltar</span>
+                    <span class="text-xs text-[#1b1d1f]">Voltar</span>
                 </button>
 
                 <img :src="imagens[0]" class="w-full h-full" v-if="!carregandoDados && imagens[0]">
@@ -165,18 +165,18 @@
                         </div>
 
                         <img src="../assets/Imagens/expressoes/1.png" v-if="reviewDoUsuario.nota == 0"
-                            class="absolute end-[-40px] bottom-[-40px] w-[150px] h-auto opacity-[0.5] z-10 brilhoCinza">
+                            class="absolute xl:end-[-40px] end-[-35px] xl:bottom-[-40px] bottom-[-20px] xl:w-[150px] w-[100px] h-auto opacity-[0.5] z-10 brilhoCinza">
                         <img src="../assets/Imagens/expressoes/2.png"
                             v-if="reviewDoUsuario.nota > 0 && reviewDoUsuario.nota < 4"
-                            class="absolute end-[-40px] bottom-[-40px] w-[150px] h-auto opacity-[0.5] z-10 brilhoVermelho">
+                            class="absolute xl:end-[-40px] end-[-35px] xl:bottom-[-40px] bottom-[-20px] xl:w-[150px] w-[100px] h-auto opacity-[0.5] z-10 brilhoVermelho">
                         <img src="../assets/Imagens/expressoes/3.png"
                             v-if="reviewDoUsuario.nota >= 4 && reviewDoUsuario.nota < 7"
-                            class="absolute end-[-40px] bottom-[-40px] w-[150px] h-auto opacity-[0.5] z-10 brilhoAmarelo">
+                            class="absolute xl:end-[-40px] end-[-35px] xl:bottom-[-40px] bottom-[-20px] xl:w-[150px] w-[100px] h-auto opacity-[0.5] z-10 brilhoAmarelo">
                         <img src="../assets/Imagens/expressoes/4.png"
                             v-if="reviewDoUsuario.nota >= 7 && reviewDoUsuario.nota < 9"
-                            class="absolute end-[-40px] bottom-[-40px] w-[150px] h-auto opacity-[0.5] z-10 brilhoAzul">
+                            class="absolute xl:end-[-40px] end-[-35px] xl:bottom-[-40px] bottom-[-20px] xl:w-[150px] w-[100px] h-auto opacity-[0.5] z-10 brilhoAzul">
                         <img src="../assets/Imagens/expressoes/5.png" v-if="reviewDoUsuario.nota >= 9"
-                            class="absolute end-[-40px] bottom-[-40px] w-[150px] h-auto opacity-[0.5] z-10 brilhoRoxo">
+                            class="absolute xl:end-[-40px] end-[-35px] xl:bottom-[-40px] bottom-[-20px] xl:w-[150px] w-[100px] h-auto opacity-[0.5] z-10 brilhoRoxo">
                     </div>
                 </div>
             </div>
@@ -312,7 +312,7 @@
                                 <div class="flex flex-col justify-center">
                                     <h2 class="text-zinc-50 xl:text-sm text-[11px]">{{ review.usuario.nome }}</h2>
                                     <span class="xl:text-[10px] text-[8px] text-zinc-500">@{{ review.usuario.usuario
-                                        }}</span>
+                                    }}</span>
                                 </div>
                             </router-link>
 
@@ -429,7 +429,6 @@ export default {
 
         if (this.usuarioLogado && this.avaliacaoBoxOpenDefault) this.avaliacaoBoxOpen = true
     },
-
     methods: {
         voltarRota() {
             if (window.history.length > 1) {

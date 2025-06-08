@@ -63,12 +63,7 @@ public class UsuarioService {
         Optional<Usuario> usuarioOptional = usuarioRepository.findByUsuario(username);
 
         if (usuarioOptional.isPresent()) {
-            Boolean temReview = reviewRepository.existsByUsuarioId(usuarioOptional.get().getId());
-            if (temReview) {
-                return reviewRepository.buscarUsuarioComNumReview(usuarioOptional.get().getId());
-            } else {
-                return usuarioRepository.buscarUsuarioDtoPorId(usuarioOptional.get().getId());
-            }
+                return usuarioRepository.buscarUsuarioComNumReview(usuarioOptional.get().getId());
         }
         return null;
     }
@@ -77,9 +72,7 @@ public class UsuarioService {
         Optional<Usuario> usuarioOptional = usuarioRepository.findById(id);
 
         if (usuarioOptional.isPresent()) {
-            System.out.println("Usuario econtrado por usuario: " + usuarioOptional.get().getEmail() + " Id: "
-                    + usuarioOptional.get().getId());
-            return usuarioRepository.buscarUsuarioDtoPorId(usuarioOptional.get().getId());
+            return usuarioRepository.buscarUsuarioComNumReview(usuarioOptional.get().getId());
         }
         return null;
     }

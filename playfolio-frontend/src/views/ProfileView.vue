@@ -1,10 +1,19 @@
 <template>
     <div class="w-full h-full pb-6 pt-4 xl:px-24 px-4 flex xl:flex-row flex-col justify-center gap-x-4">
-        <MenuComponent :selected="2" />
-        <MenuMobileComponent />
+        <MenuComponent :selected="2" @recarrega-usuario="carregaUsuario" />
+        <MenuMobileComponent :selected="2" @recarrega-usuario="carregaUsuario" />
         <div class="xl:w-[820px] w-full xl:h-min max-xl:min-h-screen flex flex-col">
             <div
                 class="w-full h-min rounded-xl pt-4 border-[1px] border-zinc-700 overflow-hidden flex flex-col bg-zinc-900">
+
+                <div class="w-full px-4 pb-2">
+                    <button @click="voltarRota"
+                        class="w-[90px] py-1 bg-zinc-50 px-2 rounded-full flex justify-around items-center cursor-pointer min-xl:hidden">
+                        <img src="../assets/Imagens/arrow.svg" class="w-[21px] h-auto">
+                        <span class="text-xs text-[#1b1d1f]">Voltar</span>
+                    </button>
+                </div>
+
                 <div class="flex w-full px-4 h-[80px] items-center relative">
                     <router-link to="/account/settings" v-if="usuario.id == usuarioProfile.id"
                         class="absolute top-0 end-[15px] p-[3px] hover:bg-zinc-600/50 rounded-full cursor-pointer transition-all duration-100">
@@ -15,9 +24,9 @@
                         <div
                             class="flex items-center justify-center xl:size-[75px] size-[65px] rounded-full bg-gradient-to-br from-amber-500 to-pink-500 ">
                             <div
-                                class="xl:size-[68.5px] size-[57px] bg-zinc-900 text-black rounded-full flex items-center justify-center overflow-hidden">
-                                <img :src="`data:image/png;base64,${usuario.imagem}`" class="w-full h-full object-cover"
-                                    v-if="usuario.imagem">
+                                class="xl:size-[69px] size-[57px] bg-zinc-900 text-black rounded-full flex items-center justify-center overflow-hidden">
+                                <img :src="`data:image/png;base64,${usuarioProfile.imagem}`"
+                                    class="w-full h-full object-cover" v-if="usuarioProfile.imagem">
                                 <h1 class="xl:text-5xl text-2xl text-zinc-50" v-else>{{ primeiraLetraUsuario }}</h1>
                             </div>
                         </div>
@@ -27,9 +36,9 @@
                         <span class="text-xs text-zinc-500">@{{ usuarioProfile.usuario }}</span>
                     </div>
                 </div>
-                <div class="w-full py-4 flex flex-col text-start px-4" v-if="usuario.bio">
+                <div class="w-full py-4 flex flex-col text-start px-4" v-if="usuarioProfile.bio">
                     <span class="text-[10px] text-zinc-400">
-                        {{ usuario.bio }}
+                        {{ usuarioProfile.bio }}
                     </span>
                 </div>
                 <div class="mt-4 flex *:w-[100px] *:px-4 *:cursor-pointer max-xl:overflow-x-scroll">
@@ -40,7 +49,8 @@
                                     :class="selectedStatus == 1 ? 'text-zinc-50' : 'text-zinc-300'">Todos</span>
                             </div>
                             <h2 class="text-[13px] mt-1"
-                                :class="selectedStatus == 1 ? 'text-zinc-50' : 'text-zinc-300'">{{ usuario.numJogos || 0
+                                :class="selectedStatus == 1 ? 'text-zinc-50' : 'text-zinc-300'">{{
+                                    usuarioProfile.numJogos || 0
                                 }}</h2>
                         </div>
                     </button>
@@ -119,48 +129,73 @@
 
                 <!-- Filtros -->
                 <div
-                    class="w-[200px]  rounded-xl border-[1px] border-zinc-800 bg-zinc-900/70 flex text-xs text-zinc-200 justify-between items-center relative">
-                    <span class="w-full px-4 text-start cursor-pointer py-auto" ref="filtroBoxButton"
-                        @click="filtroBoxOpen = !filtroBoxOpen">Avaliação</span>
+                    class="w-[150px]  rounded-xl border-[1px] border-zinc-800 bg-zinc-900/70 flex text-xs text-zinc-200 justify-between items-center relative">
+                    <div class="w-full px-4 text-start cursor-pointer py-auto flex items-center justify-between"
+                        ref="filtroBoxButton" @click="filtroBoxOpen = !filtroBoxOpen">
+                        <span v-if="filtroReviews == 1 || filtroReviews == 2">Nome</span>
+                        <span v-if="filtroReviews == 3 || filtroReviews == 4">Nota</span>
+                        <span v-if="filtroReviews == 5 || filtroReviews == 6">Data</span>
+
+
+                        <img v-if="filtroReviews == 1" src="../assets/Imagens/filtros/letter_up.svg"
+                            class="filtro-cinza-claro w-[20px] h-auto">
+                        <img v-else-if="filtroReviews == 2" src="../assets/Imagens/filtros/letter_down.svg"
+                            class="filtro-cinza-claro w-[20px] h-auto">
+                        <img v-else-if="filtroReviews == 3" src="../assets/Imagens/filtros/arrow_down.svg"
+                            class="filtro-cinza-claro w-[20px] h-auto">
+                        <img v-else-if="filtroReviews == 4" src="../assets/Imagens/filtros/arrow_up.svg"
+                            class="filtro-cinza-claro w-[20px] h-auto">
+                        <img v-else-if="filtroReviews == 5" src="../assets/Imagens/filtros/calendar_down.svg"
+                            class="filtro-cinza-claro w-[20px] h-auto">
+                        <img v-else-if="filtroReviews == 6" src="../assets/Imagens/filtros/calendar_up.svg"
+                            class="filtro-cinza-claro w-[20px] h-auto">
+                    </div>
 
                     <div v-if="filtroBoxOpen" ref="filtroBox"
                         class="absolute top-[45px] end-0 w-max flex flex-col gap-y-3 p-4 rounded-2xl border border-zinc-700 bg-zinc-800 z-[1100] shadow-md">
                         <div class="grid grid-cols-3 gap-x-1 items-center">
                             <span class="pr-4 text-start">Nome</span>
-                            <button
-                                class="filter-button px-4 py-1 rounded-full hover:bg-zinc-600 cursor-pointer flex items-center justify-center">
-                                <img src="../assets/Imagens/filtros/letter_up.svg" class="w-[20px] h-auto filtro-cinza">
+                            <button @click="filtroReviews = 1"
+                                class="filter-button px-4 py-1 rounded-full hover:bg-zinc-600 cursor-pointer flex items-center justify-center"
+                                :class="{ 'bg-zinc-600': filtroReviews == 1 }">
+                                <img src="../assets/Imagens/filtros/letter_up.svg" class="w-[20px] h-auto"
+                                    :class="filtroReviews == 1 ? 'filtro-cinza-claro' : 'filtro-cinza'">
                             </button>
-                            <button
-                                class="filter-button px-4 py-1 rounded-full hover:bg-zinc-600 cursor-pointer flex items-center justify-center"><img
-                                    src="../assets/Imagens/filtros/letter_down.svg"
-                                    class="w-[20px] h-auto filtro-cinza"></button>
+                            <button @click="filtroReviews = 2"
+                                class="filter-button px-4 py-1 rounded-full hover:bg-zinc-600 cursor-pointer flex items-center justify-center"
+                                :class="{ 'bg-zinc-600': filtroReviews == 2 }">
+                                <img src="../assets/Imagens/filtros/letter_down.svg" class="w-[20px] h-auto"
+                                    :class="filtroReviews == 2 ? 'filtro-cinza-claro' : 'filtro-cinza'"></button>
                         </div>
 
                         <div class="grid grid-cols-3 gap-x-1 items-center">
                             <span class="pr-4 text-start">Nota</span>
-                            <button
-                                class="filter-button px-4 py-1 rounded-full hover:bg-zinc-600 cursor-pointer flex items-center justify-center">
-                                <img src="../assets/Imagens/filtros/arrow_down.svg"
-                                    class="w-[20px] h-auto filtro-cinza">
+                            <button @click="filtroReviews = 3"
+                                class="filter-button px-4 py-1 rounded-full hover:bg-zinc-600 cursor-pointer flex items-center justify-center"
+                                :class="{ 'bg-zinc-600': filtroReviews == 3 }">
+                                <img src="../assets/Imagens/filtros/arrow_down.svg" class="w-[20px] h-auto"
+                                    :class="filtroReviews == 3 ? 'filtro-cinza-claro' : 'filtro-cinza'">
                             </button>
-                            <button
-                                class="filter-button px-4 py-1 rounded-full hover:bg-zinc-600 cursor-pointer flex items-center justify-center"><img
-                                    src="../assets/Imagens/filtros/arrow_up.svg"
-                                    class="w-[20px] h-auto filtro-cinza"></button>
+                            <button @click="filtroReviews = 4"
+                                class="filter-button px-4 py-1 rounded-full hover:bg-zinc-600 cursor-pointer flex items-center justify-center"
+                                :class="{ 'bg-zinc-600': filtroReviews == 4 }">
+                                <img src="../assets/Imagens/filtros/arrow_up.svg" class="w-[20px] h-auto"
+                                    :class="filtroReviews == 4 ? 'filtro-cinza-claro' : 'filtro-cinza'"></button>
                         </div>
 
                         <div class="grid grid-cols-3 gap-x-1 items-center">
                             <span class="pr-4 text-start">Data</span>
-                            <button
-                                class="filter-button px-4 py-1 rounded-full hover:bg-zinc-600 cursor-pointer flex items-center justify-center">
-                                <img src="../assets/Imagens/filtros/calendar_down.svg"
-                                    class="w-[20px] h-auto filtro-cinza">
+                            <button @click="filtroReviews = 5"
+                                class="filter-button px-4 py-1 rounded-full hover:bg-zinc-600 cursor-pointer flex items-center justify-center"
+                                :class="{ 'bg-zinc-600': filtroReviews == 5 }">
+                                <img src="../assets/Imagens/filtros/calendar_down.svg" class="w-[20px] h-auto"
+                                    :class="filtroReviews == 5 ? 'filtro-cinza-claro' : 'filtro-cinza'">
                             </button>
-                            <button
-                                class="filter-button px-4 py-1 rounded-full hover:bg-zinc-600 cursor-pointer flex items-center justify-center"><img
-                                    src="../assets/Imagens/filtros/calendar_up.svg"
-                                    class="w-[20px] h-auto filtro-cinza"></button>
+                            <button @click="filtroReviews = 6"
+                                class="filter-button px-4 py-1 rounded-full hover:bg-zinc-600 cursor-pointer flex items-center justify-center"
+                                :class="{ 'bg-zinc-600': filtroReviews == 6 }">
+                                <img src="../assets/Imagens/filtros/calendar_up.svg" class="w-[20px] h-auto"
+                                    :class="filtroReviews == 6 ? 'filtro-cinza-claro' : 'filtro-cinza'"></button>
                         </div>
                     </div>
                 </div>
@@ -242,7 +277,7 @@
 
                             </div>
                         </router-link>
-                        <ProfileReviewTextComponent :texto="reviews[jogo.id].texto" :usuario="usuario" />
+                        <ProfileReviewTextComponent :texto="reviews[jogo.id].texto" :usuario="usuarioProfile" />
                     </div>
 
                 </div>
@@ -259,7 +294,7 @@
 
                     <div class="absolute top-[15px] end-[15px] z-[300]" v-if="usuario.id == usuarioProfile.id">
                         <SubmenuReviewComponent :idUsuarioAutor="usuarioProfile.id" :idUsuarioLogado="usuario.id"
-                            :review="reviews[jogo.id]" @recarrega-dados="recarregaDados"
+                            :review="reviews[jogo.id]" @recarrega-dados="carregaInformacoesUsuario"
                             :wishlist="wishlists[jogo.id].id" />
                     </div>
 
@@ -353,6 +388,7 @@ export default {
             carregando: false,
             twitchTokenStore: useTwitchTokenStore(),
             filtroBoxOpen: false,
+            filtroReviews: 5,
             semReviews: false,
             semWishlists: false
         }
@@ -378,25 +414,35 @@ export default {
             }
         }
 
-        await this.procuraUsuario()
-
-        console.log("usuario: ", this.usuario)
-        console.log("Usuario profile: ", this.usuarioProfile)
-
-        await this.carregaListaDeDesejo()
-        await this.carregaReviews()
-        if (this.usuarioProfile != null && (this.jogosIds.length > 0)) {
-            setTimeout(() => this.carregaJogos(this.jogosIds), 1500)
-        }
-
-        this.carregando = false
-
-        this.semReviews = !this.reviews.length > 0
-        this.semWishlists = !this.wishlists.length > 0
+        await this.carregaUsuario()
 
         document.addEventListener("click", this.verificaClick)
     },
     methods: {
+        async carregaUsuario() {
+            await this.procuraUsuario()
+
+            this.carregaInformacoesUsuario()
+        },
+        voltarRota() {
+            if (window.history.length > 1) {
+                this.$router.back()
+            } else {
+                this.$router.push('/')
+            }
+        },
+        async carregaInformacoesUsuario() {
+            await this.carregaListaDeDesejo()
+            await this.carregaReviews()
+            if (this.usuarioProfile != null && (this.jogosIds.length > 0)) {
+                setTimeout(() => this.carregaJogos(this.jogosIds), 1500)
+            } else {
+                this.carregando = false
+            }
+
+            this.semReviews = !this.reviews.length > 0
+            this.semWishlists = !this.wishlists.length > 0
+        },
         verificaClick(event) {
             if (this.$refs.filtroBox && !this.$refs.filtroBox.contains(event.target) && this.$refs.filtroBoxButton && !this.$refs.filtroBoxButton.contains(event.target)) {
                 this.filtroBoxOpen = false
@@ -534,6 +580,35 @@ export default {
                     this.jogosWishlist = this.jogosWishlistBackup
                 }
             }
+        },
+        filtroReviews() {
+            console.log(this.jogosReviewBackup)
+            if (this.filtroReviews == 1) {
+                this.jogosReview = [...this.jogosReviewBackup].sort((a, b) => a.name.localeCompare(b.name, 'pt-BR', { sensitivity: 'base' }));
+            } else if (this.filtroReviews == 2) {
+                this.jogosReview = [...this.jogosReviewBackup].sort((a, b) => b.name.localeCompare(a.name, 'pt-BR', { sensitivity: 'base' }));
+            } else if (this.filtroReviews == 3) {
+                this.jogosReview = [...this.jogosReviewBackup].sort((a, b) => {
+                    const notaA = this.reviews[a.id]?.nota ?? 0
+                    const notaB = this.reviews[b.id]?.nota ?? 0
+                    return notaB - notaA
+                });
+            } else if (this.filtroReviews == 4) {
+                this.jogosReview = [...this.jogosReviewBackup].sort((a, b) => {
+                    const notaA = this.reviews[a.id]?.nota ?? 0
+                    const notaB = this.reviews[b.id]?.nota ?? 0
+                    return notaA - notaB
+                });
+            } else if (this.filtroReviews == 5) {
+                this.jogosReview = [...this.jogosReviewBackup].sort((a, b) => new Date(this.reviews[a.id].dataInclusao) - new Date(this.reviews[b.id].dataInclusao));
+            } else if (this.filtroReviews == 6) {
+                this.jogosReview = [...this.jogosReviewBackup].sort((a, b) => b.name.localeCompare(a.name, 'pt-BR', { sensitivity: 'base' }));
+            }
+        },
+        '$route.params.username'(novo, antigo) {
+            if (novo != antigo) {
+                this.carregaUsuario()
+            }
         }
     },
     computed: {
@@ -547,6 +622,10 @@ export default {
 <style scoped>
 .filtro-cinza {
     filter: brightness(0) saturate(100%) invert(69%) sepia(3%) saturate(706%) hue-rotate(201deg) brightness(92%) contrast(89%);
+}
+
+.filtro-cinza-claro {
+    filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(7479%) hue-rotate(180deg) brightness(82%) contrast(132%);
 }
 
 .filter-button:hover img {

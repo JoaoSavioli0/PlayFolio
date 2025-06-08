@@ -106,18 +106,22 @@ export default {
             startX: 0,
             scrollLeft: 0,
             embla: null,
-            twitchTokenStore: useTwitchTokenStore()
+            twitchTokenStore: useTwitchTokenStore(),
+            timeOutId: null
         }
     },
     async mounted() {
         if (this.twitchTokenStore.access_token == '') {
             await this.twitchTokenStore.buscaToken()
         }
-        this.encontraJogos()
+        this.timeOutId = setTimeout(() => {
+            this.encontraJogos()
+        }, 1000)
+    },
+    beforeUnmount() {
+        clearTimeout(this.timeoutId)
     },
     methods: {
-
-
         async encontraJogos() {
             const body = `fields *; sort first_release_date desc; where rating_count > 25; limit 15;`
             try {
@@ -135,7 +139,7 @@ export default {
 
                 await this.carregaCapas(jogosDestaqueId)
                 this.carregaCarrossel()
-                setTimeout(await this.carregaTags(this.jogosDestaque), 2000)
+                await this.carregaTags(this.jogosDestaque)
 
             } catch (error) {
                 console.error("Erro: " + error)

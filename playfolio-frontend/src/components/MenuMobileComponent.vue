@@ -20,7 +20,8 @@
                     <img src="../assets/Imagens/close.svg" class="size-[25px] filtro-zinc-50">
                 </button>
                 <div class="w-full pt-6 flex flex-col px-6" v-if="usuario">
-                    <router-link class="w-full p-0" :to="`/account/profile/${usuario.usuario}`">
+                    <router-link class="w-full p-0" :to="`/account/profile/${usuario.usuario}`"
+                        @click="menuMobileOpen = false">
                         <div class="flex w-full h-max hover:cursor-pointer">
                             <div
                                 class="flex items-center justify-center size-[45px] rounded-full bg-gradient-to-br from-amber-500 to-pink-500 ">
@@ -77,18 +78,18 @@
 
                         <router-link :to="item.rota" v-for="item in itemsNavFiltrados" class="w-full ">
                             <li @click="itemAtivo = item.id"
-                                class="group flex rounded-full hover:bg-zinc-800 py-[10px] mt-2 text-zinc-400 hover:text-zinc-50 transition-all cursor-pointer text-start px-8 w-full"
+                                class="group flex hover:bg-zinc-800 py-[10px] mt-2 text-zinc-400 hover:text-zinc-50 transition-all cursor-pointer text-start px-8 w-full"
                                 :class="{ 'bg-zinc-800': itemAtivo == item.id }">
                                 <img :src="item.img" class="w-[23px] h-auto transition-all duration-200"
                                     :class="[itemAtivo == item.id ? 'filtro-zinc-50' : 'filtro-cinza']">
                                 <span class="ml-4 transition" :class="{ 'text-zinc-50': itemAtivo == item.id }">{{
                                     item.name
-                                    }}</span>
+                                }}</span>
                             </li>
                         </router-link>
 
                         <li @click="deslogaUsuario"
-                            class="group flex rounded-full hover:bg-zinc-800 py-[10px] mt-2 text-zinc-400 hover:text-zinc-50 transition-all cursor-pointer text-start px-8 w-full"
+                            class="group flex hover:bg-zinc-800 py-[10px] mt-2 text-zinc-400 hover:text-zinc-50 transition-all cursor-pointer text-start px-8 w-full"
                             v-if="this.usuario">
                             <img src="../assets/Imagens/exit.svg"
                                 class="w-[23px] h-auto filtro-cinza transition-all duration-200">
@@ -108,6 +109,7 @@ import PesquisaJogoBoxComponent from './PesquisaJogoBoxComponent.vue'
 
 export default {
     name: "menumobile",
+    props: ["selected"],
     data() {
         return {
             itemsNav: [],
