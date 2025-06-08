@@ -11,7 +11,8 @@ public class ReviewDto {
     private Long idUsuario;
     private LocalDateTime dataInclusao;
 
-    public ReviewDto(int idJogo, Long idUsuario, String texto, Double nota, int status, LocalDateTime dataInclusao) {
+    public ReviewDto(Long idReview, int idJogo, Long idUsuario, String texto, Double nota, int status, LocalDateTime dataInclusao) {
+        this.idReview = idReview;
         this.idJogo = idJogo;
         this.idUsuario = idUsuario;
         this.texto = texto;

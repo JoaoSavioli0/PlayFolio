@@ -44,11 +44,11 @@
 </template>
 
 <script>
-import axios from 'axios';
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { useTwitchTokenStore } from '@/stores/TwitchTokenStore';
+import { igdbApi } from '@/services/api';
 
 export default {
     name: "Info",
@@ -69,7 +69,7 @@ export default {
         async encontraJogos() {
             const body = `fields name, first_release_date, cover; sort first_release_date; where first_release_date > ${this.dataAtualUnix} & hypes > 100; limit 4;`
             try {
-                const response = await axios.post("/v4/games", body, {
+                const response = await igdbApi.post("/v4/games", body, {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
@@ -90,7 +90,7 @@ export default {
 
             const body = `fields url, game; where game = (${jogosId.join(", ")}); limit ${jogosId.length};`
             try {
-                const response = await axios.post("/v4/covers", body, {
+                const response = await igdbApi.post("/v4/covers", body, {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",

@@ -1,7 +1,7 @@
 <template>
     <div class="w-screen h-screen bg-black/50 flex justify-center items-center top-0 start-0 fixed z-[100]"
         v-if="exibeExcluiReviewBox">
-        <div class="bg-zinc-800 rounded-lg px-6 w-[400px] py-12" ref="excluirBox">
+        <div class="bg-zinc-800 rounded-lg px-6  xl:w-[400px] w-[90%] py-12" ref="excluirBox">
             <h2 class="text-zinc-50 text-center">Deseja mesmo excluir?</h2>
             <div class="flex w-full justify-center mt-6">
                 <button @click="exibeExcluiReviewBox = false"
@@ -37,7 +37,8 @@
 </template>
 
 <script>
-import axios from 'axios'
+import { api } from '@/services/api'
+
 export default {
     name: "SubmenuReview",
     props: ['idUsuarioAutor', 'idUsuarioLogado', 'review', 'wishlist'],
@@ -72,7 +73,7 @@ export default {
         async excluirReview() {
             try {
                 console.log("Entrou")
-                await axios.get(`http://localhost:5000/review/delete/${this.review?.id || this.review.idReview}`)
+                await api.get(`/review/delete/${this.review?.id || this.review.idReview}`)
             } catch (error) {
                 console.log("Erro ao excluir review: ", error)
             } finally {
@@ -83,7 +84,7 @@ export default {
         async excluirWishlist() {
             try {
                 console.log("excluir wishlist")
-                await axios.get(`http://localhost:5000/wishlist/delete/${this.wishlist}`)
+                await api.get(`/wishlist/delete/${this.wishlist}`)
             } catch (error) {
                 console.log("Erro ao excluir wishlist: ", error)
             } finally {

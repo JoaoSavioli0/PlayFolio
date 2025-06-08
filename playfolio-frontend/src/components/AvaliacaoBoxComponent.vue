@@ -1,4 +1,17 @@
 <template>
+    <div class="w-screen h-screen bg-black/50 flex justify-center items-center top-0 start-0 fixed z-[2100]"
+        v-if="exibeExcluiReviewBox">
+        <div class="bg-zinc-800 rounded-lg px-6 xl:w-[400px] w-[90%] py-12" ref="excluirBox">
+            <h2 class="text-zinc-50 text-center">Deseja mesmo excluir?</h2>
+            <div class="flex w-full justify-center mt-6">
+                <button @click="exibeExcluiReviewBox = false"
+                    class="w-[40%] rounded-md bg-zinc-700 text-zinc-50 h-[50px] text-sm cursor-pointer">Cancelar</button>
+                <button @click="() => { wishlist ? excluirWishlist() : excluirReview() }"
+                    class="w-[40%] rounded-md bg-zinc-700 text-rose-600 h-[50px] text-sm cursor-pointer ml-2 border-rose-700 border-2">Excluir</button>
+            </div>
+        </div>
+    </div>
+
     <div
         class="w-full h-screen flex justify-center items-center fixed start-0 top-0 overflow-y-hidden z-[2000] max-xl:px-2">
         <div class="w-full h-full bg-black/80 z-[100] absolute top-0 start-0" @click="fechaBox"></div>
@@ -62,7 +75,7 @@
                                 }}</h1>
                             <span class="w-full text-start text-md text-zinc-500">{{
                                 formataDataUnix(dados.first_release_date)
-                                }}</span>
+                            }}</span>
                         </div>
                     </div>
                     <button class="self-start"><img src="../assets/Imagens/close.svg"
@@ -206,12 +219,16 @@
 
                         <div class="w-full pb-2 flex justify-start px-4">
                             <span class="text-zinc-100 text-[10px]">{{ reviewText.length
-                                }}/5000</span>
+                            }}/5000</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="w-full mt-2 flex justify-end px-4" v-if="status != 4">
+                <div class="w-full mt-2 flex px-4" v-if="status != 4"
+                    :class="avaliacaoUsuario ? 'justify-between' : 'justify-end'">
+                    <button
+                        class="px-8 xl:py-4 py-2 border-zinc-400 border text-zinc-50 rounded-full text-xs cursor-pointer"
+                        @click="excluiReviewBox">Excluir</button>
                     <button class="px-8 xl:py-4 py-2 text-zinc-900 bg-zinc-50 rounded-full text-xs cursor-pointer"
                         @click="salvaRegistro">{{ avaliacaoUsuario ? 'Editar' : 'Enviar' }}</button>
                 </div>
@@ -222,15 +239,16 @@
                     </div>
                     <div class="col-span-3 flex flex-col justify-center text-start">
                         <h1 class="xl:text-2xl text-sm line-clamp-2">{{ dados.name }}</h1>
-                        <span v-if="!estaNaWishlist" class="text-zinc-300 xl:text-md text-xs">Adicione {{ dados.name }}
+                        <span v-if="!estaNaWishlist && !avaliacaoUsuario"
+                            class="text-zinc-300 xl:text-md text-xs">Adicione {{ dados.name }}
                             à sua
                             Wishlist</span>
-                        <span v-else class="text-zinc-300 xl:text-md text-xs">{{ dados.name }} já está na sua
-                            Wishlist</span>
+                        <span v-else class="text-zinc-300 xl:text-md text-xs">{{ dados.name }} já
+                            está na sua Wishlist ou já foi avaliado</span>
                         <div class="w-[90%] flex mt-4">
                             <button
                                 class="grow-1 rounded-full text-zinc-900 bg-zinc-50 px-4 xl:py-2 py-1 xl:text-sm text-xs cursor-pointer hover:-translate-y-[2px] hover:shadow-lg transition-all"
-                                @click="salvaWishlist" v-if="!estaNaWishlist">Adicionar</button>
+                                @click="salvaWishlist" v-if="!estaNaWishlist && !avaliacaoUsuario">Adicionar</button>
                             <router-link class="p-0 grow-1"
                                 :to="{ path: `/account/profile/${usuario.usuario}`, query: { filtro: 5 } }">
                                 <button
@@ -247,7 +265,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import { api } from '@/services/api';
 
 export default {
     name: "AvaliacaoBox",
@@ -267,13 +285,13 @@ export default {
             opacidades: [1, 0, 0, 0, 0],
             reviewText: this.avaliacaoUsuario?.texto || '',
             estaNaWishlist: false,
+            exibeExcluiReviewBox: false,
         }
     },
     async mounted() {
-        console.log("avaliacaoUsuario: ", this.avaliacaoUsuario)
+        console.log("avaliacaoUsuario: ", this.avaliacaoUsuario, "\nusuario: ", this.usuario)
         this.updateOffset()
         this.estaNaWishlist = await this.verificaWishlist()
-        console.log("this.estaNaWishlist: ", this.estaNaWishlist)
     },
     methods: {
         updateOffset() {
@@ -324,7 +342,7 @@ export default {
         async salvaRegistro() {
             if (!this.avaliacaoUsuario) {
                 try {
-                    const response = await axios.post("http://localhost:5000/review/new", {
+                    const response = await api.post("/review/new", {
                         texto: this.reviewText,
                         nota: this.nota,
                         status: this.status,
@@ -339,7 +357,7 @@ export default {
                 }
             } else {
                 try {
-                    await axios.post("http://localhost:5000/review/update", {
+                    await api.post("/review/update", {
                         idUsuario: this.avaliacaoUsuario.idUsuario,
                         idJogo: this.avaliacaoUsuario.idJogo,
                         texto: this.reviewText,
@@ -356,7 +374,7 @@ export default {
 
         async salvaWishlist() {
             try {
-                const response = await axios.post("http://localhost:5000/wishlist/adiciona", {
+                await api.post("/wishlist/adiciona", {
                     idUsuario: this.usuario.id,
                     idJogo: this.dados.id
                 })
@@ -364,17 +382,36 @@ export default {
             } catch (error) {
                 console.log("Erro ao adicionar jogo à wishlist: ", error)
             }
+            this.fechaBox()
         },
 
         async verificaWishlist() {
             try {
-                const response = await axios.get(`http://localhost:5000/wishlist/get?idUsuario=${this.usuario.id}&idJogo=${this.dados.id}`)
+                const response = await api.get(`/wishlist/get?idUsuario=${this.usuario.id}&idJogo=${this.dados.id}`)
                 return response.data
             } catch (error) {
                 console.log("Erro ao verificar estado do jogo na wishlist: ", error)
                 return false
             }
-        }
+        },
+
+        excluiReviewBox() {
+            if (this.usuario.id != this.avaliacaoUsuario?.idUsuario) return
+            setTimeout(() => {
+                this.exibeExcluiReviewBox = true
+            }, 100)
+        },
+        async excluirReview() {
+            try {
+                console.log(this.avaliacaoUsuario?.idReview)
+                await api.get(`/review/delete/${this.avaliacaoUsuario?.idReview}`)
+            } catch (error) {
+                console.log("Erro ao excluir review: ", error)
+            } finally {
+                this.exibeExcluiReviewBox = false
+                this.fechaBox()
+            }
+        },
     },
     computed: {
         posicaoMedia() {

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import axios from 'axios';
+import { api } from '@/services/api';
 
 export const useUserStore = defineStore('usuario', {
   state: () => ({
@@ -9,7 +9,7 @@ export const useUserStore = defineStore('usuario', {
   actions: {
     async login(usuarioData) {
       try {
-        const response = await axios.post("http://localhost:5000/usuario/login", {
+        const response = await api.post("http://localhost:5000/usuario/login", {
           email: usuarioData.email,
           senha: usuarioData.senha
         },
@@ -23,7 +23,7 @@ export const useUserStore = defineStore('usuario', {
             this.usuario = response.data.usuario
             this.token = response.data.token
             localStorage.setItem("token", this.token)
-            axios.defaults.headers.common["Authorization"] = `Bearer ${this.token}`;
+            api.defaults.headers.common["Authorization"] = `Bearer ${this.token}`;
         }
 
       } catch (error) {
@@ -34,7 +34,7 @@ export const useUserStore = defineStore('usuario', {
       this.usuario = null
       this.token = null
       localStorage.removeItem("token")
-      delete axios.defaults.headers.common["Authorization"]
+      delete api.defaults.headers.common["Authorization"]
     },
     async reconectaSessao() {
       if (!this.token) {
@@ -43,7 +43,7 @@ export const useUserStore = defineStore('usuario', {
     }
 
       try {
-        const response = await axios.get("http://localhost:5000/usuario/me", {
+        const response = await api.get("http://localhost:5000/usuario/me", {
           headers: { Authorization: `Bearer ${this.token}` },
         })
         if(response.data && response.data.id)

@@ -81,7 +81,7 @@
 
 <script>
 import { useUserStore } from '@/stores/UserStore'
-import axios from 'axios'
+import { api } from '@/services/api'
 
 export default {
     name: 'settingsprofile',
@@ -111,7 +111,7 @@ export default {
             if (!this.verificaDados) return
 
             try {
-                const response = await axios.post("http://localhost:5000/usuario/update-data", {
+                const response = await api.post("/usuario/update-data", {
                     id: this.usuario.id,
                     nome: this.nomeExibicao,
                     usuario: this.nomeUsuario,
@@ -169,7 +169,7 @@ export default {
                 const formData = new FormData()
                 formData.append("file", imagemUpada)
                 try {
-                    const response = await axios.post(`http://localhost:5000/usuario/foto-perfil/${this.usuario.id}/nova`,
+                    const response = await api.post(`/usuario/foto-perfil/${this.usuario.id}/nova`,
                         formData,
                         {
                             headers: { "Content-Type": "multipart/form-data" }

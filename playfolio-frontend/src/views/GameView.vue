@@ -297,30 +297,62 @@
                 </div>
 
                 <div class="w-full grid grid-cols-1 gap-4 mt-6">
-                    <div class="w-full flex flex-col xl:pb-8 pb-4 border-b border-zinc-800 " v-for="review in reviews">
-                        <!-- Dados usuário -->
-                        <div class="w-full flex justify-between">
-                            <router-link :to="`/account/profile/${review.usuario.usuario}`"
-                                class="flex gap-x-2 cursor-pointer">
-                                <div
-                                    class="xl:size-[40px] size-[28px] bg-zinc-800 text-black rounded-full flex items-center justify-center overflow-hidden">
-                                    <img :src="`data:image/png;base64,${review.usuario.imagem}`"
-                                        class="w-full h-full object-cover" v-if="review.usuario.imagem">
-                                    <h1 class="text-[12px] text-zinc-50" v-else>{{
-                                        primeiraLetraUsuario(review.usuario.usuario) }}</h1>
-                                </div>
-                                <div class="flex flex-col justify-center">
-                                    <h2 class="text-zinc-50 xl:text-sm text-[11px]">{{ review.usuario.nome }}</h2>
-                                    <span class="xl:text-[10px] text-[8px] text-zinc-500">@{{ review.usuario.usuario
-                                    }}</span>
-                                </div>
-                            </router-link>
+                    <div class="w-full flex flex-col pb-3 border-b border-zinc-800 " v-for="review in reviews">
 
-                            <SubmenuReviewComponent :idUsuario="usuario.id" :review="review"
-                                @recarrega-dados="recarregaDados" />
+                        <!-- Não tem texto -->
+                        <div class="w-full">
+                            <div class="w-full flex justify-between relative items-center">
+                                <router-link :to="`/account/profile/${review.usuario.usuario}`"
+                                    class="flex gap-x-2 cursor-pointer">
+                                    <div
+                                        class="xl:size-[32px] size-[28px] bg-zinc-800 text-black rounded-full flex items-center justify-center overflow-hidden">
+                                        <img :src="`data:image/png;base64,${review.usuario.imagem}`"
+                                            class="w-full h-full object-cover" v-if="review.usuario.imagem">
+                                        <h1 class="text-[12px] text-zinc-50" v-else>{{
+                                            primeiraLetraUsuario(review.usuario.usuario) }}</h1>
+                                    </div>
+                                    <div class="flex flex-col justify-center">
+                                        <h2 class="text-zinc-50 xl:text-xs text-[11px]">{{ review.usuario.nome }}</h2>
+                                        <span class="xl:text-[10px] text-[8px] text-zinc-500">@{{ review.usuario.usuario
+                                        }}</span>
+                                    </div>
+                                </router-link>
+
+                                <div class="flex items-center">
+                                    <div class="w-fit flex flex-col items-center justify-center">
+                                        <h1 class="xl:text-2xl text-xl" :class="{
+                                            'degradeVermelho': review.nota < 4,
+                                            'degradeAmarelo': review.nota >= 4 && review.nota < 7,
+                                            'degradeAzul': review.nota >= 7 && review.nota < 9,
+                                            'degradeRoxo': review.nota >= 9
+                                        }">
+                                            {{ review.nota }}
+                                        </h1>
+                                        <!-- Status -->
+                                        <div class="w-full border rounded-md flex items-center justify-center py-[2px] xl:px-2 px-[15px]"
+                                            :class="{
+                                                'border-[#c31ef1]': review.status == 1,
+                                                'border-zinc-300': review.status == 2,
+                                                'border-[#d22d56]': review.status == 3,
+                                            }">
+                                            <span class="text-[#c31ef1] text-[8px] xl:text-[10px]"
+                                                v-if="review.status == 1">Jogando</span>
+                                            <span class="text-zinc-300 text-[8px] xl:text-[10px]"
+                                                v-else-if="review.status == 2">Concluído</span>
+                                            <span class="text-[#d22d56] text-[8px] xl:text-[10px]"
+                                                v-else-if="review.status == 3">Dropado</span>
+                                        </div>
+                                    </div>
+
+                                    <SubmenuReviewComponent :idUsuario="usuario.id" :review="review"
+                                        @recarrega-dados="recarregaDados" />
+                                </div>
+                            </div>
+                            <div class="w-full mt-2" v-if="review.review">
+                                <ReviewTextComponent :usuario="usuario" :review="review" />
+                            </div>
+
                         </div>
-
-                        <ReviewTextComponent :usuario="usuario" :review="review" />
                     </div>
                 </div>
             </div>
@@ -330,7 +362,6 @@
 
 <script>
 import EmblaCarousel from 'embla-carousel'
-import axios from 'axios'
 import VideoPlayerComponent from '@/components/VideoPlayerComponent.vue'
 import ReviewTextComponent from '@/components/ReviewTextComponent.vue'
 import ImageComponent from '@/components/ImageComponent.vue'
@@ -340,6 +371,7 @@ import { useUserStore } from '@/stores/UserStore'
 import MenuComponent from '@/components/MenuComponent.vue'
 import { useTwitchTokenStore } from '@/stores/TwitchTokenStore'
 import MenuMobileComponent from '@/components/MenuMobileComponent.vue'
+import { igdbApi, api } from '@/services/api'
 
 export default {
     name: "Game",
@@ -439,7 +471,7 @@ export default {
         },
         async verificaSeEstaNaWishlist() {
             try {
-                const response = await axios.get(`http://localhost:5000/wishlist/get?idUsuario=${this.usuario.id}&idJogo=${this.id}`)
+                const response = await api.get(`/wishlist/get?idUsuario=${this.usuario.id}&idJogo=${this.id}`)
                 this.estaNaWishlist = response.data
             } catch (error) {
                 console.log("Erro ao verificar se jogo está na wishlist do usuário: ", error)
@@ -450,7 +482,7 @@ export default {
             const body = `fields *; where id = ${this.id};`;
 
             try {
-                const response = await axios.post("/v4/games", body, {
+                const response = await igdbApi.post("/v4/games", body, {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
@@ -479,10 +511,10 @@ export default {
         },
 
         async carregaReviewDoUsuario() {
-            console.log("Id: ", this.id, "\nusuario: ", this.usuario, "\nUsuario logado: ", this.usuarioLogado)
             if (!this.id || !this.usuarioLogado) return
+
             try {
-                const response = await axios.get(`http://localhost:5000/review/get?idJogo=${this.id}&idUsuario=${this.usuario.id}`)
+                const response = await api.get(`/review/get?idJogo=${this.id}&idUsuario=${this.usuario.id}`)
                 this.reviewDoUsuario = response.data
                 console.log(this.reviewDoUsuario)
             } catch (error) {
@@ -494,7 +526,7 @@ export default {
             if (!this.id) return
 
             try {
-                const response = await axios.get(`http://localhost:5000/review/get/${this.id}`)
+                const response = await api.get(`/review/get/${this.id}`)
                 this.reviews = response.data
                 console.log("Reviews: ", this.reviews)
             } catch (error) {
@@ -507,7 +539,7 @@ export default {
 
             const body = `fields video_id; where game = ${this.id};`;
             try {
-                const response = await axios.post("/v4/game_videos", body, {
+                const response = await igdbApi.post("/v4/game_videos", body, {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
@@ -533,7 +565,7 @@ export default {
 
             const body = `fields url; where game = ${this.id};`;
             try {
-                const response = await axios.post("/v4/screenshots", body, {
+                const response = await igdbApi.post("/v4/screenshots", body, {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
@@ -552,7 +584,7 @@ export default {
         async carregaCapa() {
             const body = `fields url; where game = ${this.id}; limit 1;`
             try {
-                const response = await axios.post("/v4/covers", body, {
+                const response = await igdbApi.post("/v4/covers", body, {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
@@ -579,7 +611,7 @@ export default {
 
             const body = `fields name; where id = (${ids.join(", ")}); limit 5;`
             try {
-                const response = await axios.post("/v4/genres", body, {
+                const response = await igdbApi.post("/v4/genres", body, {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
@@ -607,7 +639,7 @@ export default {
             const body = `fields name; where id = (${platformIds.join(", ")});`
 
             try {
-                const response = await axios.post("/v4/platforms", body, {
+                const response = await igdbApi.post("/v4/platforms", body, {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
@@ -629,7 +661,7 @@ export default {
             this.empresas = []
             const body = `fields company, developer, porting, publisher, supporting; where game = ${this.id};`
             try {
-                const response = await axios.post("/v4/involved_companies", body, {
+                const response = await igdbApi.post("/v4/involved_companies", body, {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
@@ -653,7 +685,7 @@ export default {
             const body = `fields name; where id = (${ids.join(", ")});`
 
             try {
-                const response = await axios.post("/v4/companies", body, {
+                const response = await igdbApi.post("/v4/companies", body, {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
@@ -674,6 +706,7 @@ export default {
 
         recarregaDados(acao) {
             this.avaliacaoBoxOpen = false
+            this.verificaSeEstaNaWishlist()
             this.carregaReviewDoUsuario()
             this.carregaReviews()
             if (acao == "Exclusao") this.boxSucessoExclusao = true

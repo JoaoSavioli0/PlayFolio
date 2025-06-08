@@ -41,7 +41,7 @@
 <script>
 import MenuComponent from '@/components/MenuComponent.vue';
 import MenuMobileComponent from '@/components/MenuMobileComponent.vue';
-import axios from 'axios';
+import { api } from '@/services/api'
 
 export default {
     name: 'Community',
@@ -67,7 +67,7 @@ export default {
         },
         async carregaUsuarios() {
             try {
-                const response = await axios.get("http://localhost:5000/usuario/all")
+                const response = await api.get("/usuario/all")
                 this.usuarios = response.data
                 console.log("Usuarios: ", this.usuarios)
             } catch (error) {

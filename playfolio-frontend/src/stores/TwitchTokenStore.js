@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import axios from "axios";
+import { api } from "@/services/api";
 
 export const useTwitchTokenStore = defineStore("TwitchToken", {
     state: () => ({
@@ -9,7 +9,7 @@ export const useTwitchTokenStore = defineStore("TwitchToken", {
     actions: {
         async buscaToken() {
             try {
-                const response = await axios.post("http://localhost:5000/api/twitch/token")
+                const response = await api.post("http://localhost:5000/api/twitch/token")
 
                 this.access_token = response.data.access_token
                 this.expires_in = response.data.expires_in

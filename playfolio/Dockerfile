@@ -8,7 +8,7 @@ WORKDIR /app
 COPY target/playfolio-0.0.1-SNAPSHOT.jar app.jar
 
 # Expõe a porta padrão do Spring Boot
-EXPOSE 5000
+EXPOSE 8080
 
 # Comando que será executado no container
 ENTRYPOINT ["java", "-jar", "app.jar"]

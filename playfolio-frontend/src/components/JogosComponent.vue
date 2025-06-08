@@ -179,7 +179,7 @@
 
 <script>
 import { useTwitchTokenStore } from '@/stores/TwitchTokenStore';
-import axios from 'axios';
+import { igdbApi } from '@/services/api';
 
 export default {
     name: "Jogos",
@@ -219,14 +219,14 @@ export default {
                 await this.carregaJogos()
                 await this.carregaJogos2()
                 await this.carregaInfo()
-            }, 1500)
+            }, 2500)
         },
 
         async carregaJogos() {
             const body = `fields *; sort value desc; limit 6; sort total_rating_count desc;`;
 
             try {
-                const response = await axios.post("/v4/games", body, {
+                const response = await igdbApi.post("/v4/games", body, {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
@@ -266,7 +266,7 @@ export default {
             const body = `fields *; limit 6; where rating_count > 300 & version_parent = null & parent_game = null; sort rating desc;`;
 
             try {
-                const response = await axios.post("/v4/games", body, {
+                const response = await igdbApi.post("/v4/games", body, {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
@@ -310,7 +310,7 @@ export default {
         async carregaCapas(jogosId) {
             const body = `fields url; where game = (${jogosId.join(", ")}); limit 12;`
             try {
-                const response = await axios.post("/v4/covers", body, {
+                const response = await igdbApi.post("/v4/covers", body, {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
@@ -332,7 +332,7 @@ export default {
 
             const body = `fields name; where id = (${generos.join(", ")}); limit 50;`
             try {
-                const response = await axios.post("/v4/genres", body, {
+                const response = await igdbApi.post("/v4/genres", body, {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
@@ -363,7 +363,7 @@ export default {
             const body = `fields abbreviation; where id = (${plataformas.join(", ")}); limit 50;`
 
             try {
-                const response = await axios.post("/v4/platforms", body, {
+                const response = await igdbApi.post("/v4/platforms", body, {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",

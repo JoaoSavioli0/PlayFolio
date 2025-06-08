@@ -79,8 +79,8 @@
 </template>
 
 <script>
-import axios from 'axios'
-import { useUserStore } from '@/stores/UserStore'
+import { api } from '@/services/api'
+
 export default {
     name: 'settingsdata',
     props: ['usuario'],
@@ -127,7 +127,7 @@ export default {
             if (!this.validaSenha()) return
             this.errosSenhaAtual = ''
             try {
-                const response = await axios.post("http://localhost:5000/usuario/update-password", {
+                const response = await api.post("/usuario/update-password", {
                     id: this.usuario.id,
                     senhaAtual: this.senhaAtual,
                     novaSenha: this.novaSenha
@@ -152,7 +152,7 @@ export default {
             }
 
             try {
-                const response = await axios.post("http://localhost:5000/usuario/update-email", {
+                const response = await api.post("/usuario/update-email", {
                     id: this.usuario.id,
                     email: this.email
                 })

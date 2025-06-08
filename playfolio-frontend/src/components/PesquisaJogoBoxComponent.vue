@@ -79,7 +79,8 @@
 
 <script>
 import { useTwitchTokenStore } from '@/stores/TwitchTokenStore'
-import axios from 'axios'
+import { igdbApi } from '@/services/api'
+
 export default {
     name: "PesquisaJogoBox",
     data() {
@@ -120,7 +121,7 @@ export default {
             const tituloFormatado = this.tituloPesquisado.toLowerCase().replace(/" /g, '\\"')
             const body = `fields name, first_release_date, cover, total_rating_count; where name ~ *"${tituloFormatado}"*; sort total_rating_count desc; limit 50;`
             try {
-                const response = await axios.post("/v4/games", body, {
+                const response = await igdbApi.post("/v4/games", body, {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
@@ -154,7 +155,7 @@ export default {
 
             const body = `fields url; where game = (${jogosId.join(", ")}); limit 50;`
             try {
-                const response = await axios.post("/v4/covers", body, {
+                const response = await igdbApi.post("/v4/covers", body, {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",

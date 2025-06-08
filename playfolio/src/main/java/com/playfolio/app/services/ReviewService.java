@@ -83,7 +83,7 @@ public class ReviewService {
 
     public List<ReviewDto> getReviewsDoUsuarioService(Long idUsuario) {
         return reviewRepository.findAllByUsuarioId(idUsuario).stream()
-                .map(r -> new ReviewDto(r.getJogoId(), r.getUsuario().getId(), r.getReview(), r.getNota(),
+                .map(r -> new ReviewDto(r.getId(), r.getJogoId(), r.getUsuario().getId(), r.getReview(), r.getNota(),
                         r.getStatus(), r.getDataInclusao()))
                 .collect(Collectors.toList());
     }
@@ -98,7 +98,7 @@ public class ReviewService {
             return null;
 
         Review reviewEncontrada = reviewOptional.get();
-        return new ReviewDto(idJogo, idUsuario, reviewEncontrada.getReview(), reviewEncontrada.getNota(),
+        return new ReviewDto(reviewEncontrada.getId(), idJogo, idUsuario, reviewEncontrada.getReview(), reviewEncontrada.getNota(),
                 reviewEncontrada.getStatus(), reviewEncontrada.getDataInclusao());
     }
 

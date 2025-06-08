@@ -91,8 +91,8 @@
 
 <script>
 import { useTwitchTokenStore } from '@/stores/TwitchTokenStore';
-import axios from 'axios';
 import EmblaCarousel from 'embla-carousel'
+import { igdbApi } from '@/services/api';
 
 export default {
     name: "Destaque",
@@ -116,7 +116,7 @@ export default {
         }
         this.timeOutId = setTimeout(() => {
             this.encontraJogos()
-        }, 1000)
+        }, 1500)
     },
     beforeUnmount() {
         clearTimeout(this.timeoutId)
@@ -125,7 +125,7 @@ export default {
         async encontraJogos() {
             const body = `fields *; sort first_release_date desc; where rating_count > 25; limit 15;`
             try {
-                const response = await axios.post("/v4/games", body, {
+                const response = await igdbApi.post("/v4/games", body, {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
@@ -162,7 +162,7 @@ export default {
             const requests = jogosId.map(async (id) => {
                 const body = `fields url; where game = ${id}; limit 1;`
                 try {
-                    const response = await axios.post("/v4/covers", body, {
+                    const response = await igdbApi.post("/v4/covers", body, {
                         headers: {
                             'Accept': 'application/json',
                             'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
@@ -192,7 +192,7 @@ export default {
 
             const body = `fields name; where id = (${this.genreIds.join(", ")}); limit 50;`
             try {
-                const response = await axios.post("/v4/genres", body, {
+                const response = await igdbApi.post("/v4/genres", body, {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",

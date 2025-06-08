@@ -3,6 +3,13 @@ module.exports = defineConfig({
   transpileDependencies: true,
   devServer: {
     port: 9091,
-    proxy: 'https://api.igdb.com',
+    proxy: {
+      '/v4': {
+        target: 'https://api.igdb.com',
+        changeOrigin: true,
+        secure: false,
+        pathRewrite: { '^/v4': '/v4' }
+      }
+    }
   }
 })

@@ -240,7 +240,7 @@
                                             class="py-2 w-[50px] rounded-lg bg-zinc-800/30 flex items-center justify-center shrink-0">
                                             <span class="text-zinc-50 text-xl">{{
                                                 reviews[jogo.id]?.nota
-                                            }}</span>
+                                                }}</span>
                                         </div>
                                         <div class="flex flex-col items-center ml-2 w-full">
                                             <div class="w-full flex justify-start">
@@ -256,7 +256,7 @@
                                                 <div class="max-w-[70%] w-fit line-clamp-2 pr-2 break-all text-left">
                                                     <span class="text-sm text-start xl:text-md w-full">{{
                                                         jogo.name
-                                                    }}</span>
+                                                        }}</span>
                                                 </div>
                                                 <div class="pl-2 border-l-[1px] border-zinc-400 flex items-center"
                                                     v-if="jogo.first_release_date">
@@ -277,7 +277,8 @@
 
                             </div>
                         </router-link>
-                        <ProfileReviewTextComponent :texto="reviews[jogo.id].texto" :usuario="usuarioProfile" />
+                        <ProfileReviewTextComponent :texto="reviews[jogo.id].texto" :usuario="usuarioProfile"
+                            v-if="reviews[jogo.id].texto" />
                     </div>
 
                 </div>
@@ -326,7 +327,7 @@
                                                 <div class="max-w-[70%] line-clamp-2 pr-2 break-all text-left">
                                                     <span class="text-sm text-start xl:text-md w-full">{{
                                                         jogo.name
-                                                    }}</span>
+                                                        }}</span>
                                                 </div>
                                                 <div class="pl-2 border-l-[1px] border-zinc-400 flex items-center"
                                                     v-if="jogo.first_release_date">
@@ -359,7 +360,7 @@ import ProfileReviewTextComponent from '@/components/ProfileReviewTextComponent.
 import SubmenuReviewComponent from '@/components/SubmenuReviewComponent.vue';
 import { useTwitchTokenStore } from '@/stores/TwitchTokenStore';
 import { useUserStore } from '@/stores/UserStore';
-import axios from 'axios';
+import { igdbApi, api } from '@/services/api'
 
 export default {
     name: 'Profile',
@@ -451,7 +452,7 @@ export default {
         async procuraUsuario() {
             console.log("Procurausuario")
             try {
-                const response = await axios.get(`http://localhost:5000/usuario/fromUsername/${this.username}`)
+                const response = await api.get(`/usuario/fromUsername/${this.username}`)
                 this.usuarioProfile = response.data
                 console.log("Usuario profile: ", this.usuarioProfile)
             } catch (error) {
@@ -461,7 +462,7 @@ export default {
 
         async carregaListaDeDesejo() {
             try {
-                const response = await axios.get(`http://localhost:5000/wishlist/get/user?idUsuario=${this.usuarioProfile.id}`)
+                const response = await api.get(`/wishlist/get/user?idUsuario=${this.usuarioProfile.id}`)
 
                 this.wishlistIds = response.data.map(w => w.idJogo)
 
@@ -476,7 +477,7 @@ export default {
         },
         async carregaReviews() {
             try {
-                const response = await axios.get(`http://localhost:5000/review/user?id=${this.usuarioProfile.id}`)
+                const response = await api.get(`/review/user?id=${this.usuarioProfile.id}`)
 
                 response.data.forEach(r => {
                     this.reviews[r.idJogo] = r
@@ -497,7 +498,7 @@ export default {
             const body = `fields *; where id = (${jogosId.join(', ')});`;
 
             try {
-                const response = await axios.post("/v4/games", body, {
+                const response = await igdbApi.post("/v4/games", body, {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
@@ -524,7 +525,7 @@ export default {
         async carregaCapas(jogosId) {
             const body = `fields url; where game = (${jogosId.join(", ")}); limit 12;`
             try {
-                const response = await axios.post("/v4/covers", body, {
+                const response = await igdbApi.post("/v4/covers", body, {
                     headers: {
                         'Accept': 'application/json',
                         'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",

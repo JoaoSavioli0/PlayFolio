@@ -193,9 +193,8 @@
 </template>
 
 <script>
-import axios from 'axios';
 import { useUserStore } from '@/stores/UserStore';
-import { useRouter } from "vue-router"
+import { api } from '@/services/api'
 
 export default {
     name: "Login",
@@ -241,10 +240,10 @@ export default {
     },
     methods: {
         async fazLogin() {
-            console.log("fazLogin")
             this.erroAviso = ''
+
             if (!this.emailLogin) {
-                console.log("EmailLogin: ", this.emailLogin)
+                this.erroAviso = "Insira um email válido"
                 return
             }
 
@@ -270,7 +269,7 @@ export default {
                 return
             }
             try {
-                const response = await axios.post("http://localhost:5000/usuario/registro", {
+                const response = await api.post("/usuario/registro", {
                     email: this.emailRegistro,
                     senha: this.senhaRegistro,
                     nome: this.nomeRegistro,
