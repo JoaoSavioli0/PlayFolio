@@ -9,7 +9,7 @@ export const useTwitchTokenStore = defineStore("TwitchToken", {
     actions: {
         async buscaToken() {
             try {
-                const response = await api.post("http://localhost:5000/api/twitch/token")
+                const response = await api.post("/api/twitch/token")
 
                 this.access_token = response.data.access_token
                 this.expires_in = response.data.expires_in

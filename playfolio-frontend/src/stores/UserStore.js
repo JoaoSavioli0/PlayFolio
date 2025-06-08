@@ -9,7 +9,7 @@ export const useUserStore = defineStore('usuario', {
   actions: {
     async login(usuarioData) {
       try {
-        const response = await api.post("http://localhost:5000/usuario/login", {
+        const response = await api.post("/usuario/login", {
           email: usuarioData.email,
           senha: usuarioData.senha
         },
@@ -43,7 +43,7 @@ export const useUserStore = defineStore('usuario', {
     }
 
       try {
-        const response = await api.get("http://localhost:5000/usuario/me", {
+        const response = await api.get("/usuario/me", {
           headers: { Authorization: `Bearer ${this.token}` },
         })
         if(response.data && response.data.id)
