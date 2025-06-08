@@ -17,6 +17,7 @@ com\playfolio\app\entities\Wishlist.class
 com\playfolio\app\services\ReviewService.class
 com\playfolio\app\controllers\GlobalExceptionHandler.class
 com\playfolio\app\dtos\NewEmailDto.class
+com\playfolio\app\controllers\HealthController.class
 com\playfolio\app\dtos\ReviewDto.class
 com\playfolio\app\dtos\RegistroDto.class
 com\playfolio\app\exceptions\usuario\UsuarioJaCadastradoException.class
