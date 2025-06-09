@@ -32,4 +32,22 @@ public class TokenController {
 
         return ResponseEntity.ok(response.getBody());
     }
+
+    public String getTwitchAccessToken() {
+        RestTemplate restTemplate = new RestTemplate();
+
+        String url = TOKEN_URL +
+                "?client_id=" + clientId +
+                "&client_secret=" + clientSecret +
+                "&grant_type=client_credentials";
+
+        ResponseEntity<Map> response = restTemplate.postForEntity(url, null, Map.class);
+
+        Map<String, Object> body = response.getBody();
+        if (body != null && body.containsKey("access_token")) {
+            return (String) body.get("access_token");
+        }
+
+        throw new RuntimeException("Token de acesso da Twitch não encontrado");
+    }
 }

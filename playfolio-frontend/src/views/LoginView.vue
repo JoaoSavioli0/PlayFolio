@@ -58,7 +58,8 @@
                         <button
                             class="rounded-full w-full min-[1800px]:py-3 py-[10px] text-center bg-zinc-50 mt-8 cursor-pointer"
                             @click="fazLogin()">
-                            <h2 class="text-zinc-800">LOGIN</h2>
+                            <h2 class="text-zinc-800" v-if="!carregandoLogin">Login</h2>
+                            <span class="loading loading-ring loading-xl text-black" v-else></span>
                         </button>
                     </div>
                     <div class="w-full py-2 flex justify-center items-center">
@@ -160,9 +161,10 @@
                             </button>
                         </label>
                         <button
-                            class="mt-4 col-span-2 rounded-full w-full py-3 py-[10px] text-center bg-zinc-50 cursor-pointer"
+                            class="mt-4 col-span-2 rounded-full w-full py-3 py-[10px] text-center bg-zinc-50 cursor-pointer flex items-center justify-center"
                             @click="fazCadastro()">
-                            <h2 class="text-zinc-800">CADASTRAR</h2>
+                            <h2 class="text-zinc-800" v-if="!carregandoRegistro">CADASTRAR</h2>
+                            <span class="loading loading-ring loading-xl text-black" v-else></span>
                         </button>
                     </div>
 
@@ -225,11 +227,12 @@ export default {
             senhaVisivel: false,
             erroAviso: '',
             userStore: useUserStore(),
-
             erroUsuarioRegistro: '',
             erroEmailRegistro: '',
             erroNomeRegistro: '',
-            erroRegistro: ''
+            erroRegistro: '',
+            carregandoLogin: false,
+            carregandoRegistro: false
         }
     },
     mounted() {
@@ -241,9 +244,11 @@ export default {
     methods: {
         async fazLogin() {
             this.erroAviso = ''
+            this.carregandoLogin = true
 
             if (!this.emailLogin) {
                 this.erroAviso = "Insira um email válido"
+                this.carregandoLogin = false
                 return
             }
 
@@ -260,14 +265,17 @@ export default {
             } catch (error) {
                 this.erroAviso = error
             }
-
+            this.carregandoLogin = false
 
         },
 
         async fazCadastro() {
+            this.carregandoRegistro = true
             if (!this.validaCampos()) {
+                this.carregandoRegistro = false
                 return
             }
+
             try {
                 const response = await api.post("/usuario/registro", {
                     email: this.emailRegistro,
@@ -286,6 +294,7 @@ export default {
                     if (error.response.status == 403) this.erroUsuarioRegistro = error.response.data
                 }
             }
+            this.carregandoRegistro = false
         },
 
         validaCampos() {

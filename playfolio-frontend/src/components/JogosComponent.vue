@@ -179,7 +179,7 @@
 
 <script>
 import { useTwitchTokenStore } from '@/stores/TwitchTokenStore';
-import { igdbApi } from '@/services/api';
+import { api } from '@/services/api';
 
 export default {
     name: "Jogos",
@@ -226,12 +226,10 @@ export default {
             const body = `fields *; sort value desc; limit 6; sort total_rating_count desc;`;
 
             try {
-                const response = await igdbApi.post("/v4/games", body, {
+                const response = await api.post("/api/igdb/proxy", body, {
                     headers: {
-                        'Accept': 'application/json',
-                        'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer ${this.twitchTokenStore.access_token}`,
-                        'Content-Type': 'text/plain'
+                        "igdb-endpoint": "/v4/games",
+                        "Content-Type": "text/plain"
                     }
                 })
                 this.jogosReview = response.data
@@ -266,12 +264,10 @@ export default {
             const body = `fields *; limit 6; where rating_count > 300 & version_parent = null & parent_game = null; sort rating desc;`;
 
             try {
-                const response = await igdbApi.post("/v4/games", body, {
+                const response = await api.post("/api/igdb/proxy", body, {
                     headers: {
-                        'Accept': 'application/json',
-                        'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer ${this.twitchTokenStore.access_token}`,
-                        'Content-Type': 'text/plain'
+                        "igdb-endpoint": "/v4/games",
+                        "Content-Type": "text/plain"
                     }
                 })
 
@@ -310,12 +306,10 @@ export default {
         async carregaCapas(jogosId) {
             const body = `fields url; where game = (${jogosId.join(", ")}); limit 12;`
             try {
-                const response = await igdbApi.post("/v4/covers", body, {
+                const response = await api.post("/api/igdb/proxy", body, {
                     headers: {
-                        'Accept': 'application/json',
-                        'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer ${this.twitchTokenStore.access_token}`,
-                        'Content-Type': 'text/plain'
+                        "igdb-endpoint": "/v4/covers",
+                        "Content-Type": "text/plain"
                     }
                 })
                 for (let data of response.data) {
@@ -332,12 +326,10 @@ export default {
 
             const body = `fields name; where id = (${generos.join(", ")}); limit 50;`
             try {
-                const response = await igdbApi.post("/v4/genres", body, {
+                const response = await api.post("/api/igdb/proxy", body, {
                     headers: {
-                        'Accept': 'application/json',
-                        'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer ${this.twitchTokenStore.access_token}`,
-                        'Content-Type': 'text/plain'
+                        "igdb-endpoint": "/v4/genres",
+                        "Content-Type": "text/plain"
                     }
                 })
 
@@ -363,12 +355,10 @@ export default {
             const body = `fields abbreviation; where id = (${plataformas.join(", ")}); limit 50;`
 
             try {
-                const response = await igdbApi.post("/v4/platforms", body, {
+                const response = await api.post("/api/igdb/proxy", body, {
                     headers: {
-                        'Accept': 'application/json',
-                        'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer ${this.twitchTokenStore.access_token}`,
-                        'Content-Type': 'text/plain'
+                        "igdb-endpoint": "/v4/platforms",
+                        "Content-Type": "text/plain"
                     }
                 })
 

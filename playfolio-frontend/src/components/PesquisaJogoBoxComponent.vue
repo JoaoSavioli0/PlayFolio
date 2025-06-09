@@ -60,7 +60,7 @@
                                         <div class="max-w-[55%] line-clamp-2 text-left">
                                             <h1 class="text-start pr-4 text-md min-[1800px]:text-lg">{{
                                                 jogo.name
-                                            }}</h1>
+                                                }}</h1>
                                         </div>
                                         <div v-if="jogo.first_release_date" class="w-fit">
                                             <h2 class="text-left text-zinc-500 text-xs min-[1800px]:text-sm">{{
@@ -79,7 +79,7 @@
 
 <script>
 import { useTwitchTokenStore } from '@/stores/TwitchTokenStore'
-import { igdbApi } from '@/services/api'
+import { api } from '@/services/api'
 
 export default {
     name: "PesquisaJogoBox",
@@ -121,12 +121,10 @@ export default {
             const tituloFormatado = this.tituloPesquisado.toLowerCase().replace(/" /g, '\\"')
             const body = `fields name, first_release_date, cover, total_rating_count; where name ~ *"${tituloFormatado}"*; sort total_rating_count desc; limit 50;`
             try {
-                const response = await igdbApi.post("/v4/games", body, {
+                const response = await api.post("/api/igdb/proxy", body, {
                     headers: {
-                        'Accept': 'application/json',
-                        'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer ${this.twitchToken.access_token}`,
-                        'Content-Type': 'text/plain'
+                        "igdb-endpoint": "/v4/games",
+                        "Content-Type": "text/plain"
                     }
                 })
 
@@ -155,12 +153,10 @@ export default {
 
             const body = `fields url; where game = (${jogosId.join(", ")}); limit 50;`
             try {
-                const response = await igdbApi.post("/v4/covers", body, {
+                const response = await api.post("/api/igdb/proxy", body, {
                     headers: {
-                        'Accept': 'application/json',
-                        'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer ${this.twitchToken.access_token}`,
-                        'Content-Type': 'text/plain'
+                        "igdb-endpoint": "/v4/covers",
+                        "Content-Type": "text/plain"
                     }
                 })
 

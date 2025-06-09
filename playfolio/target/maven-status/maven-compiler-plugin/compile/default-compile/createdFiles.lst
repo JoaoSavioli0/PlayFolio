@@ -4,6 +4,7 @@ com\playfolio\app\dtos\UsuarioDto.class
 com\playfolio\app\PlayfolioApplication.class
 com\playfolio\app\controllers\WishlistController.class
 com\playfolio\app\controllers\ReviewController.class
+com\playfolio\app\controllers\ProxyController.class
 com\playfolio\app\dtos\LoginDto.class
 com\playfolio\app\services\JwtService.class
 com\playfolio\app\dtos\NewSenhaDto.class

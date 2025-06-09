@@ -92,7 +92,7 @@
 <script>
 import { useTwitchTokenStore } from '@/stores/TwitchTokenStore';
 import EmblaCarousel from 'embla-carousel'
-import { igdbApi } from '@/services/api';
+import { api } from '@/services/api';
 
 export default {
     name: "Destaque",
@@ -125,12 +125,10 @@ export default {
         async encontraJogos() {
             const body = `fields *; sort first_release_date desc; where rating_count > 25; limit 15;`
             try {
-                const response = await igdbApi.post("/v4/games", body, {
+                const response = await api.post("/api/igdb/proxy", body, {
                     headers: {
-                        'Accept': 'application/json',
-                        'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer ${this.twitchTokenStore.access_token}`,
-                        'Content-Type': 'text/plain'
+                        "igdb-endpoint": "/v4/games",
+                        "Content-Type": "text/plain"
                     }
                 })
 
@@ -162,12 +160,10 @@ export default {
             const requests = jogosId.map(async (id) => {
                 const body = `fields url; where game = ${id}; limit 1;`
                 try {
-                    const response = await igdbApi.post("/v4/covers", body, {
+                    const response = await api.post("/api/igdb/proxy", body, {
                         headers: {
-                            'Accept': 'application/json',
-                            'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                            'Authorization': `Bearer ${this.twitchTokenStore.access_token}`,
-                            'Content-Type': 'text/plain'
+                            "igdb-endpoint": "/v4/covers",
+                            "Content-Type": "text/plain"
                         }
                     })
                     let imagem = response.data[0]
@@ -192,15 +188,12 @@ export default {
 
             const body = `fields name; where id = (${this.genreIds.join(", ")}); limit 50;`
             try {
-                const response = await igdbApi.post("/v4/genres", body, {
+                const response = await api.post("/api/igdb/proxy", body, {
                     headers: {
-                        'Accept': 'application/json',
-                        'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer ${this.twitchTokenStore.access_token}`,
-                        'Content-Type': 'text/plain'
+                        "igdb-endpoint": "/v4/genres",
+                        "Content-Type": "text/plain"
                     }
                 })
-                console.log("response: " + JSON.stringify(response.data))
 
                 for (let data of response.data) {
                     this.genresNomes[data.id] = data.name

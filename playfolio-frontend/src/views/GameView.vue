@@ -371,7 +371,7 @@ import { useUserStore } from '@/stores/UserStore'
 import MenuComponent from '@/components/MenuComponent.vue'
 import { useTwitchTokenStore } from '@/stores/TwitchTokenStore'
 import MenuMobileComponent from '@/components/MenuMobileComponent.vue'
-import { igdbApi, api } from '@/services/api'
+import { api } from '@/services/api'
 
 export default {
     name: "Game",
@@ -482,12 +482,10 @@ export default {
             const body = `fields *; where id = ${this.id};`;
 
             try {
-                const response = await igdbApi.post("/v4/games", body, {
+                const response = await api.post("/api/igdb/proxy", body, {
                     headers: {
-                        'Accept': 'application/json',
-                        'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer ${this.twitchToken.access_token}`,
-                        'Content-Type': 'text/plain'
+                        "igdb-endpoint": "/v4/games",
+                        "Content-Type": "text/plain"
                     }
                 })
 
@@ -539,12 +537,10 @@ export default {
 
             const body = `fields video_id; where game = ${this.id};`;
             try {
-                const response = await igdbApi.post("/v4/game_videos", body, {
+                const response = await api.post("/api/igdb/proxy", body, {
                     headers: {
-                        'Accept': 'application/json',
-                        'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer ${this.twitchToken.access_token}`,
-                        'Content-Type': 'text/plain'
+                        "igdb-endpoint": "/v4/game_videos",
+                        "Content-Type": "text/plain"
                     }
                 })
                 let data = response.data
@@ -565,12 +561,10 @@ export default {
 
             const body = `fields url; where game = ${this.id};`;
             try {
-                const response = await igdbApi.post("/v4/screenshots", body, {
+                const response = await api.post("/api/igdb/proxy", body, {
                     headers: {
-                        'Accept': 'application/json',
-                        'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer ${this.twitchToken.access_token}`,
-                        'Content-Type': 'text/plain'
+                        "igdb-endpoint": "/v4/screenshots",
+                        "Content-Type": "text/plain"
                     }
                 })
                 let data = response.data
@@ -584,12 +578,10 @@ export default {
         async carregaCapa() {
             const body = `fields url; where game = ${this.id}; limit 1;`
             try {
-                const response = await igdbApi.post("/v4/covers", body, {
+                const response = await api.post("/api/igdb/proxy", body, {
                     headers: {
-                        'Accept': 'application/json',
-                        'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer ${this.twitchToken.access_token}`,
-                        'Content-Type': 'text/plain'
+                        "igdb-endpoint": "/v4/covers",
+                        "Content-Type": "text/plain"
                     }
                 })
                 let imagem = response.data[0]
@@ -611,12 +603,10 @@ export default {
 
             const body = `fields name; where id = (${ids.join(", ")}); limit 5;`
             try {
-                const response = await igdbApi.post("/v4/genres", body, {
+                const response = await api.post("/api/igdb/proxy", body, {
                     headers: {
-                        'Accept': 'application/json',
-                        'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer ${this.twitchToken.access_token}`,
-                        'Content-Type': 'text/plain'
+                        "igdb-endpoint": "/v4/genres",
+                        "Content-Type": "text/plain"
                     }
                 })
 
@@ -639,12 +629,10 @@ export default {
             const body = `fields name; where id = (${platformIds.join(", ")});`
 
             try {
-                const response = await igdbApi.post("/v4/platforms", body, {
+                const response = await api.post("/api/igdb/proxy", body, {
                     headers: {
-                        'Accept': 'application/json',
-                        'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer ${this.twitchToken.access_token}`,
-                        'Content-Type': 'text/plain'
+                        "igdb-endpoint": "/v4/platforms",
+                        "Content-Type": "text/plain"
                     }
                 })
 
@@ -661,12 +649,10 @@ export default {
             this.empresas = []
             const body = `fields company, developer, porting, publisher, supporting; where game = ${this.id};`
             try {
-                const response = await igdbApi.post("/v4/involved_companies", body, {
+                const response = await api.post("/api/igdb/proxy", body, {
                     headers: {
-                        'Accept': 'application/json',
-                        'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer ${this.twitchToken.access_token}`,
-                        'Content-Type': 'text/plain'
+                        "igdb-endpoint": "/v4/involved_companies",
+                        "Content-Type": "text/plain"
                     }
                 })
 
@@ -685,15 +671,12 @@ export default {
             const body = `fields name; where id = (${ids.join(", ")});`
 
             try {
-                const response = await igdbApi.post("/v4/companies", body, {
+                const response = await api.post("/api/igdb/proxy", body, {
                     headers: {
-                        'Accept': 'application/json',
-                        'Client-ID': "i79ndcjylui2396ezi2v752sc9dze0",
-                        'Authorization': `Bearer ${this.twitchToken.access_token}`,
-                        'Content-Type': 'text/plain'
+                        "igdb-endpoint": "/v4/companies",
+                        "Content-Type": "text/plain"
                     }
                 })
-
 
                 for (let data of response.data) {
                     this.empresas.filter(e => e.company == data.id).forEach(e => e.name = data.name)
