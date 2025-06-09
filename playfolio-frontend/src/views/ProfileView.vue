@@ -240,7 +240,7 @@
                                             class="py-2 w-[50px] rounded-lg bg-zinc-800/30 flex items-center justify-center shrink-0">
                                             <span class="text-zinc-50 text-xl">{{
                                                 reviews[jogo.id]?.nota
-                                            }}</span>
+                                                }}</span>
                                         </div>
                                         <div class="flex flex-col items-center ml-2 w-full">
                                             <div class="w-full flex justify-start">
@@ -256,7 +256,7 @@
                                                 <div class="max-w-[70%] w-fit line-clamp-2 pr-2 break-all text-left">
                                                     <span class="text-sm text-start xl:text-md w-full">{{
                                                         jogo.name
-                                                    }}</span>
+                                                        }}</span>
                                                 </div>
                                                 <div class="pl-2 border-l-[1px] border-zinc-400 flex items-center"
                                                     v-if="jogo.first_release_date">
@@ -327,7 +327,7 @@
                                                 <div class="max-w-[70%] line-clamp-2 pr-2 break-all text-left">
                                                     <span class="text-sm text-start xl:text-md w-full">{{
                                                         jogo.name
-                                                    }}</span>
+                                                        }}</span>
                                                 </div>
                                                 <div class="pl-2 border-l-[1px] border-zinc-400 flex items-center"
                                                     v-if="jogo.first_release_date">
@@ -391,7 +391,8 @@ export default {
             filtroBoxOpen: false,
             filtroReviews: 5,
             semReviews: false,
-            semWishlists: false
+            semWishlists: false,
+            proprioUsuario: false,
         }
     },
     components: {
@@ -414,6 +415,8 @@ export default {
                 this.usuario = useUserStore().usuario
             }
         }
+        this.proprioUsuario = this.usuario.usuario == this.username
+        console.log("próprio usuário: ", this.proprioUsuario)
 
         await this.carregaUsuario()
 

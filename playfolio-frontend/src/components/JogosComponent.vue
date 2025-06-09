@@ -180,6 +180,7 @@
 <script>
 import { useTwitchTokenStore } from '@/stores/TwitchTokenStore';
 import { api } from '@/services/api';
+import { useHomePageInfoStore } from '@/stores/HomePageInfoStore';
 
 export default {
     name: "Jogos",
@@ -205,6 +206,7 @@ export default {
         }
     },
     async mounted() {
+        useHomePageInfoStore().carregaHomePageInfo()
         if (this.twitchTokenStore.access_token == '') {
             await this.twitchTokenStore.buscaToken()
         }
