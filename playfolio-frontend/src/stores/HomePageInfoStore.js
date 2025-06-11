@@ -14,7 +14,7 @@ export const useHomePageInfoStore = defineStore("HomePageInfo", {
     capasJogos: {},
     generosNomes: {},
 
-    //Listas gerais (junta os ids, para carregar ambos em apenas uma requisição)
+    //Listas gerais (junta os ids, para carregar em apenas uma requisição)
     jogosIds: [],
     generosIds: [],
     capasIds: [],
@@ -23,18 +23,26 @@ export const useHomePageInfoStore = defineStore("HomePageInfo", {
   actions: {
     // Método para carregar tudo
     async carregaHomePageInfo() {
-      await this.carregaJogosMaisReviews();
-      await this.carregaJogosMaiorNota();
+      //Carrega jogos
+      if (this.jogosMaisReviews.length == 0)
+        await this.carregaJogosMaisReviews();
+      if (this.jogosMaiorNota.length == 0) await this.carregaJogosMaiorNota();
+      if (this.jogosEmDestaque.length == 0) await this.carregaJogosEmDestaque();
+      if (this.jogosEmBreve.length == 0) await this.carregaJogosEmBreve();
+
+      //Carrega itens das sublistas
       await this.carregaCapas();
       await this.carregaGeneros();
       await this.carregaPlataformas();
 
       console.log("==========HomePageInfoStore=========");
-      console.log("JogosMaisReviews: ", this.jogosMaisReviews);
-      console.log("JogosMaiorNota: ", this.jogosMaiorNota);
-      console.log("plataformasJogos: ", this.plataformasJogos);
-      console.log("capasJogos: ", this.capasJogos);
-      console.log("generosNomes: ", this.generosNomes);
+      console.log("-> JogosMaisReviews: ", this.jogosMaisReviews);
+      console.log("-> JogosMaiorNota: ", this.jogosMaiorNota);
+      console.log("-> JogosEmDestaque: ", this.jogosEmDestaque);
+      console.log("-> JogosEmBreve: ", this.jogosEmBreve);
+      console.log("-> plataformasJogos: ", this.plataformasJogos);
+      console.log("-> capasJogos: ", this.capasJogos);
+      console.log("-> generosNomes: ", this.generosNomes);
     },
 
     // Carrega jogos com mais reviews e alimenta listas gerais
@@ -109,6 +117,56 @@ export const useHomePageInfoStore = defineStore("HomePageInfo", {
       }
     },
 
+    //Carrega jogos em destaque e alimenta sublistas
+    async carregaJogosEmDestaque() {
+      const body = `fields *; sort first_release_date desc; where rating_count > 25; limit 15;`;
+      try {
+        const response = await api.post("/api/igdb/proxy", body, {
+          headers: {
+            "igdb-endpoint": "/v4/games",
+            "Content-Type": "text/plain",
+          },
+        });
+
+        this.jogosEmDestaque = response.data;
+
+        this.jogosEmDestaque.map((jogo) => {
+          if (!this.jogosIds.includes(jogo.id)) this.jogosIds.push(jogo.id);
+        });
+
+        this.jogosEmDestaque.forEach((jogo) => {
+          jogo.genres.forEach((genreId) => {
+            if (!this.generosIds.includes(genreId))
+              this.generosIds.push(genreId);
+          });
+        });
+      } catch (error) {
+        console.error("Erro: " + error);
+      }
+    },
+
+    //Carrega jogos em breve e alimenta sublistas
+    async carregaJogosEmBreve() {
+      const dataAtualUnix = this.calculaDataAtualUnix();
+      const body = `fields name, first_release_date, cover; sort first_release_date; where first_release_date > ${dataAtualUnix} & hypes > 100; limit 4;`;
+      try {
+        const response = await api.post("/api/igdb/proxy", body, {
+          headers: {
+            "igdb-endpoint": "/v4/games",
+            "Content-Type": "text/plain",
+          },
+        });
+
+        this.jogosEmBreve = response.data;
+
+        this.jogosEmBreve.map((jogo) => {
+          if (!this.jogosIds.includes(jogo.id)) this.jogosIds.push(jogo.id);
+        });
+      } catch (error) {
+        console.error("Erro carregando hypes: " + error);
+      }
+    },
+
     // Carrega informações das sublistas
     // Carrega capas da lista geral
     async carregaCapas() {
@@ -138,6 +196,7 @@ export const useHomePageInfoStore = defineStore("HomePageInfo", {
       const body = `fields name; where id = (${this.generosIds.join(
         ", "
       )}); limit ${this.generosIds.length};`;
+      console.log("Body ===> ", body);
       try {
         const response = await api.post("/api/igdb/proxy", body, {
           headers: {
@@ -160,6 +219,7 @@ export const useHomePageInfoStore = defineStore("HomePageInfo", {
         ", "
       )}); limit ${this.plataformasIds.length};`;
 
+      console.log("Body plataforma =-=-=-=> ", body);
       try {
         const response = await api.post("/api/igdb/proxy", body, {
           headers: {
@@ -170,7 +230,7 @@ export const useHomePageInfoStore = defineStore("HomePageInfo", {
 
         for (let plataforma of response.data) {
           const abbreviation = plataforma.abbreviation;
-          const id = 0;
+          let id = 0;
           if (abbreviation.includes("PS") || abbreviation.includes("Vita"))
             id = 1;
           else if (
@@ -189,6 +249,9 @@ export const useHomePageInfoStore = defineStore("HomePageInfo", {
       } catch (error) {
         console.error("Erro carregando plataformas: " + error);
       }
+    },
+    calculaDataAtualUnix() {
+      return Math.floor(Date.now() / 1000);
     },
   },
 });

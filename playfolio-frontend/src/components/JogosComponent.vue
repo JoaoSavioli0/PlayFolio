@@ -29,18 +29,18 @@
                                     <div class="flex absolute end-[20px] xl:top-[20px] bottom-[10px] items-center">
                                         <img src="../assets/Imagens/stack.svg" class="w-[17px] h-auto filtro-branco">
                                         <span class="ml-2 text-[12px] xl:text-[15px]">{{ jogo.total_rating_count
-                                        }}</span>
+                                            }}</span>
                                     </div>
                                     <div class="flex flex-col w-full justify-center h-full">
                                         <div class="flex items-center">
                                             <div
                                                 class="w-[29px] h-[29px] rounded-lg bg-zinc-800/30 flex items-center justify-center shrink-0">
                                                 <span class="text-zinc-50 text-[10px] xl:text-[14px]">{{ index + 1
-                                                }}</span>
+                                                    }}</span>
                                             </div>
                                             <div class="max-w-[55%] line-clamp-1 text-left">
                                                 <span class="text-sm text-start ml-2 pr-4 xl:text-md">{{ jogo.name
-                                                }}</span>
+                                                    }}</span>
                                             </div>
                                             <div class="pl-4 border-l-[1px] border-zinc-400"
                                                 v-if="jogo.first_release_date">
@@ -118,12 +118,12 @@
                                             <div
                                                 class="w-[29px] h-[29px] rounded-lg bg-zinc-800/30 flex items-center justify-center shrink-0">
                                                 <span class="text-zinc-50 text-[10px] xl:text-[14px]">{{ index + 1
-                                                }}</span>
+                                                    }}</span>
                                             </div>
                                             <div class="max-w-[55%] line-clamp-1 break-all text-left">
                                                 <span class="text-sm text-start ml-2 pr-4 xl:text-md w-full">{{
                                                     jogo.name
-                                                }}</span>
+                                                    }}</span>
                                             </div>
                                             <div class="pl-4 border-l-[1px] border-zinc-400"
                                                 v-if="jogo.first_release_date">
@@ -186,31 +186,36 @@ export default {
     name: "Jogos",
     data() {
         return {
-            jogosReview: [],
-            jogosNota: [],
-            jogosGenres: [],
-            jogosPlatforms: [],
-            genreIds: [],
-            genresNomes: {},
-            capasJogos: {},
-            plataformasJogos: {},
-            plataformasMapping: {
-                1: "PlayStation",
-                2: "Xbox",
-                3: "PC",
-                4: "Mobile"
-            },
-            jogosIds: [],
             twitchTokenStore: useTwitchTokenStore(),
+            homePageInfoStore: useHomePageInfoStore(),
+
+            jogosReview: null,
+            jogosNota: null,
+
+            genresNomes: null,
+            capasJogos: null,
+            plataformasJogos: null,
+
             timeOutId: null
         }
     },
     async mounted() {
-        useHomePageInfoStore().carregaHomePageInfo()
+        if (
+            this.homePageInfoStore.jogosMaisReviews.length === 0 ||
+            this.homePageInfoStore.jogosMaiorNota.length === 0
+        ) {
+            await this.homePageInfoStore.carregaHomePageInfo()
+        }
+
+        this.jogosReview = this.homePageInfoStore?.jogosMaisReviews || null
+        this.jogosNota = this.homePageInfoStore?.jogosMaiorNota || null
+        this.genresNomes = this.homePageInfoStore?.generosNomes || null
+        this.capasJogos = this.homePageInfoStore?.capasJogos || null
+        this.plataformasJogos = this.homePageInfoStore?.plataformasJogos || null
+
         if (this.twitchTokenStore.access_token == '') {
             await this.twitchTokenStore.buscaToken()
         }
-        this.carregaDados()
     },
     beforeUnmount() {
         clearTimeout(this.timeoutId)
@@ -381,10 +386,6 @@ export default {
             }
         },
 
-        encontraPlataforma(id) {
-            idMapping = this.plataformasJogos[id]
-            return this.plataformasMapping[idMapping]
-        }
     },
     computed: {
         dataAtualUnix() {

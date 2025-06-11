@@ -25,20 +25,20 @@
                             class="flex items-center justify-center xl:size-[75px] size-[65px] rounded-full bg-gradient-to-br from-amber-500 to-pink-500 ">
                             <div
                                 class="xl:size-[69px] size-[57px] bg-zinc-900 text-black rounded-full flex items-center justify-center overflow-hidden">
-                                <img :src="`data:image/png;base64,${usuarioProfile.imagem}`"
-                                    class="w-full h-full object-cover" v-if="usuarioProfile.imagem">
+                                <img :src="`data:image/png;base64,${proprioUsuario ? usuario.imagem : usuarioProfile.imagem}`"
+                                    class="w-full h-full object-cover" v-if="usuarioProfile.imagem || (proprioUsuario && usuario.imagem)">
                                 <h1 class="xl:text-5xl text-2xl text-zinc-50" v-else>{{ primeiraLetraUsuario }}</h1>
                             </div>
                         </div>
                     </div>
                     <div class="flex flex-col text-start ml-2 h-full justify-center">
-                        <h1 class="text-lg text-zinc-50">{{ usuarioProfile.nome }}</h1>
-                        <span class="text-xs text-zinc-500">@{{ usuarioProfile.usuario }}</span>
+                        <h1 class="text-lg text-zinc-50">{{ proprioUsuario ? usuario.nome : usuarioProfile.nome }}</h1>
+                        <span class="text-xs text-zinc-500">@{{ proprioUsuario ? usuario.usuario : usuarioProfile.usuario }}</span>
                     </div>
                 </div>
-                <div class="w-full py-4 flex flex-col text-start px-4" v-if="usuarioProfile.bio">
+                <div class="w-full py-4 flex flex-col text-start px-4" v-if="usuarioProfile.bio || (proprioUsuario && usuario.bio)">
                     <span class="text-[10px] text-zinc-400">
-                        {{ usuarioProfile.bio }}
+                        {{ proprioUsuario ? usuario.bio : usuarioProfile.bio }}
                     </span>
                 </div>
                 <div class="mt-4 flex *:w-[100px] *:px-4 *:cursor-pointer max-xl:overflow-x-scroll">

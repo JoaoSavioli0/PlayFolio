@@ -93,30 +93,42 @@
 import { useTwitchTokenStore } from '@/stores/TwitchTokenStore';
 import EmblaCarousel from 'embla-carousel'
 import { api } from '@/services/api';
+import { useHomePageInfoStore } from '@/stores/HomePageInfoStore';
 
 export default {
     name: "Destaque",
     data() {
         return {
+            twitchTokenStore: useTwitchTokenStore(),
+            homePageInfoStore: useHomePageInfoStore(),
+
             jogosDestaque: [],
+
             capasJogos: {},
-            genreIds: [],
             genresNomes: {},
+
             isDown: false,
             startX: 0,
             scrollLeft: 0,
             embla: null,
-            twitchTokenStore: useTwitchTokenStore(),
+
             timeOutId: null
         }
     },
     async mounted() {
+        if (this.homePageInfoStore.jogosEmDestaque.length === 0) {
+            await this.homePageInfoStore.carregaHomePageInfo()
+        }
+
+        this.jogosDestaque = this.homePageInfoStore?.jogosMaisReviews || null
+        this.genresNomes = this.homePageInfoStore?.generosNomes || null
+        this.capasJogos = this.homePageInfoStore?.capasJogos || null
+
+        this.carregaCarrossel()
+
         if (this.twitchTokenStore.access_token == '') {
             await this.twitchTokenStore.buscaToken()
         }
-        this.timeOutId = setTimeout(() => {
-            this.encontraJogos()
-        }, 1500)
     },
     beforeUnmount() {
         clearTimeout(this.timeoutId)
