@@ -193,7 +193,7 @@
                 </div>
                 <div class="w-full">
                     <span class="text-[10px] text-zinc-400">{{ dados.parent_game ? "Jogo Relacionado" : "Jogo Principal"
-                    }}</span>
+                        }}</span>
                 </div>
                 <div class="w-full mt-4" v-if="!carregandoDados">
                     <ul>
@@ -201,31 +201,45 @@
                             <span class="text-xs text-zinc-400">Data de Lançamento: </span>
                             <span class="inline text-zinc-50 text-xs" v-if="dados.first_release_date"> {{
                                 formataDataUnix(dados.first_release_date, 2)
-                            }}</span>
+                                }}</span>
+                            <span class="loading loading-dots loading-xs"
+                                v-else-if="!dados.first_release_date && carregandoInformacoesAdicionais"></span>
                             <span class="inline text-zinc-50 text-xs" v-else>Não encontrado</span>
                         </li>
                         <li>
                             <span class="text-xs text-zinc-400">Gêneros: </span>
-                            <span class="inline text-zinc-50 text-xs"> {{ tags?.join(", ") || "Não encontrado" }}</span>
-                        </li>
-                        <li>
-                            <span class="text-xs text-zinc-400">Plataformas: </span>
-                            <span class="inline text-zinc-50 text-xs"> {{ plataformas?.join(", ") || "Não encontrado"
+                            <span class="loading loading-dots loading-xs"
+                                v-if="!tags.length && carregandoInformacoesAdicionais"></span>
+                            <span class="inline text-zinc-50 text-xs" v-else> {{ tags?.join(", ") || "Não encontrado"
                             }}</span>
                         </li>
                         <li>
+                            <span class="text-xs text-zinc-400">Plataformas: </span>
+                            <span class="loading loading-dots loading-xs"
+                                v-if="!plataformas.length && carregandoInformacoesAdicionais"></span>
+                            <span class="inline text-zinc-50 text-xs" v-else>
+                                {{ plataformas?.join(", ") || "Não encontrado"
+                                }}</span>
+                        </li>
+                        <li>
                             <span class="text-xs text-zinc-400">Desenvolvedores: </span>
-                            <span class="inline text-zinc-50 text-xs"> {{empresas.filter(e =>
+                            <span class="loading loading-dots loading-xs"
+                                v-if="!empresas.length && carregandoInformacoesAdicionais"></span>
+                            <span class="inline text-zinc-50 text-xs" v-else> {{empresas.filter(e =>
                                 e.developer)?.map(e => e.name).join(", ") || "Não encontrado"}}</span>
                         </li>
                         <li>
                             <span class="text-xs text-zinc-400">Publicadoras: </span>
-                            <span class="inline text-zinc-50 text-xs"> {{empresas.filter(e =>
+                            <span class="loading loading-dots loading-xs"
+                                v-if="!empresas.length && carregandoInformacoesAdicionais"></span>
+                            <span class="inline text-zinc-50 text-xs" v-else> {{empresas.filter(e =>
                                 e.publisher)?.map(e => e.name).join(", ") || "Não encontrado"}}</span>
                         </li>
                         <li>
                             <span class="text-xs text-zinc-400">Suporte: </span>
-                            <span class="inline text-zinc-50 text-xs"> {{empresas.filter(e =>
+                            <span class="loading loading-dots loading-xs"
+                                v-if="!empresas.length && carregandoInformacoesAdicionais"></span>
+                            <span class="inline text-zinc-50 text-xs" v-else> {{empresas.filter(e =>
                                 e.supporting)?.map(e => e.name).join(", ") || "Não encontrado"}}</span>
                         </li>
                     </ul>
@@ -314,7 +328,7 @@
                                     <div class="flex flex-col justify-center">
                                         <h2 class="text-zinc-50 xl:text-xs text-[11px]">{{ review.usuario.nome }}</h2>
                                         <span class="xl:text-[10px] text-[8px] text-zinc-500">@{{ review.usuario.usuario
-                                        }}</span>
+                                            }}</span>
                                     </div>
                                 </router-link>
 
@@ -413,6 +427,7 @@ export default {
             avaliacaoBoxOpen: false,
             statusDefault: 0,
             carregandoDados: false,
+            carregandoInformacoesAdicionais: false,
             reviews: [],
             reviewDoUsuario: {},
             reviewMapping: {
@@ -479,7 +494,8 @@ export default {
         },
         async carregaDados() {
             this.carregandoDados = true
-            const body = `fields *; where id = ${this.id};`;
+            this.carregandoInformacoesAdicionais = true
+            const body = `fields name, first_release_date, parent_game,summary, storyline, genres, platforms; where id = ${this.id};`;
 
             try {
                 const response = await api.post("/api/igdb/proxy", body, {
@@ -493,12 +509,13 @@ export default {
 
                 await this.carregaImagens()
                 await this.carregaCapa()
+                this.carregandoDados = false
                 await this.carregaTags()
                 await this.carregaPlataformas()
                 await this.carregaEmpresas()
-                this.carregandoDados = false
                 await this.carregaVideos()
                 await this.carregaReviews()
+                this.carregandoInformacoesAdicionais = false
 
             } catch (error) {
                 console.error("Erro ao carregar dados do jogo: " + error)

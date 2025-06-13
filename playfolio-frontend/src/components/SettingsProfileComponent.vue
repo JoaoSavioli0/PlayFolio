@@ -12,8 +12,8 @@
                 </div>
             </div>
             <label class="flex flex-col ml-6 text-start w-2/3" for="pfp-upload">
-                <span class="text-[11px] text-zinc-400">Recomenda-se usar uma imagem com pelo menos 98 x 98 pixels e 2MB
-                    ou menos. Use um arquivo PNG ou JPG.</span>
+                <span class="text-[11px] text-zinc-400">Use uma imagem com pelo menos 98 x 98 pixels e no máximo 2MB.
+                    Use um arquivo PNG ou JPG.</span>
                 <div
                     class="px-4 h-[35px] border border-white/30 rounded-2xl w-max flex items-center mt-3 cursor-pointer">
                     <span class="text-[10px]">Enviar imagem</span>
@@ -160,7 +160,6 @@ export default {
             }
 
             img.onerror = () => {
-                this.mensagemErroFoto = "Erro ao carregar imagem.";
                 URL.revokeObjectURL(objectUrl);
             };
         },
@@ -181,7 +180,8 @@ export default {
                     this.$emit("atualiza-menu")
                 } catch (error) {
                     console.error("Erro ao salvar imagem: ", error.response.data)
-                    this.mensagemErroFoto = "Erro ao salvar imagem."
+                    this.mensagemErroFoto = "Erro desconhecido ao salvar imagem."
+                    this.imagemPreview = null
                 }
             }
         },

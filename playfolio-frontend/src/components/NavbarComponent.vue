@@ -23,14 +23,19 @@
                 </div>
             </router-link>
             <div class="flex px-2 relative" v-else>
-                <div ref="profile" class="flex cursor-pointer" @click="profileSubmenuOpen = !profileSubmenuOpen">
+                <div ref="profile" class="flex cursor-pointer shrink-0"
+                    @click="profileSubmenuOpen = !profileSubmenuOpen">
                     <div v-if="usuario.id"
-                        class="flex items-center justify-center size-[35px] rounded-full bg-gradient-to-br from-amber-500 to-pink-500 ">
+                        class="relative size-[35px] rounded-full bg-gradient-to-br from-amber-500 to-pink-500 p-[2px]">
                         <div
-                            class="size-[31px] bg-zinc-900 text-black rounded-full flex items-center justify-center overflow-hidden">
-                            <img :src="`data:image/png;base64,${usuario.imagem}`" class="w-full h-full object-cover"
-                                v-if="usuario.imagem">
-                            <h1 class="text-2xl text-zinc-50" v-else>{{ primeiraLetraUsuario }}</h1>
+                            class="w-full h-full bg-zinc-900 rounded-full flex items-center justify-center overflow-hidden relative">
+                            <img :src="`data:image/png;base64,${usuario.imagem}`"
+                                class="w-full h-full object-cover absolute start-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2"
+                                v-if="usuario.imagem" />
+                            <h1 v-else
+                                class="text-2xl text-zinc-50 absolute start-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2">
+                                {{ primeiraLetraUsuario }}
+                            </h1>
                         </div>
                     </div>
                     <div class="flex flex-col ml-2 text-start h-full justify-center max-xl:hidden max-w-[160px]">

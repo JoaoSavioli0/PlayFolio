@@ -9,18 +9,23 @@
                 <span class="text-xs text-[#1b1d1f]">Voltar</span>
             </button>
             <div class="w-full py-4">
-                <h1 class="text-zinc-50 text-2xl text-start">COMUNIDADE</h1>
+                <h1 class="text-zinc-50 text-2xl text-start" v-if="!usuarios.length">
+                    CARREGANDO COMUNIDADE <span class="loading loading-dots loading-xl"></span></h1>
+                <h1 class="text-zinc-50 text-2xl text-start" v-else>COMUNIDADE</h1>
             </div>
             <div class="w-full grid grid-cols-1 gap-y-[4px]">
                 <router-link v-for="usuario in usuarios" :to="`/account/profile/${usuario.usuario}`"
-                    class="w-full border border-white/10 rounded-lg bg-zinc-900 flex px-4 py-4 items-center">
-                    <div
-                        class="flex items-center justify-center size-[40px] rounded-full bg-gradient-to-br from-amber-500 to-pink-500 ">
+                    class="w-full border border-white/10 rounded-lg bg-zinc-900 flex px-4 py-4 items-center shrink-0">
+                    <div class="relative size-[43px] rounded-full bg-gradient-to-br from-amber-500 to-pink-500 p-[3px]">
                         <div
-                            class="size-[36px] bg-zinc-900 text-black rounded-full flex items-center justify-center overflow-hidden">
-                            <img :src="`data:image/png;base64,${usuario.imagem}`" class="w-full h-full object-cover"
-                                v-if="usuario.imagem">
-                            <h1 class="text-2xl text-zinc-50" v-else>{{ primeiraLetraUsuario(usuario.usuario) }}</h1>
+                            class="w-full h-full bg-zinc-900 rounded-full flex items-center justify-center overflow-hidden relative">
+                            <img :src="`data:image/png;base64,${usuario.imagem}`"
+                                class="w-full h-full object-cover absolute start-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2"
+                                v-if="usuario.imagem" />
+                            <h1 v-else
+                                class="text-2xl text-zinc-50 absolute start-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2">
+                                {{ primeiraLetraUsuario(usuario.usuario) }}
+                            </h1>
                         </div>
                     </div>
                     <div class="flex flex-col ml-2 text-start">

@@ -3,12 +3,12 @@
         <div class="absolute w-full h-[50px] top-[-50px] gradiente-texto"></div>
         <div class="flex px-4 gap-x-2">
             <div
-                class="size-[28px] bg-zinc-800 text-black rounded-full flex items-center justify-center overflow-hidden">
+                class="size-[28px] bg-zinc-800 text-black rounded-full flex items-center shrink-0 justify-center overflow-hidden">
                 <img :src="`data:image/png;base64,${usuario.imagem}`" class="w-full h-full object-cover"
                     v-if="usuario.imagem">
                 <h1 class="text-[12px] text-zinc-50" v-else>{{ primeiraLetraUsuario }}</h1>
             </div>
-            <div class="w-full text-start ">
+            <div class="w-full text-start">
                 <p ref="textoRef" class="text-[11px] text-zinc-100 break-all w-full"
                     :class="{ 'line-clamp-5': !mostrarMais }">
                     {{ texto }}
@@ -47,8 +47,8 @@ export default {
 
                 const alturaLinha = parseFloat(getComputedStyle(el).lineHeight)
                 const alturaMaxima = alturaLinha * 5
-                this.mostrarMais = !(el.scrollHeight > alturaMaxima)
                 this.mostrarBotao = el.scrollHeight > alturaMaxima
+                this.mostrarMais = !(el.scrollHeight > alturaMaxima)
             })
         }
     },
@@ -56,6 +56,9 @@ export default {
         primeiraLetraUsuario() {
             return this.usuario?.usuario?.charAt(0).toUpperCase() || 'P'
         }
+    },
+    watch: {
+
     }
 }
 </script>

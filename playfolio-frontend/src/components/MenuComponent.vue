@@ -9,11 +9,11 @@
                     <img src="../assets/Imagens/arrow.svg" class="w-[21px] h-auto">
                     <span class="text-sm text-[#1b1d1f]">Voltar</span>
                 </button>
-                <div class="flex items-center">
+                <router-link class="flex items-center" to="/">
                     <img src="../assets/Imagens/logo.png" class="size-[16px] shrink-0 filtro-branco">
 
                     <h1 class="text-xl inline ml-[3px]">PlayFolio</h1>
-                </div>
+                </router-link>
             </div>
 
             <div class="w-full mt-8 flex flex-col" v-if="usuario">
@@ -79,7 +79,7 @@
                             <img :src="item.img" class="w-[23px] h-auto transition-all duration-200"
                                 :class="[itemAtivo == item.id ? 'filtro-branco' : 'filtro-cinza']">
                             <span class="ml-4 transition" :class="{ 'text-zinc-50': itemAtivo == item.id }">{{ item.name
-                                }}</span>
+                            }}</span>
                         </li>
                     </router-link>
 

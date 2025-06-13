@@ -75,7 +75,7 @@
                                 }}</h1>
                             <span class="w-full text-start text-md text-zinc-500">{{
                                 formataDataUnix(dados.first_release_date)
-                            }}</span>
+                                }}</span>
                         </div>
                     </div>
                     <button class="self-start"><img src="../assets/Imagens/close.svg"
@@ -219,7 +219,7 @@
 
                         <div class="w-full pb-2 flex justify-start px-4">
                             <span class="text-zinc-100 text-[10px]">{{ reviewText.length
-                            }}/5000</span>
+                                }}/5000</span>
                         </div>
                     </div>
                 </div>
@@ -273,7 +273,7 @@ export default {
     emits: ['fecha-avaliacaoBox'],
     data() {
         return {
-            status: this.statusDefault == 5 ? 4 : this.statusDefault,
+            status: this.statusDefault == 5 ? 4 : this.statusDefault || 1,
             nota: this.avaliacaoUsuario?.nota || 0,
             imagens: [
                 '1.png',

@@ -15,6 +15,7 @@ import NavbarComponent from '@/components/NavbarComponent.vue';
 import DestaqueComponent from '@/components/DestaqueComponent.vue';
 import JogosComponent from '@/components/JogosComponent.vue';
 import FooterComponent from '@/components/FooterComponent.vue';
+import { useHomePageInfoStore } from '@/stores/HomePageInfoStore';
 
 export default {
 
@@ -27,7 +28,21 @@ export default {
     JogosComponent,
     FooterComponent
   },
-
+  data() {
+    return {
+      homePageInfoStore: useHomePageInfoStore()
+    }
+  },
+  async mounted() {
+    if (
+      this.homePageInfoStore.jogosMaisReviews.length === 0 ||
+      this.homePageInfoStore.jogosMaiorNota.length === 0 ||
+      this.homePageInfoStore.jogosEmBreve.length === 0 ||
+      this.homePageInfoStore.jogosEmDestaque.length === 0
+    ) {
+      await this.homePageInfoStore.carregaHomePageInfo()
+    }
+  }
 }
 </script>
 

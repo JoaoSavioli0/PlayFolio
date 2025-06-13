@@ -24,11 +24,11 @@ export const useHomePageInfoStore = defineStore("HomePageInfo", {
     // Método para carregar tudo
     async carregaHomePageInfo() {
       //Carrega jogos
+      if (this.jogosEmBreve.length == 0) await this.carregaJogosEmBreve();
+      if (this.jogosEmDestaque.length == 0) await this.carregaJogosEmDestaque();
       if (this.jogosMaisReviews.length == 0)
         await this.carregaJogosMaisReviews();
       if (this.jogosMaiorNota.length == 0) await this.carregaJogosMaiorNota();
-      if (this.jogosEmDestaque.length == 0) await this.carregaJogosEmDestaque();
-      if (this.jogosEmBreve.length == 0) await this.carregaJogosEmBreve();
 
       //Carrega itens das sublistas
       await this.carregaCapas();
@@ -36,18 +36,13 @@ export const useHomePageInfoStore = defineStore("HomePageInfo", {
       await this.carregaPlataformas();
 
       console.log("==========HomePageInfoStore=========");
-      console.log("-> JogosMaisReviews: ", this.jogosMaisReviews);
-      console.log("-> JogosMaiorNota: ", this.jogosMaiorNota);
-      console.log("-> JogosEmDestaque: ", this.jogosEmDestaque);
-      console.log("-> JogosEmBreve: ", this.jogosEmBreve);
-      console.log("-> plataformasJogos: ", this.plataformasJogos);
       console.log("-> capasJogos: ", this.capasJogos);
       console.log("-> generosNomes: ", this.generosNomes);
     },
 
     // Carrega jogos com mais reviews e alimenta listas gerais
     async carregaJogosMaisReviews() {
-      const body = `fields *; sort value desc; limit 6; sort total_rating_count desc;`;
+      const body = `fields genres, platforms, name, cover, total_rating_count, first_release_date; sort value desc; sort value desc; limit 6; sort total_rating_count desc;`;
 
       try {
         const response = await api.post("/api/igdb/proxy", body, {
@@ -83,7 +78,7 @@ export const useHomePageInfoStore = defineStore("HomePageInfo", {
 
     // Carrega jogos com maiores notas e alimenta listas gerais
     async carregaJogosMaiorNota() {
-      const body = `fields *; limit 6; where rating_count > 300 & version_parent = null & parent_game = null; sort rating desc;`;
+      const body = `fields genres, platforms, name, cover, rating, first_release_date; sort value desc; limit 6; where rating_count > 300 & version_parent = null & parent_game = null; sort rating desc;`;
 
       try {
         const response = await api.post("/api/igdb/proxy", body, {
@@ -119,7 +114,7 @@ export const useHomePageInfoStore = defineStore("HomePageInfo", {
 
     //Carrega jogos em destaque e alimenta sublistas
     async carregaJogosEmDestaque() {
-      const body = `fields *; sort first_release_date desc; where rating_count > 25; limit 15;`;
+      const body = `fields name, first_release_date, cover, genres, rating; sort first_release_date desc; where rating_count > 5; limit 15;`;
       try {
         const response = await api.post("/api/igdb/proxy", body, {
           headers: {

@@ -14,29 +14,31 @@
                     </button>
                 </div>
 
-                <div class="flex w-full px-4 h-[80px] items-center relative">
+                <div class="flex w-full px-4 h-[80px] items-center relative shrink-0">
                     <router-link to="/account/settings" v-if="usuario.id == usuarioProfile.id"
                         class="absolute top-0 end-[15px] p-[3px] hover:bg-zinc-600/50 rounded-full cursor-pointer transition-all duration-100">
                         <img src="../assets/Imagens/pencil.svg" class="w-[20px] h-auto filtro-cinza">
                     </router-link>
-                    <div
-                        class="flex items-center justify-center xl:size-[75px] size-[65px] rounded-full bg-gradient-to-br from-amber-500 to-pink-500 ">
+                    <div class="relative size-[75px] rounded-full bg-gradient-to-br from-amber-500 to-pink-500 p-[3px]">
                         <div
-                            class="flex items-center justify-center xl:size-[75px] size-[65px] rounded-full bg-gradient-to-br from-amber-500 to-pink-500 ">
-                            <div
-                                class="xl:size-[69px] size-[57px] bg-zinc-900 text-black rounded-full flex items-center justify-center overflow-hidden">
-                                <img :src="`data:image/png;base64,${proprioUsuario ? usuario.imagem : usuarioProfile.imagem}`"
-                                    class="w-full h-full object-cover" v-if="usuarioProfile.imagem || (proprioUsuario && usuario.imagem)">
-                                <h1 class="xl:text-5xl text-2xl text-zinc-50" v-else>{{ primeiraLetraUsuario }}</h1>
-                            </div>
+                            class="w-full h-full bg-zinc-900 rounded-full flex items-center justify-center overflow-hidden relative">
+                            <img :src="`data:image/png;base64,${proprioUsuario ? usuario.imagem : usuarioProfile.imagem}`"
+                                class="w-full h-full object-cover absolute start-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2"
+                                v-if="usuarioProfile.imagem || (proprioUsuario && usuario.imagem)" />
+                            <h1 v-else
+                                class="text-2xl text-zinc-50 absolute start-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2">
+                                {{ primeiraLetraUsuario }}
+                            </h1>
                         </div>
                     </div>
                     <div class="flex flex-col text-start ml-2 h-full justify-center">
                         <h1 class="text-lg text-zinc-50">{{ proprioUsuario ? usuario.nome : usuarioProfile.nome }}</h1>
-                        <span class="text-xs text-zinc-500">@{{ proprioUsuario ? usuario.usuario : usuarioProfile.usuario }}</span>
+                        <span class="text-xs text-zinc-500">@{{ proprioUsuario ? usuario.usuario :
+                            usuarioProfile.usuario }}</span>
                     </div>
                 </div>
-                <div class="w-full py-4 flex flex-col text-start px-4" v-if="usuarioProfile.bio || (proprioUsuario && usuario.bio)">
+                <div class="w-full py-4 flex flex-col text-start px-4"
+                    v-if="usuarioProfile.bio || (proprioUsuario && usuario.bio)">
                     <span class="text-[10px] text-zinc-400">
                         {{ proprioUsuario ? usuario.bio : usuarioProfile.bio }}
                     </span>
@@ -498,7 +500,7 @@ export default {
         },
 
         async carregaJogos(jogosId) {
-            const body = `fields *; where id = (${jogosId.join(', ')});`;
+            const body = `fields name, first_release_date, cover; where id = (${jogosId.join(', ')});`;
 
             try {
                 const response = await api.post("/api/igdb/proxy", body, {

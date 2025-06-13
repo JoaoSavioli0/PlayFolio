@@ -5,7 +5,9 @@
             <!-- Coluna esquerda -->
             <div class="xl:w-[50%] xl:pr-6 w-full py-4">
                 <div class="flex flex-col gap-y-2 xl:pr-2">
-                    <h1 class="xl:text-end text-start xl:text-[30px] text-[20px]">📈 MAIS REVIEWS</h1>
+                    <h1 class="xl:text-end text-start xl:text-[30px] text-[20px]" v-if="!jogosReview">
+                        CARREGANDO JOGOS COM MAIS REVIEWS <span class="loading loading-dots loading-xl"></span></h1>
+                    <h1 class="xl:text-end text-start xl:text-[30px] text-[20px]" v-else>📈 MAIS REVIEWS</h1>
                     <!-- Card -->
 
                     <div class="mt-[1px] w-full h-[120px] flex rounded-2xl overflow-hidden"
@@ -89,7 +91,9 @@
             <!-- Coluna direita -->
             <div class="xl:w-[50%] w-full xl:pl-6 py-4 xl:border-l-[1px] border-zinc-800">
                 <div class="flex flex-col gap-y-2 xl:pl-2">
-                    <h1 class="text-start xl:text-[30px] text-[20px]">MELHORES NOTAS 💎</h1>
+                    <h1 class="text-start xl:text-[30px] text-[20px]" v-if="!jogosNota">
+                        CARREGANDO JOGOS COM MAIOR NOTA <span class="loading loading-dots loading-xl"></span></h1>
+                    <h1 class="text-start xl:text-[30px] text-[20px]" v-else>MELHORES NOTAS 💎</h1>
                     <!-- Card -->
                     <div class="mt-[1px] w-full h-[120px] flex rounded-2xl overflow-hidden"
                         v-for="(jogo, index) in jogosNota" :key="jogo.id">
@@ -181,6 +185,7 @@
 import { useTwitchTokenStore } from '@/stores/TwitchTokenStore';
 import { api } from '@/services/api';
 import { useHomePageInfoStore } from '@/stores/HomePageInfoStore';
+import { watchEffect } from 'vue';
 
 export default {
     name: "Jogos",
@@ -200,192 +205,29 @@ export default {
         }
     },
     async mounted() {
-        if (
-            this.homePageInfoStore.jogosMaisReviews.length === 0 ||
-            this.homePageInfoStore.jogosMaiorNota.length === 0
-        ) {
-            await this.homePageInfoStore.carregaHomePageInfo()
-        }
-
-        this.jogosReview = this.homePageInfoStore?.jogosMaisReviews || null
-        this.jogosNota = this.homePageInfoStore?.jogosMaiorNota || null
-        this.genresNomes = this.homePageInfoStore?.generosNomes || null
-        this.capasJogos = this.homePageInfoStore?.capasJogos || null
-        this.plataformasJogos = this.homePageInfoStore?.plataformasJogos || null
-
         if (this.twitchTokenStore.access_token == '') {
             await this.twitchTokenStore.buscaToken()
         }
+
+        watchEffect(() => {
+            this.jogosReview = this.homePageInfoStore?.jogosMaisReviews || null
+            this.jogosNota = this.homePageInfoStore?.jogosMaiorNota || null
+            this.genresNomes = this.homePageInfoStore?.generosNomes || null
+            this.capasJogos = this.homePageInfoStore?.capasJogos || null
+            this.plataformasJogos = this.homePageInfoStore?.plataformasJogos || null
+        })
+
     },
     beforeUnmount() {
         clearTimeout(this.timeoutId)
     },
     methods: {
-        async carregaDados() {
-            this.timeOutId = setTimeout(async () => {
-                await this.carregaJogos()
-                await this.carregaJogos2()
-                await this.carregaInfo()
-            }, 2500)
-        },
-
-        async carregaJogos() {
-            const body = `fields *; sort value desc; limit 6; sort total_rating_count desc;`;
-
-            try {
-                const response = await api.post("/api/igdb/proxy", body, {
-                    headers: {
-                        "igdb-endpoint": "/v4/games",
-                        "Content-Type": "text/plain"
-                    }
-                })
-                this.jogosReview = response.data
-
-                this.jogosReview.map((e) => { if (!this.jogosIds.includes(e.id)) { console.log("entrou: " + e.name); this.jogosIds.push(e.id) } })
-
-                this.jogosReview.forEach(e => {
-                    e.genres.forEach(genreId => {
-                        if (!this.jogosGenres.includes(genreId)) {
-                            this.jogosGenres.push(genreId)
-                        }
-                    });
-                });
-
-                this.jogosReview.forEach(e => {
-                    e.platforms.forEach(platformId => {
-                        if (!this.jogosPlatforms.includes(platformId)) {
-                            this.jogosPlatforms.push(platformId)
-                        }
-                    })
-                })
-
-                console.log("jogosGenres: " + this.jogosGenres)
-
-
-            } catch (error) {
-                console.error("Erro: " + error)
-            }
-        },
-
-        async carregaJogos2() {
-            const body = `fields *; limit 6; where rating_count > 300 & version_parent = null & parent_game = null; sort rating desc;`;
-
-            try {
-                const response = await api.post("/api/igdb/proxy", body, {
-                    headers: {
-                        "igdb-endpoint": "/v4/games",
-                        "Content-Type": "text/plain"
-                    }
-                })
-
-                this.jogosNota = response.data
-
-
-                this.jogosNota.map((e) => { if (!this.jogosIds.includes(e.id)) this.jogosIds.push(e.id) })
-
-                this.jogosNota.forEach(e => {
-                    e.genres.forEach(genreId => {
-                        if (!this.jogosGenres.includes(genreId)) {
-                            this.jogosGenres.push(genreId);
-                        }
-                    });
-                });
-
-                this.jogosNota.forEach(e => {
-                    e.platforms.forEach(platformId => {
-                        if (!this.jogosPlatforms.includes(platformId)) {
-                            this.jogosPlatforms.push(platformId)
-                        }
-                    })
-                })
-
-            } catch (error) {
-                console.error("Erro: " + error)
-            }
-        },
-
-        async carregaInfo() {
-            await this.carregaCapas(this.jogosIds)
-            await this.carregaTags(this.jogosGenres)
-            await this.carregaPlataformas(this.jogosPlatforms)
-        },
-
-        async carregaCapas(jogosId) {
-            const body = `fields url; where game = (${jogosId.join(", ")}); limit 12;`
-            try {
-                const response = await api.post("/api/igdb/proxy", body, {
-                    headers: {
-                        "igdb-endpoint": "/v4/covers",
-                        "Content-Type": "text/plain"
-                    }
-                })
-                for (let data of response.data) {
-                    if (data && data.url) {
-                        this.capasJogos[data.id] = data.url.replace("thumb", "720p")
-                    }
-                }
-            } catch (error) {
-                console.error("Erro carregando imagem: " + error)
-            }
-        },
-
-        async carregaTags(generos) {
-
-            const body = `fields name; where id = (${generos.join(", ")}); limit 50;`
-            try {
-                const response = await api.post("/api/igdb/proxy", body, {
-                    headers: {
-                        "igdb-endpoint": "/v4/genres",
-                        "Content-Type": "text/plain"
-                    }
-                })
-
-                for (let data of response.data) {
-                    this.genresNomes[data.id] = data.name
-                }
-
-            } catch (error) {
-                console.error("Erro carregando generos: " + error)
-            }
-        },
-
         formataDataUnix(dataUnix) {
             const timestamp = dataUnix;
             const data = new Date(timestamp * 1000);
             const options = { year: 'numeric' };
             return data.toLocaleString('pt-BR', options)
         },
-
-        async carregaPlataformas(plataformas) {
-            let id = 0
-
-            const body = `fields abbreviation; where id = (${plataformas.join(", ")}); limit 50;`
-
-            try {
-                const response = await api.post("/api/igdb/proxy", body, {
-                    headers: {
-                        "igdb-endpoint": "/v4/platforms",
-                        "Content-Type": "text/plain"
-                    }
-                })
-
-                for (let data of response.data) {
-                    let abbreviation = data.abbreviation
-                    if (abbreviation.includes("PS") || abbreviation.includes("Vita")) id = 1
-                    if (abbreviation.includes("Series X|S") || abbreviation.includes("XBOX") || abbreviation.includes("X360")) id = 2
-                    if (abbreviation.includes("PC")) id = 3
-                    if (abbreviation.includes("iOS")) id = 4
-                    if (abbreviation.includes("Switch")) id = 5
-                    if (abbreviation.includes("Stadia")) id = 6
-
-                    this.plataformasJogos[data.id] = id
-                }
-
-            } catch (error) {
-                console.error("Erro carregando plataformas: " + error)
-            }
-        },
-
     },
     computed: {
         dataAtualUnix() {

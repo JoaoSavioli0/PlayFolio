@@ -1,9 +1,11 @@
 <template>
-    <div class="w-full min-[1800px]:px-40 xl:px-20 px-6 xl:py-16 pt-16 pb-6" v-if="jogosDestaque.length">
+    <div class="w-full min-[1800px]:px-40 xl:px-20 px-6 xl:py-16 pt-16 pb-6">
         <div class="flex w-full items-center">
             <div class="whitespace-nowrap flex items-center justify-between w-full">
                 <div class="flex">
-                    <h1 class="xl:text-[30px] text-[20px] text-start text-zinc-50">DESTAQUES 🔥</h1>
+                    <h1 class="xl:text-[30px] text-[20px] text-start text-zinc-50" v-if="!jogosDestaque.length">
+                        CARREGANDO DESTAQUES <span class="loading loading-dots loading-xl"></span></h1>
+                    <h1 v-else class="xl:text-[30px] text-[20px] text-start text-zinc-50">DESTAQUES 🔥</h1>
                 </div>
 
                 <div class="flex justify-end gap-2">
@@ -20,7 +22,7 @@
             </div>
         </div>
 
-        <div class="embla mt-6">
+        <div class="embla mt-6" v-if="jogosDestaque.length">
             <div class="embla__viewport" ref="viewport">
                 <div class="embla__container">
                     <div class="embla__slide xl:h-[420px] h-[320px] clip-card bg-[#262729] flex flex-col shrink-0 relative card-area rounded-xl overflow-hidden border-[1px] border-zinc-600"
@@ -28,7 +30,7 @@
                         <router-link class="w-full h-[400px] xl:mb-2 relative overflow-hidden relative image-area z-40"
                             :to="`/game/${jogo.id}`">
 
-                            <img :src="capasJogos[jogo.id]" alt="">
+                            <img :src="capasJogos[jogo.cover]" alt="">
                             <div class="w-full h-full absolute gradiente-card top-0"></div>
 
                             <div class="end-0 top-0 px-[10px] py-[4px] justify-center flex absolute shrink-0 items-center bg-[#1A1B1E] z-50 rounded-bl-xl border-l-[1px] border-b-[1px] border-zinc-600 shadow-lg"
@@ -94,6 +96,7 @@ import { useTwitchTokenStore } from '@/stores/TwitchTokenStore';
 import EmblaCarousel from 'embla-carousel'
 import { api } from '@/services/api';
 import { useHomePageInfoStore } from '@/stores/HomePageInfoStore';
+import { watchEffect } from 'vue';
 
 export default {
     name: "Destaque",
@@ -116,46 +119,20 @@ export default {
         }
     },
     async mounted() {
-        if (this.homePageInfoStore.jogosEmDestaque.length === 0) {
-            await this.homePageInfoStore.carregaHomePageInfo()
-        }
-
-        this.jogosDestaque = this.homePageInfoStore?.jogosMaisReviews || null
-        this.genresNomes = this.homePageInfoStore?.generosNomes || null
-        this.capasJogos = this.homePageInfoStore?.capasJogos || null
-
-        this.carregaCarrossel()
-
         if (this.twitchTokenStore.access_token == '') {
             await this.twitchTokenStore.buscaToken()
         }
+
+        watchEffect(() => {
+            this.jogosDestaque = this.homePageInfoStore?.jogosEmDestaque || null
+            this.genresNomes = this.homePageInfoStore?.generosNomes || null
+            this.capasJogos = this.homePageInfoStore?.capasJogos || null
+        })
     },
     beforeUnmount() {
         clearTimeout(this.timeoutId)
     },
     methods: {
-        async encontraJogos() {
-            const body = `fields *; sort first_release_date desc; where rating_count > 25; limit 15;`
-            try {
-                const response = await api.post("/api/igdb/proxy", body, {
-                    headers: {
-                        "igdb-endpoint": "/v4/games",
-                        "Content-Type": "text/plain"
-                    }
-                })
-
-                this.jogosDestaque = response.data
-                let jogosDestaqueId = this.jogosDestaque.map(e => e.id)
-
-                await this.carregaCapas(jogosDestaqueId)
-                this.carregaCarrossel()
-                await this.carregaTags(this.jogosDestaque)
-
-            } catch (error) {
-                console.error("Erro: " + error)
-            }
-        },
-
         carregaCarrossel() {
             const viewportNode = this.$refs.viewport
             if (viewportNode) {
@@ -166,56 +143,7 @@ export default {
                     dragFree: true
                 })
             }
-        },
-
-        async carregaCapas(jogosId) {
-            const requests = jogosId.map(async (id) => {
-                const body = `fields url; where game = ${id}; limit 1;`
-                try {
-                    const response = await api.post("/api/igdb/proxy", body, {
-                        headers: {
-                            "igdb-endpoint": "/v4/covers",
-                            "Content-Type": "text/plain"
-                        }
-                    })
-                    let imagem = response.data[0]
-                    if (imagem && imagem.url) {
-                        this.capasJogos[id] = imagem.url.replace("thumb", "720p")
-                    }
-                } catch (error) {
-                    console.error("Erro carregando imagem: " + error)
-                }
-            })
-            await Promise.all(requests)
-        },
-
-        async carregaTags(jogos) {
-            for (let jogo of jogos) {
-                for (let genreId of jogo.genres) {
-                    if (!this.genreIds.includes(genreId)) {
-                        this.genreIds.push(genreId)
-                    }
-                }
-            }
-
-            const body = `fields name; where id = (${this.genreIds.join(", ")}); limit 50;`
-            try {
-                const response = await api.post("/api/igdb/proxy", body, {
-                    headers: {
-                        "igdb-endpoint": "/v4/genres",
-                        "Content-Type": "text/plain"
-                    }
-                })
-
-                for (let data of response.data) {
-                    this.genresNomes[data.id] = data.name
-                }
-
-
-            } catch (error) {
-                console.error("Erro carregando generos: " + error)
-            }
-            console.log("genreNomes: " + JSON.stringify(this.genresNomes))
+            console.log("Carregou carrossel")
         },
 
         formataDataUnix(dataUnix) {
@@ -243,6 +171,15 @@ export default {
             this.isDown = false;
         }
     },
+    watch: {
+        jogosDestaque(val) {
+            if (val && val.length > 0) {
+                this.$nextTick(() => {
+                    this.carregaCarrossel()
+                })
+            }
+        }
+    }
 }
 </script>
 
