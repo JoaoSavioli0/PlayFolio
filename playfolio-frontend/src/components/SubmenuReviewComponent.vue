@@ -64,10 +64,8 @@ export default {
         },
         excluiReviewBox() {
             if (this.idUsuario != this.review?.usuario?.id && this.idUsuario != this.review.idUsuario) return
-            console.log("exibeExcluiReviewBox" + this.exibeExcluiReviewBox)
             setTimeout(() => {
                 this.exibeExcluiReviewBox = true
-                console.log("exibeExcluiReviewBox" + this.exibeExcluiReviewBox)
             }, 100)
         },
         async excluirReview() {

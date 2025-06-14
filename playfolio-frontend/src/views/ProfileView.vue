@@ -38,7 +38,7 @@
                     </div>
                 </div>
                 <div class="w-full py-4 flex flex-col text-start px-4"
-                    v-if="usuarioProfile.bio || (proprioUsuario && usuario.bio)">
+                    v-if="(usuarioProfile.bio && usuarioProfile.bio.trim().length) || (proprioUsuario && usuario.bio && usuario.bio.trim().length)">
                     <span class="text-[10px] text-zinc-400">
                         {{ proprioUsuario ? usuario.bio : usuarioProfile.bio }}
                     </span>
@@ -219,7 +219,7 @@
 
                     <div class="absolute top-[15px] end-[15px] z-[300]">
                         <SubmenuReviewComponent :idUsuarioAutor="usuarioProfile.id" :idUsuarioLogado="usuario.id"
-                            :review="reviews[jogo.id]" @recarrega-dados="recarregaDados" />
+                            :review="reviews[jogo.id]" @recarrega-dados="carregaInformacoesUsuario" />
                     </div>
 
                     <div class="w-full h-full relative overflow-hidden">
@@ -247,7 +247,7 @@
                                         <div class="flex flex-col items-center ml-2 w-full">
                                             <div class="w-full flex justify-start">
                                                 <div class="px-[5px] py-[1px] rounded-lg text-zinc-50 flex items-center"
-                                                    :class="[{ 'bg-[#d438ff]': reviews[jogo.id].status == 1 },
+                                                    :class="[{ 'bg-[#d438ff]': reviews[jogo.id]?.status == 1 },
                                                     { 'bg-green-600': reviews[jogo.id]?.status == 2 },
                                                     { 'bg-[#d22d56]': reviews[jogo.id]?.status == 3 }]">
                                                     <span class="text-[10px] text-start">{{
@@ -279,8 +279,8 @@
 
                             </div>
                         </router-link>
-                        <ProfileReviewTextComponent :texto="reviews[jogo.id].texto" :usuario="usuarioProfile"
-                            v-if="reviews[jogo.id].texto" />
+                        <ProfileReviewTextComponent :texto="reviews[jogo.id]?.texto" :usuario="usuarioProfile"
+                            v-if="reviews[jogo.id]?.texto" />
                     </div>
 
                 </div>
@@ -405,7 +405,7 @@ export default {
     },
     async mounted() {
 
-        this.carregando = true
+
         if (this.twitchTokenStore.access_token == '') {
             await this.twitchTokenStore.buscaToken()
         }
@@ -438,6 +438,13 @@ export default {
             }
         },
         async carregaInformacoesUsuario() {
+            this.wishlistIds = []
+            this.wishlists = []
+            this.reviews = []
+            this.jogosIds = []
+            this.jogosReview = []
+            console.log("Chamou no emit")
+            this.carregando = true
             await this.carregaListaDeDesejo()
             await this.carregaReviews()
             if (this.usuarioProfile != null && (this.jogosIds.length > 0)) {
@@ -466,6 +473,7 @@ export default {
         },
 
         async carregaListaDeDesejo() {
+
             try {
                 const response = await api.get(`/wishlist/get/user?idUsuario=${this.usuarioProfile.id}`)
 
@@ -481,6 +489,7 @@ export default {
             }
         },
         async carregaReviews() {
+
             try {
                 const response = await api.get(`/review/user?id=${this.usuarioProfile.id}`)
 

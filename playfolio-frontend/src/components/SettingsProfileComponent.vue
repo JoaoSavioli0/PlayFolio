@@ -109,13 +109,13 @@ export default {
     methods: {
         async atualizarDados() {
             if (!this.verificaDados) return
-
+            console.log("nova bio: ", this.bio)
             try {
                 const response = await api.post("/usuario/update-data", {
                     id: this.usuario.id,
                     nome: this.nomeExibicao,
                     usuario: this.nomeUsuario,
-                    bio: this.bio
+                    bio: this.bio || ' '
                 })
                 this.mensagemSucesso = "Usuário atualizado!"
                 useUserStore().usuario = response.data

@@ -1,6 +1,7 @@
 <template>
   <NavbarComponent />
   <BannerComponent />
+  <TutorialComponent />
   <InfoComponent />
   <DestaqueComponent />
   <JogosComponent />
@@ -16,6 +17,7 @@ import DestaqueComponent from '@/components/DestaqueComponent.vue';
 import JogosComponent from '@/components/JogosComponent.vue';
 import FooterComponent from '@/components/FooterComponent.vue';
 import { useHomePageInfoStore } from '@/stores/HomePageInfoStore';
+import TutorialComponent from '@/components/TutorialComponent.vue';
 
 export default {
 
@@ -23,6 +25,7 @@ export default {
   components: {
     InfoComponent,
     BannerComponent,
+    TutorialComponent,
     NavbarComponent,
     DestaqueComponent,
     JogosComponent,
@@ -34,6 +37,7 @@ export default {
     }
   },
   async mounted() {
+    alert("Este projeto usa o plano gratuito do render para hospedar sua API, por conta disso, a API pode demorar até 1 minuto para ser iniciada e os dados serem carregados.")
     if (
       this.homePageInfoStore.jogosMaisReviews.length === 0 ||
       this.homePageInfoStore.jogosMaiorNota.length === 0 ||
