@@ -238,7 +238,7 @@ export default {
     mounted() {
         this.userStore.reconectaSessao()
         if (this.userStore.usuario != null) {
-            this.$router.push("/account")
+            this.$router.push(`/account/profile/${this.userStore.usuario.usuario}`)
         }
     },
     methods: {
