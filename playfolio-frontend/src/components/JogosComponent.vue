@@ -63,22 +63,22 @@
                                         <div class="flex items-center gap-x-2 w-full pt-2" v-if="jogo.platforms">
                                             <img src="../assets/Imagens/ps_logo.png"
                                                 v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 1)"
-                                                class="w-[20px] h-auto filtro-branco">
+                                                class="xl:w-[20px] w-[17px] h-auto filtro-branco">
                                             <img src="../assets/Imagens/xbox_logo.svg"
                                                 v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 2)"
-                                                class="w-[16px] h-auto filtro-branco">
+                                                class="xl:w-[16px] w-[13px] h-auto filtro-branco">
                                             <img src="../assets/Imagens/pc_logo.png"
                                                 v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 3)"
-                                                class="w-[20px] h-auto filtro-branco">
+                                                class="xl:w-[20px] w-[17px] h-auto filtro-branco">
                                             <img src="../assets/Imagens/ios_logo.png"
                                                 v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 4)"
-                                                class="w-[20px] h-auto filtro-branco">
+                                                class="xl:w-[20px] w-[17px] h-auto filtro-branco">
                                             <img src="../assets/Imagens/switch_logo.png"
                                                 v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 5)"
-                                                class="w-[20px] h-auto filtro-branco">
+                                                class="xl:w-[20px] w-[17px] h-auto filtro-branco">
                                             <img src="../assets/Imagens/stadia_logo.png"
                                                 v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 6)"
-                                                class="w-[20px] h-auto filtro-branco">
+                                                class="xl:w-[20px] w-[17px] h-auto filtro-branco">
                                         </div>
                                     </div>
                                 </div>
@@ -148,22 +148,22 @@
                                         <div class="flex items-center gap-x-2 w-full pt-2" v-if="jogo.platforms">
                                             <img src="../assets/Imagens/ps_logo.png"
                                                 v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 1)"
-                                                class="w-[20px] h-auto filtro-branco">
+                                                class="xl:w-[20px] w-[17px] h-auto filtro-branco">
                                             <img src="../assets/Imagens/xbox_logo.svg"
                                                 v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 2)"
-                                                class="w-[16px] h-auto filtro-branco">
+                                                class="xl:w-[16px] w-[13px] h-auto filtro-branco">
                                             <img src="../assets/Imagens/pc_logo.png"
                                                 v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 3)"
-                                                class="w-[20px] h-auto filtro-branco">
+                                                class="xl:w-[20px] w-[17px] h-auto filtro-branco">
                                             <img src="../assets/Imagens/ios_logo.png"
                                                 v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 4)"
-                                                class="w-[20px] h-auto filtro-branco">
+                                                class="xl:w-[20px] w-[17px] h-auto filtro-branco">
                                             <img src="../assets/Imagens/switch_logo.png"
                                                 v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 5)"
-                                                class="w-[20px] h-auto filtro-branco">
+                                                class="xl:w-[20px] w-[17px] h-auto filtro-branco">
                                             <img src="../assets/Imagens/stadia_logo.png"
                                                 v-if="jogo.platforms.some(plataforma => plataformasJogos[plataforma] == 6)"
-                                                class="w-[20px] h-auto filtro-branco">
+                                                class="xl:w-[20px] w-[17px] h-auto filtro-branco">
                                         </div>
                                     </div>
                                 </div>

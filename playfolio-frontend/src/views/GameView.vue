@@ -193,7 +193,7 @@
                 </div>
                 <div class="w-full">
                     <span class="text-[10px] text-zinc-400">{{ dados.parent_game ? "Jogo Relacionado" : "Jogo Principal"
-                        }}</span>
+                    }}</span>
                 </div>
                 <div class="w-full mt-4" v-if="!carregandoDados">
                     <ul>
@@ -201,7 +201,7 @@
                             <span class="text-xs text-zinc-400">Data de Lançamento: </span>
                             <span class="inline text-zinc-50 text-xs" v-if="dados.first_release_date"> {{
                                 formataDataUnix(dados.first_release_date, 2)
-                                }}</span>
+                            }}</span>
                             <span class="loading loading-dots loading-xs"
                                 v-else-if="!dados.first_release_date && carregandoInformacoesAdicionais"></span>
                             <span class="inline text-zinc-50 text-xs" v-else>Não encontrado</span>
@@ -211,7 +211,7 @@
                             <span class="loading loading-dots loading-xs"
                                 v-if="!tags.length && carregandoInformacoesAdicionais"></span>
                             <span class="inline text-zinc-50 text-xs" v-else> {{ tags?.join(", ") || "Não encontrado"
-                            }}</span>
+                                }}</span>
                         </li>
                         <li>
                             <span class="text-xs text-zinc-400">Plataformas: </span>
@@ -251,11 +251,17 @@
 
                 <div class="w-full mt-8" v-if="dados.summary && !carregandoDados">
                     <span class="text-xs text-zinc-50 block">Sumário</span>
-                    <span class="text-xs text-zinc-400">{{ dados.summary }}</span>
+                    <p class="text-xs text-zinc-400 mt-1">{{ dados.summary }}</p>
                 </div>
                 <div class="w-full mt-8" v-if="dados.storyline && !carregandoDados">
                     <span class="text-xs text-zinc-50 block">História</span>
-                    <span class="text-xs text-zinc-400">{{ dados.storyline }}</span>
+                    <p class="text-xs text-zinc-400 mt-1" ref="textoRef"
+                        :class="{ 'line-clamp-[15]': !mostrarMaisHistoria }">{{
+                            dados.storyline }}</p>
+                    <a class="cursor-pointer text-xs text-zinc-400 mt-1 underline"
+                        @click="mostrarMaisHistoria = !mostrarMaisHistoria" v-if="botaoMostrarMaisHistoria">
+                        {{ mostrarMaisHistoria ? 'Mostrar menos' : 'Mostrar mais' }}
+                    </a>
                 </div>
 
                 <div class="w-full mt-8 relative">
@@ -328,7 +334,7 @@
                                     <div class="flex flex-col justify-center">
                                         <h2 class="text-zinc-50 xl:text-xs text-[11px]">{{ review.usuario.nome }}</h2>
                                         <span class="xl:text-[10px] text-[8px] text-zinc-500">@{{ review.usuario.usuario
-                                            }}</span>
+                                        }}</span>
                                     </div>
                                 </router-link>
 
@@ -440,6 +446,8 @@ export default {
             twitchToken: useTwitchTokenStore(),
             estaNaWishlist: false,
             boxSucessoExclusao: false,
+            mostrarMaisHistoria: false,
+            botaoMostrarMaisHistoria: true
         }
     },
 
@@ -456,6 +464,10 @@ export default {
         this.usuarioLogado = this.userStore.usuario ? true : false
 
         this.carregaDados()
+
+        this.verificarAlturaTexto()
+        window.addEventListener('resize', this.verificarAlturaTexto)
+
         this.carregaReviewDoUsuario()
         this.verificaSeEstaNaWishlist()
         this.$nextTick(() => {
@@ -476,7 +488,21 @@ export default {
 
         if (this.usuarioLogado && this.avaliacaoBoxOpenDefault) this.avaliacaoBoxOpen = true
     },
+    beforeUnmount() {
+        window.removeEventListener('resize', this.verificarAlturaTexto)
+    },
     methods: {
+        verificarAlturaTexto() {
+            this.$nextTick(() => {
+                const el = this.$refs.textoRef
+                if (!el) return
+
+                const alturaLinha = parseFloat(getComputedStyle(el).lineHeight)
+                const alturaMaxima = alturaLinha * 15
+                this.botaoMostrarMaisHistoria = el.scrollHeight > alturaMaxima
+                this.mostrarMaisHistoria = !(el.scrollHeight > alturaMaxima)
+            })
+        },
         voltarRota() {
             if (window.history.length > 1) {
                 this.$router.back()

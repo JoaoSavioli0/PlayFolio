@@ -3,7 +3,8 @@
         <div class="flex w-full items-center">
             <div class="whitespace-nowrap flex items-center justify-between w-full">
                 <div class="flex">
-                    <h1 class="xl:text-[30px] text-[20px] text-start text-zinc-50" v-if="!jogosDestaque.length">
+                    <h1 class="xl:text-[30px] text-[20px] text-start text-zinc-50 whitespace-normal"
+                        v-if="!jogosDestaque.length">
                         CARREGANDO DESTAQUES <span class="loading loading-dots loading-xl"></span></h1>
                     <h1 v-else class="xl:text-[30px] text-[20px] text-start text-zinc-50">DESTAQUES 🔥</h1>
                 </div>

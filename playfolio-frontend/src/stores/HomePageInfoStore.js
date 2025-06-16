@@ -34,10 +34,6 @@ export const useHomePageInfoStore = defineStore("HomePageInfo", {
       await this.carregaCapas();
       await this.carregaGeneros();
       await this.carregaPlataformas();
-
-      console.log("==========HomePageInfoStore=========");
-      console.log("-> capasJogos: ", this.capasJogos);
-      console.log("-> generosNomes: ", this.generosNomes);
     },
 
     // Carrega jogos com mais reviews e alimenta listas gerais
@@ -214,7 +210,6 @@ export const useHomePageInfoStore = defineStore("HomePageInfo", {
         ", "
       )}); limit ${this.plataformasIds.length};`;
 
-      console.log("Body plataforma =-=-=-=> ", body);
       try {
         const response = await api.post("/api/igdb/proxy", body, {
           headers: {
@@ -231,12 +226,17 @@ export const useHomePageInfoStore = defineStore("HomePageInfo", {
           else if (
             abbreviation.includes("Series X|S") ||
             abbreviation.includes("XBOX") ||
-            abbreviation.includes("X360")
+            abbreviation.includes("X360") ||
+            abbreviation.includes("XONE")
           )
             id = 2;
           else if (abbreviation.includes("PC")) id = 3;
           else if (abbreviation.includes("iOS")) id = 4;
-          else if (abbreviation.includes("Switch")) id = 5;
+          else if (
+            abbreviation.includes("Switch") ||
+            abbreviation.includes("Switch 2")
+          )
+            id = 5;
           else if (abbreviation.includes("Stadia")) id = 6;
 
           this.plataformasJogos[plataforma.id] = id;
@@ -245,6 +245,7 @@ export const useHomePageInfoStore = defineStore("HomePageInfo", {
         console.error("Erro carregando plataformas: " + error);
       }
     },
+
     calculaDataAtualUnix() {
       return Math.floor(Date.now() / 1000);
     },

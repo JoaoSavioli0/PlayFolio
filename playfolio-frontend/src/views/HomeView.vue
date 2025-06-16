@@ -37,7 +37,6 @@ export default {
     }
   },
   async mounted() {
-    alert("Este projeto usa o plano gratuito do render para hospedar sua API, por conta disso, a API pode demorar até 1 minuto para ser iniciada e os dados serem carregados.")
     if (
       this.homePageInfoStore.jogosMaisReviews.length === 0 ||
       this.homePageInfoStore.jogosMaiorNota.length === 0 ||
