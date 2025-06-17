@@ -22,9 +22,6 @@ export default {
         fechaPlayer() {
             this.$emit("fechar-video")
         }
-    },
-    mounted() {
-        console.log("Url: " + this.url)
     }
 }
 </script>

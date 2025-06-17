@@ -418,7 +418,6 @@ export default {
             }
         }
         this.proprioUsuario = this.usuario.usuario == this.username
-        console.log("próprio usuário: ", this.proprioUsuario)
 
         await this.carregaUsuario()
 
@@ -443,7 +442,7 @@ export default {
             this.reviews = []
             this.jogosIds = []
             this.jogosReview = []
-            console.log("Chamou no emit")
+
             this.carregando = true
             await this.carregaListaDeDesejo()
             await this.carregaReviews()
@@ -462,11 +461,9 @@ export default {
             }
         },
         async procuraUsuario() {
-            console.log("Procurausuario")
             try {
                 const response = await api.get(`/usuario/fromUsername/${this.username}`)
                 this.usuarioProfile = response.data
-                console.log("Usuario profile: ", this.usuarioProfile)
             } catch (error) {
                 console.log("Erro ao carregar informações de usuário: ", error)
             }
@@ -594,7 +591,6 @@ export default {
             }
         },
         filtroReviews() {
-            console.log(this.jogosReviewBackup)
             if (this.filtroReviews == 1) {
                 this.jogosReview = [...this.jogosReviewBackup].sort((a, b) => a.name.localeCompare(b.name, 'pt-BR', { sensitivity: 'base' }));
             } else if (this.filtroReviews == 2) {

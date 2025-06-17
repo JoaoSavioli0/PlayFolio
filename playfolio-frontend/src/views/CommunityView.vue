@@ -74,7 +74,6 @@ export default {
             try {
                 const response = await api.get("/usuario/all")
                 this.usuarios = response.data
-                console.log("Usuarios: ", this.usuarios)
             } catch (error) {
                 console.log("Erro ao carregar usuários: ", error)
             }

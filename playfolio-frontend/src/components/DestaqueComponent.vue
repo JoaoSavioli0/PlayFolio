@@ -144,7 +144,6 @@ export default {
                     dragFree: true
                 })
             }
-            console.log("Carregou carrossel")
         },
 
         formataDataUnix(dataUnix) {

@@ -70,7 +70,6 @@ export default {
         },
         async excluirReview() {
             try {
-                console.log("Entrou")
                 await api.get(`/review/delete/${this.review?.id || this.review.idReview}`)
             } catch (error) {
                 console.log("Erro ao excluir review: ", error)
@@ -81,7 +80,6 @@ export default {
         },
         async excluirWishlist() {
             try {
-                console.log("excluir wishlist")
                 await api.get(`/wishlist/delete/${this.wishlist}`)
             } catch (error) {
                 console.log("Erro ao excluir wishlist: ", error)
@@ -93,7 +91,6 @@ export default {
     },
     mounted() {
         document.addEventListener('click', this.verificaClick)
-        console.log("É wishlist: ", this.wishlist)
     },
     beforeUnmount() {
         document.removeEventListener('click', this.verificaClick)

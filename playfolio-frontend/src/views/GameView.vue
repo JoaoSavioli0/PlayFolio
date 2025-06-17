@@ -10,7 +10,7 @@
         <div class="bg-zinc-800 rounded-lg px-6 w-[400px] py-12">
             <h2 class="text-zinc-50 text-center">Review excluída!</h2>
             <div class="flex w-full justify-center mt-6">
-                <button @click="() => { console.log(boxSucessoExclusao); boxSucessoExclusao = false }"
+                <button @click="() => { boxSucessoExclusao = false }"
                     class="w-[40%] rounded-md bg-zinc-700 text-zinc-50 h-[50px] text-sm cursor-pointer">Ok</button>
             </div>
         </div>
@@ -447,7 +447,7 @@ export default {
             estaNaWishlist: false,
             boxSucessoExclusao: false,
             mostrarMaisHistoria: false,
-            botaoMostrarMaisHistoria: true
+            botaoMostrarMaisHistoria: false
         }
     },
 
@@ -463,7 +463,7 @@ export default {
         }
         this.usuarioLogado = this.userStore.usuario ? true : false
 
-        this.carregaDados()
+        await this.carregaDados()
 
         this.verificarAlturaTexto()
         window.addEventListener('resize', this.verificarAlturaTexto)
@@ -499,7 +499,9 @@ export default {
 
                 const alturaLinha = parseFloat(getComputedStyle(el).lineHeight)
                 const alturaMaxima = alturaLinha * 15
+
                 this.botaoMostrarMaisHistoria = el.scrollHeight > alturaMaxima
+
                 this.mostrarMaisHistoria = !(el.scrollHeight > alturaMaxima)
             })
         },
@@ -547,7 +549,6 @@ export default {
                 console.error("Erro ao carregar dados do jogo: " + error)
             } finally {
                 this.carregandoDados = false
-                console.log(this.dados)
             }
         },
 
@@ -557,7 +558,6 @@ export default {
             try {
                 const response = await api.get(`/review/get?idJogo=${this.id}&idUsuario=${this.usuario.id}`)
                 this.reviewDoUsuario = response.data
-                console.log(this.reviewDoUsuario)
             } catch (error) {
                 console.log("Erro ao carregar avaliação de usuário: ", error)
             }
@@ -569,7 +569,6 @@ export default {
             try {
                 const response = await api.get(`/review/get/${this.id}`)
                 this.reviews = response.data
-                console.log("Reviews: ", this.reviews)
             } catch (error) {
                 console.log("Erro ao carregar reviews: ", error)
             }
@@ -591,7 +590,6 @@ export default {
                 data.forEach((e) => {
                     this.videos.push(e);
                     this.capasVideos[e.id] = `https://i.ytimg.com/vi/${e.video_id}/hqdefault.jpg`
-                    console.log(e.video_id)
                 })
 
             } catch (error) {

@@ -187,7 +187,6 @@ export const useHomePageInfoStore = defineStore("HomePageInfo", {
       const body = `fields name; where id = (${this.generosIds.join(
         ", "
       )}); limit ${this.generosIds.length};`;
-      console.log("Body ===> ", body);
       try {
         const response = await api.post("/api/igdb/proxy", body, {
           headers: {

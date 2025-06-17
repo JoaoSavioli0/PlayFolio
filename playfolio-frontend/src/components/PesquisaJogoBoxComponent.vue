@@ -149,8 +149,6 @@ export default {
         },
 
         async carregaCapas(jogosId) {
-            console.log("jogosId:", jogosId)
-
             const body = `fields url; where game = (${jogosId.join(", ")}); limit 50;`
             try {
                 const response = await api.post("/api/igdb/proxy", body, {
@@ -160,13 +158,12 @@ export default {
                     }
                 })
 
-                console.log("responsedata: ", response.data)
                 for (let data of response.data) {
                     if (data && data.url) {
                         this.capasJogosPesquisados[data.id] = data.url.replace("thumb", "720p")
                     }
                 }
-                console.log("capas: ", this.capasJogosPesquisados)
+
             } catch (error) {
                 console.error("Erro carregando imagem: " + error)
             }

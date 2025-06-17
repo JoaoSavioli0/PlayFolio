@@ -98,9 +98,6 @@ export default {
             imagemPreview: null
         }
     },
-    mounted() {
-        console.log(this.usuario)
-    },
     computed: {
         primeiraLetraUsuario() {
             return this.usuario?.usuario?.charAt(0).toUpperCase() || ''
@@ -109,7 +106,6 @@ export default {
     methods: {
         async atualizarDados() {
             if (!this.verificaDados) return
-            console.log("nova bio: ", this.bio)
             try {
                 const response = await api.post("/usuario/update-data", {
                     id: this.usuario.id,

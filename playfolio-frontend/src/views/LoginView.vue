@@ -289,7 +289,6 @@ export default {
                 }
             } catch (error) {
                 if (error.response) {
-                    console.log("Status -> ", error.response.status, "\nData -> ", error.response.data)
                     if (error.response.status == 409) this.erroEmailRegistro = error.response.data
                     if (error.response.status == 403) this.erroUsuarioRegistro = error.response.data
                 }

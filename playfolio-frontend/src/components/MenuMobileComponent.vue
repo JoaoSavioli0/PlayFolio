@@ -128,7 +128,6 @@ export default {
         document.addEventListener("click", this.verificaClick)
         if (this.userStore.usuario != null) {
             this.usuario = this.userStore.usuario
-            console.log("usuario> ", this.usuario)
         } else {
             await this.userStore.reconectaSessao()
             if (this.userStore.usuario != null) {
@@ -157,7 +156,6 @@ export default {
         },
         verificaClick(event) {
             if (this.$refs.menuMobile && !this.$refs.menuMobile.contains(event.target) && this.$refs.menuMobileButton && !this.$refs.menuMobileButton.contains(event.target)) {
-                console.log("checa")
                 this.menuMobileOpen = false
             }
         },

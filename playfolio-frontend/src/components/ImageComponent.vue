@@ -19,9 +19,6 @@ export default {
         fechaImagem() {
             this.$emit("fechar-imagem")
         }
-    },
-    mounted() {
-        console.log("Url: " + this.url)
     }
 }
 </script>

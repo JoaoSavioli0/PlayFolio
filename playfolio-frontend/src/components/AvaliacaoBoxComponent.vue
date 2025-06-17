@@ -289,7 +289,6 @@ export default {
         }
     },
     async mounted() {
-        console.log("avaliacaoUsuario: ", this.avaliacaoUsuario, "\nusuario: ", this.usuario)
         this.updateOffset()
         this.estaNaWishlist = await this.verificaWishlist()
     },
@@ -351,7 +350,6 @@ export default {
                     })
 
                     this.fechaBox()
-                    console.log(response.data)
                 } catch (error) {
                     console.log("Erro ao salvar registro: " + error)
                 }
@@ -403,7 +401,6 @@ export default {
         },
         async excluirReview() {
             try {
-                console.log(this.avaliacaoUsuario?.idReview)
                 await api.get(`/review/delete/${this.avaliacaoUsuario?.idReview}`)
             } catch (error) {
                 console.log("Erro ao excluir review: ", error)
