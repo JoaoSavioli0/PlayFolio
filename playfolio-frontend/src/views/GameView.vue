@@ -61,7 +61,7 @@
 
                         <div class="flex w-full h-full pl-2" v-if="dados">
                             <div class="flex flex-col text-start px-4 justify-center h-full">
-                                <span class="text-[12px] text-zinc-300">NOTA</span>
+                                <span class="xl:text-[12px] text-[9px] text-zinc-300">NOTA</span>
                                 <h2 class="text-2xl" v-if="dados.total_rating && !carregandoDados"
                                     :class="[{ 'text-lime-400': dados.total_rating >= 90 }, { 'text-red-600': dados.total_rating <= 50 }, { 'text-teal-300': dados.total_rating >= 70 && dados.total_rating < 90 }, { 'text-amber-400': dados.rating > 50 && dados.total_rating < 70 }]">
                                     {{ (dados.total_rating / 10).toFixed(1) }}</h2>
@@ -71,7 +71,7 @@
                             </div>
 
                             <div class="flex flex-col text-start px-4 justify-center h-full">
-                                <span class="text-[12px] text-zinc-300">AVALIAÇÕES</span>
+                                <span class="xl:text-[12px] text-[9px] text-zinc-300">AVALIAÇÕES</span>
                                 <h2 class="text-2xl" v-if="dados.total_rating && !carregandoDados">
                                     {{ dados.total_rating_count }}</h2>
                                 <h2 v-else>N/A</h2>
@@ -91,12 +91,12 @@
                         <div class="w-full flex justify-start items-center">
                             <router-link to="/account/login" class="p-0">
                                 <button
-                                    class="py-2 px-4 rounded-xl border-[1px] border-zinc-500 text-sm cursor-pointer">Login</button>
-                                <span class="px-4 text-zinc-400 text-sm">Ou</span>
+                                    class="py-2 xl:px-4 px-3 rounded-xl border-[1px] border-zinc-500 lg:text-sm text-xs cursor-pointer">Login</button>
+                                <span class="lg:px-4 px-3 text-zinc-400 text-sm">Ou</span>
                             </router-link>
                             <router-link to="/account/registro" class="p-0">
                                 <button
-                                    class="p-2 px-4 rounded-xl border-[1px] border-zinc-500 text-sm cursor-pointer">Cadastre-se</button>
+                                    class="p-2 xl:px-4 px-3 rounded-xl border-[1px] border-zinc-500 lg:text-sm text-xs cursor-pointer">Cadastre-se</button>
                             </router-link>
                         </div>
 
@@ -193,7 +193,7 @@
                 </div>
                 <div class="w-full">
                     <span class="text-[10px] text-zinc-400">{{ dados.parent_game ? "Jogo Relacionado" : "Jogo Principal"
-                    }}</span>
+                        }}</span>
                 </div>
                 <div class="w-full mt-4" v-if="!carregandoDados">
                     <ul>
@@ -201,7 +201,7 @@
                             <span class="text-xs text-zinc-400">Data de Lançamento: </span>
                             <span class="inline text-zinc-50 text-xs" v-if="dados.first_release_date"> {{
                                 formataDataUnix(dados.first_release_date, 2)
-                            }}</span>
+                                }}</span>
                             <span class="loading loading-dots loading-xs"
                                 v-else-if="!dados.first_release_date && carregandoInformacoesAdicionais"></span>
                             <span class="inline text-zinc-50 text-xs" v-else>Não encontrado</span>
@@ -211,7 +211,7 @@
                             <span class="loading loading-dots loading-xs"
                                 v-if="!tags.length && carregandoInformacoesAdicionais"></span>
                             <span class="inline text-zinc-50 text-xs" v-else> {{ tags?.join(", ") || "Não encontrado"
-                                }}</span>
+                            }}</span>
                         </li>
                         <li>
                             <span class="text-xs text-zinc-400">Plataformas: </span>
@@ -334,7 +334,7 @@
                                     <div class="flex flex-col justify-center">
                                         <h2 class="text-zinc-50 xl:text-xs text-[11px]">{{ review.usuario.nome }}</h2>
                                         <span class="xl:text-[10px] text-[8px] text-zinc-500">@{{ review.usuario.usuario
-                                        }}</span>
+                                            }}</span>
                                     </div>
                                 </router-link>
 

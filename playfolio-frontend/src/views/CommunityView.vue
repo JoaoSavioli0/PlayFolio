@@ -16,9 +16,10 @@
             <div class="w-full grid grid-cols-1 gap-y-[4px]">
                 <router-link v-for="usuario in usuarios" :to="`/account/profile/${usuario.usuario}`"
                     class="w-full border border-white/10 rounded-lg bg-zinc-900 flex px-4 py-4 items-center shrink-0">
-                    <div class="relative size-[43px] rounded-full bg-gradient-to-br from-amber-500 to-pink-500 p-[3px]">
+                    <div
+                        class="relative size-[43px] rounded-full bg-gradient-to-br from-amber-500 to-pink-500 p-[3px] flex shrink-0 ">
                         <div
-                            class="w-full h-full bg-zinc-900 rounded-full flex items-center justify-center overflow-hidden relative">
+                            class="w-full h-full bg-zinc-900 rounded-full flex shrink-0 items-center justify-center overflow-hidden relative">
                             <img :src="`data:image/png;base64,${usuario.imagem}`"
                                 class="w-full h-full object-cover absolute start-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2"
                                 v-if="usuario.imagem" />
@@ -28,13 +29,14 @@
                             </h1>
                         </div>
                     </div>
-                    <div class="flex flex-col ml-2 text-start">
+                    <div class="flex flex-col ml-2 text-start min-w-[100px]">
                         <h1 class="text-zinc-50 text-xs">{{ usuario.nome }}</h1>
                         <span class="text-zinc-400 text-[9px]">@{{ usuario.usuario }}</span>
                         <span class="text-[9px] text-zinc-400 mt-[2px] tracking-wide">{{ usuario.numJogos }}
                             reviews</span>
                     </div>
-                    <div class="flex h-full ml-6 items-center italic text-[9px] text-zinc-400" v-if="usuario.bio">
+                    <div class="flex h-full ml-6 items-center italic text-[9px] text-zinc-400 max-md:text-[7px] max-w-[300px] xl:ml-auto"
+                        v-if="usuario.bio">
                         {{ usuario.bio }}
                     </div>
                 </router-link>
