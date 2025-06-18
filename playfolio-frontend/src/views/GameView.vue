@@ -468,7 +468,7 @@ export default {
         this.verificarAlturaTexto()
         window.addEventListener('resize', this.verificarAlturaTexto)
 
-        this.carregaReviewDoUsuario()
+        await this.carregaReviewDoUsuario()
         this.verificaSeEstaNaWishlist()
         this.$nextTick(() => {
             const viewportNode = this.$refs.viewport
@@ -486,7 +486,7 @@ export default {
             }
         })
 
-        if (this.usuarioLogado && this.avaliacaoBoxOpenDefault) this.avaliacaoBoxOpen = true
+        if (this.usuarioLogado && this.avaliacaoBoxOpenDefault && this.reviewDoUsuario) this.avaliacaoBoxOpen = true
     },
     beforeUnmount() {
         window.removeEventListener('resize', this.verificarAlturaTexto)
@@ -728,12 +728,12 @@ export default {
             }
         },
 
-        recarregaDados(acao) {
-            this.avaliacaoBoxOpen = false
+        async recarregaDados(acao) {
             this.verificaSeEstaNaWishlist()
-            this.carregaReviewDoUsuario()
+            await this.carregaReviewDoUsuario()
             this.carregaReviews()
             if (acao == "Exclusao") this.boxSucessoExclusao = true
+            this.avaliacaoBoxOpen = false
         },
 
         formataDataUnix(dataUnix, tipo) {
@@ -759,6 +759,9 @@ export default {
     watch: {
         id() {
             this.carregaDados()
+        },
+        reviewDoUsuario() {
+            if (this.avaliacaoBoxOpenDefault && this.reviewDoUsuario && !this.avaliacaoBoxOpen) this.avaliacaoBoxOpen = true
         }
     }
 }

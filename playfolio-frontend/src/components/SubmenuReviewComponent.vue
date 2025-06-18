@@ -18,16 +18,22 @@
         <img src="../assets/Imagens/dots.svg" class="xl:w-[15px] w-[12px] h-auto">
         <div class="flex flex-col top-0 mt-[25px] end-0 absolute" v-if="exibeSub">
             <ul
-                class="*:px-2 *:py-1 *:first:rounded-t-lg *:last:rounded-b-lg text-zinc-400 text-[12px] w-max rounded-lg shadow-md bg-zinc-900 text-start">
-                <li class="hover:bg-zinc-800" @click="denunciaReviewBox"
+                class="*:first:rounded-t-lg *:last:rounded-b-lg text-zinc-400 text-[12px] w-max rounded-lg shadow-md bg-zinc-900 text-start">
+                <li class="hover:bg-zinc-800 px-4 py-1" @click="denunciaReviewBox"
                     v-if="idUsuarioAutor != idUsuarioLogado && !wishlist">
                     Denunciar
                 </li>
-                <li class="hover:bg-zinc-800" @click="excluiReviewBox"
+                <li class="hover:bg-zinc-800 p-0" v-if="idUsuarioAutor == idUsuarioLogado && review">
+                    <router-link class="block w-full h-full px-4 py-1"
+                        :to="{ path: `/game/${review.idJogo}`, query: { avaliacaoBoxOpenDefault: true } }">
+                        Editar
+                    </router-link>
+                </li>
+                <li class="hover:bg-zinc-800 px-4 py-1" @click="excluiReviewBox"
                     v-if="idUsuarioAutor == idUsuarioLogado && !wishlist">
                     Excluir
                 </li>
-                <li class="hover:bg-zinc-800" @click="excluiReviewBox"
+                <li class="hover:bg-zinc-800 px-4 py-1" @click="excluiReviewBox"
                     v-if="idUsuarioAutor == idUsuarioLogado && wishlist">
                     Remover
                 </li>
@@ -90,6 +96,7 @@ export default {
         }
     },
     mounted() {
+        console.log("Review submenu: ", this.review)
         document.addEventListener('click', this.verificaClick)
     },
     beforeUnmount() {

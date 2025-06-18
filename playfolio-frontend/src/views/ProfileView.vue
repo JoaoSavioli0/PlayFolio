@@ -52,7 +52,7 @@
                             </div>
                             <h2 class="text-[13px] mt-1"
                                 :class="selectedStatus == 1 ? 'text-zinc-50' : 'text-zinc-300'">{{
-                                    usuarioProfile.numJogos || 0
+                                    jogosReview?.length || 0
                                 }}</h2>
                         </div>
                     </button>
@@ -242,7 +242,7 @@
                                             class="py-2 w-[50px] rounded-lg bg-zinc-800/30 flex items-center justify-center shrink-0">
                                             <span class="text-zinc-50 text-xl">{{
                                                 reviews[jogo.id]?.nota
-                                                }}</span>
+                                            }}</span>
                                         </div>
                                         <div class="flex flex-col items-center ml-2 w-full">
                                             <div class="w-full flex justify-start">
@@ -258,7 +258,7 @@
                                                 <div class="max-w-[70%] w-fit line-clamp-2 pr-2 break-all text-left">
                                                     <span class="text-sm text-start xl:text-md w-full">{{
                                                         jogo.name
-                                                        }}</span>
+                                                    }}</span>
                                                 </div>
                                                 <div class="pl-2 border-l-[1px] border-zinc-400 flex items-center"
                                                     v-if="jogo.first_release_date">
@@ -329,7 +329,7 @@
                                                 <div class="max-w-[70%] line-clamp-2 pr-2 break-all text-left">
                                                     <span class="text-sm text-start xl:text-md w-full">{{
                                                         jogo.name
-                                                        }}</span>
+                                                    }}</span>
                                                 </div>
                                                 <div class="pl-2 border-l-[1px] border-zinc-400 flex items-center"
                                                     v-if="jogo.first_release_date">
