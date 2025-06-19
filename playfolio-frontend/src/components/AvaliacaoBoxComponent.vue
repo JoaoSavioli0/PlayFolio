@@ -204,7 +204,7 @@
                     :class="avaliacaoUsuario ? 'justify-between' : 'justify-end'">
                     <button
                         class="px-8 xl:py-4 py-2 border-zinc-400 border text-zinc-50 rounded-full text-xs cursor-pointer"
-                        @click="excluiReviewBox">Excluir</button>
+                        v-if="avaliacaoUsuario" @click="excluiReviewBox">Excluir</button>
                     <button class="px-8 xl:py-4 py-2 text-zinc-900 bg-zinc-50 rounded-full text-xs cursor-pointer"
                         @click="salvaRegistro">{{ avaliacaoUsuario ? 'Editar' : 'Enviar' }}</button>
                 </div>
